@@ -9,7 +9,51 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  name  String? @db.VarChar(255)
-  email String  @unique @db.VarChar(255)
+  id          Int     @id @default(autoincrement())
+  name        String? @db.VarChar(255)
+  email       String  @unique @db.VarChar(255)
+  createdPubs Pub[]   @relation("createdBy")
+  updatedPubs Pub[]   @relation("updatedBy")
+}
+
+model MapLocation {
+  id   Int   @id @default(autoincrement())
+  lat  Float
+  lng  Float
+  pubs Pub[]
+}
+
+model Rules {
+  id                   Int     @id @default(autoincrement())
+  isCueDeposit         Boolean
+  isJumpingAllowed     Boolean
+  isPoundOnTable       Boolean
+  isReservationAllowed Boolean
+  pubs                 Pub[]
+}
+
+model Table {
+  id          Int     @id @default(autoincrement())
+  size        String?
+  quality     String?
+  cost        Float?
+  description String?
+  pub         Pub     @relation(fields: [pubId], references: [id])
+  pubId       Int
+}
+
+model Pub {
+  id          Int         @id @default(autoincrement())
+  name        String
+  area        String
+  description String
+  availablity Int?
+  locationId  Int
+  location    MapLocation @relation(fields: [locationId], references: [id])
+  rulesId     Int
+  rules       Rules       @relation(fields: [rulesId], references: [id])
+  tables      Table[]
+  createdBy   User        @relation(fields: [userId], references: [id], name: "createdBy")
+  updatedBy   User[]      @relation("updatedBy")
+  userId      Int
 }
