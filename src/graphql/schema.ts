@@ -37,7 +37,7 @@ export const typeDefs = `
   }
 
   type Query {
-    users: [User]!
-    pubs: [Pub]!
+    users: [User]
+    pubs: [Pub]
   }
 `;
