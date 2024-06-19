@@ -1,10 +1,13 @@
+import { Pub } from "@/types";
 import { gql, useQuery } from "@apollo/client";
-import { Pub } from "@prisma/client";
 import React from "react";
+import styles from "@/styles/Pubs.module.scss";
 
 const GET_PUBS = gql`
   query GetPubs {
     pubs {
+      id
+      name
       area
       availablity
       description
@@ -19,8 +22,6 @@ const GET_PUBS = gql`
         quality
         size
       }
-      id
-      name
       rules {
         isCueDeposit
         isJumpingAllowed
@@ -37,17 +38,36 @@ const Pubs: React.FC = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
-  console.log(data);
-
   return (
-    <div>
-      {data?.pubs.map((pub) => (
-        <div key={pub.id}>
-          <h2>{pub.name}</h2>
-          <p>Area: {pub.area}</p>
-          <p>Description: {pub.description}</p>
-        </div>
-      ))}
+    <div className={styles.container}>
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            <th style={{ width: "20%" }}>Name</th>
+            <th style={{ width: "10%" }}>Area</th>
+            <th style={{ width: "30%" }}>Description</th>{" "}
+            <th style={{ width: "10%" }}>Availability</th>{" "}
+            <th style={{ width: "10%" }}>Cue Deposit</th>{" "}
+            <th style={{ width: "10%" }}>Jumping Allowed</th>{" "}
+            <th style={{ width: "10%" }}>Pound On Table</th>{" "}
+            <th style={{ width: "10%" }}>Reservation Allowed</th>{" "}
+          </tr>
+        </thead>
+        <tbody>
+          {data?.pubs.map((pub) => (
+            <tr key={pub.id}>
+              <td>{pub.name}</td>
+              <td>{pub.area}</td>
+              <td>{pub.description}</td>
+              <td>{pub.availability}</td>
+              <td>{pub.rules.isCueDeposit ? "Yes" : "No"}</td>
+              <td>{pub.rules.isJumpingAllowed ? "Yes" : "No"}</td>
+              <td>{pub.rules.isPoundOnTable ? "Yes" : "No"}</td>
+              <td>{pub.rules.isReservationAllowed ? "Yes" : "No"}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

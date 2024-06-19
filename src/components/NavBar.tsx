@@ -1,8 +1,16 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useState } from "react";
+import DraggableComponent from "./DraggableComponent";
+import AddPubForm from "./AddPubForm";
 
 const NavBar = () => {
   const router = useRouter();
+  const [isAddPubVisible, setIsAddPubVisible] = useState<boolean>(false);
+
+  const toggleAddPub = () => {
+    setIsAddPubVisible(!isAddPubVisible);
+  };
 
   return (
     <nav style={styles.nav}>
@@ -24,6 +32,13 @@ const NavBar = () => {
       >
         Map
       </Link>
+      <button onClick={toggleAddPub}>Add Pub</button>
+      <DraggableComponent
+        isVisiable={isAddPubVisible}
+        toggleIsVisiable={toggleAddPub}
+      >
+        <AddPubForm />
+      </DraggableComponent>
     </nav>
   );
 };

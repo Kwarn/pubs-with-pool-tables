@@ -1,11 +1,11 @@
 import { ApolloServer } from "apollo-server-micro";
 import { typeDefs } from "../../graphql/schema";
 import { resolvers } from "../../graphql/resolvers";
-import type { NextApiRequest, NextApiResponse } from "next";
 import Cors from "cors";
+import { NextApiRequest, NextApiResponse } from "next";
 
 const cors = Cors({
-  origin: "*",
+  origin: "http://localhost:3000",
   methods: ["POST", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -28,9 +28,7 @@ function runMiddleware(
 
 const apolloServer = new ApolloServer({ typeDefs, resolvers });
 
-const startServer = apolloServer.start().then(() => {
-  return apolloServer.createHandler({ path: "/api/graphql" });
-});
+const startServer = apolloServer.start();
 
 export const config = {
   api: {
@@ -44,6 +42,11 @@ export default async function handler(
 ) {
   await runMiddleware(req, res, cors);
 
-  const apolloHandler = await startServer;
-  return apolloHandler(req, res);
+  if (req.method === "OPTIONS") {
+    res.end(); // Handle OPTIONS request
+    return;
+  }
+
+  await startServer;
+  await apolloServer.createHandler({ path: "/api/graphql" })(req, res);
 }
