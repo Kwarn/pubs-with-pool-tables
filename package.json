@@ -9,11 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@apollo/client": "^3.10.5",
+    "@prisma/client": "^5.15.1",
+    "apollo-server-micro": "^3.13.0",
+    "cors": "^2.8.5",
+    "graphql": "^16.8.2",
+    "graphql-tag": "^2.12.6",
     "next": "14.2.4",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
