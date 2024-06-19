@@ -30,7 +30,7 @@ export const typeDefs = `
     name: String!
     area: String!
     description: String!
-    availablity: Int
+    availability: Int
     location: MapLocation
     rules: Rules
     tables: [Table]

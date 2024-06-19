@@ -1,7 +1,34 @@
+import React from "react";
+import styled from "styled-components";
 import { Pub } from "@/types";
 import { gql, useQuery } from "@apollo/client";
-import React from "react";
-import styles from "@/styles/Pubs.module.scss";
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  background-color: #4a4848;
+`;
+
+const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+`;
+
+const Th = styled.th`
+  border: 1px dotted #798dcf;
+  padding: 8px;
+  text-align: center;
+  max-height: 40px;
+  background-color: #798dcf;
+`;
+
+const Td = styled.td`
+  border: 1px dotted #798dcf;
+  padding: 8px;
+  text-align: center;
+  max-height: 40px;
+`;
 
 const GET_PUBS = gql`
   query GetPubs {
@@ -9,7 +36,7 @@ const GET_PUBS = gql`
       id
       name
       area
-      availablity
+      availability
       description
       location {
         id
@@ -39,36 +66,36 @@ const Pubs: React.FC = () => {
   if (error) return <div>Error: {error.message}</div>;
 
   return (
-    <div className={styles.container}>
-      <table className={styles.table}>
+    <Container>
+      <Table>
         <thead>
           <tr>
-            <th style={{ width: "20%" }}>Name</th>
-            <th style={{ width: "10%" }}>Area</th>
-            <th style={{ width: "30%" }}>Description</th>{" "}
-            <th style={{ width: "10%" }}>Availability</th>{" "}
-            <th style={{ width: "10%" }}>Cue Deposit</th>{" "}
-            <th style={{ width: "10%" }}>Jumping Allowed</th>{" "}
-            <th style={{ width: "10%" }}>Pound On Table</th>{" "}
-            <th style={{ width: "10%" }}>Reservation Allowed</th>{" "}
+            <Th style={{ width: "20%" }}>Name</Th>
+            <Th style={{ width: "10%" }}>Area</Th>
+            <Th style={{ width: "30%" }}>Description</Th>
+            <Th style={{ width: "10%" }}>Availability</Th>
+            <Th style={{ width: "10%" }}>Cue Deposit</Th>
+            <Th style={{ width: "10%" }}>Jumping Allowed</Th>
+            <Th style={{ width: "10%" }}>Pound On Table</Th>
+            <Th style={{ width: "10%" }}>Reservation Allowed</Th>
           </tr>
         </thead>
         <tbody>
           {data?.pubs.map((pub) => (
             <tr key={pub.id}>
-              <td>{pub.name}</td>
-              <td>{pub.area}</td>
-              <td>{pub.description}</td>
-              <td>{pub.availability}</td>
-              <td>{pub.rules.isCueDeposit ? "Yes" : "No"}</td>
-              <td>{pub.rules.isJumpingAllowed ? "Yes" : "No"}</td>
-              <td>{pub.rules.isPoundOnTable ? "Yes" : "No"}</td>
-              <td>{pub.rules.isReservationAllowed ? "Yes" : "No"}</td>
+              <Td>{pub.name}</Td>
+              <Td>{pub.area}</Td>
+              <Td>{pub.description}</Td>
+              <Td>{pub.availability}</Td>
+              <Td>{pub.rules.isCueDeposit ? "Yes" : "No"}</Td>
+              <Td>{pub.rules.isJumpingAllowed ? "Yes" : "No"}</Td>
+              <Td>{pub.rules.isPoundOnTable ? "Yes" : "No"}</Td>
+              <Td>{pub.rules.isReservationAllowed ? "Yes" : "No"}</Td>
             </tr>
           ))}
         </tbody>
-      </table>
-    </div>
+      </Table>
+    </Container>
   );
 };
 

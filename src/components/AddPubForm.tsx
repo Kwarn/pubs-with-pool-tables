@@ -49,9 +49,31 @@ const Textarea = styled.textarea`
   height: 100px;
 `;
 
-const Checkbox = styled.input.attrs({ type: "checkbox" })`
-  width: auto;
+const RadioGroup = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 5px;
+`;
+
+const RadioLabel = styled.label`
   margin-right: 10px;
+  display: flex;
+  align-items: center;
+`;
+
+const RadioInput = styled.input`
+  margin-right: 5px;
+`;
+
+const Select = styled.select`
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+`;
+
+const Option = styled.option`
+  font-size: 16px;
 `;
 
 const Button = styled.button`
@@ -79,26 +101,28 @@ const AddPubForm: React.FC = () => {
     name: "",
     area: "",
     description: "",
-    isCueDeposit: false,
-    isJumpingAllowed: false,
-    isPoundOnTable: false,
-    isReservationAllowed: false,
+    availability: "",
+    isCueDeposit: "Don't Know",
+    isJumpingAllowed: "Don't Know",
+    isPoundOnTable: "Don't Know",
+    isReservationAllowed: "Don't Know",
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormState({
       ...formState,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     });
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Submitted form with state: ", formState);
-    // Add your submission logic here
   };
 
   return (
@@ -138,48 +162,159 @@ const AddPubForm: React.FC = () => {
           />
         </FormGroup>
         <FormGroup>
-          <Label htmlFor="isCueDeposit">
-            <Checkbox
-              id="isCueDeposit"
-              name="isCueDeposit"
-              checked={formState.isCueDeposit}
-              onChange={handleChange}
-            />
-            Cue Deposit Required
-          </Label>
+          <Label htmlFor="availability">Table Availability:</Label>
+          <Select
+            id="availability"
+            name="availability"
+            value={formState.availability}
+            onChange={handleChange}
+            required
+          >
+            <Option value="">Select availability...</Option>
+            <Option value="High">High</Option>
+            <Option value="Medium">Medium</Option>
+            <Option value="Low">Low</Option>
+          </Select>
         </FormGroup>
         <FormGroup>
-          <Label htmlFor="isJumpingAllowed">
-            <Checkbox
-              id="isJumpingAllowed"
-              name="isJumpingAllowed"
-              checked={formState.isJumpingAllowed}
-              onChange={handleChange}
-            />
-            Jumping Allowed
-          </Label>
+          <Label>Cue Deposit Required:</Label>
+          <RadioGroup>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isCueDeposit"
+                value="Yes"
+                checked={formState.isCueDeposit === "Yes"}
+                onChange={handleChange}
+              />
+              Yes
+            </RadioLabel>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isCueDeposit"
+                value="No"
+                checked={formState.isCueDeposit === "No"}
+                onChange={handleChange}
+              />
+              No
+            </RadioLabel>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isCueDeposit"
+                value="Don't Know"
+                checked={formState.isCueDeposit === "Don't Know"}
+                onChange={handleChange}
+              />
+              {"Don't Know"}
+            </RadioLabel>
+          </RadioGroup>
         </FormGroup>
         <FormGroup>
-          <Label htmlFor="isPoundOnTable">
-            <Checkbox
-              id="isPoundOnTable"
-              name="isPoundOnTable"
-              checked={formState.isPoundOnTable}
-              onChange={handleChange}
-            />
-            Pound On Table Allowed
-          </Label>
+          <Label>Jumping Allowed:</Label>
+          <RadioGroup>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isJumpingAllowed"
+                value="Yes"
+                checked={formState.isJumpingAllowed === "Yes"}
+                onChange={handleChange}
+              />
+              Yes
+            </RadioLabel>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isJumpingAllowed"
+                value="No"
+                checked={formState.isJumpingAllowed === "No"}
+                onChange={handleChange}
+              />
+              No
+            </RadioLabel>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isJumpingAllowed"
+                value="Don't Know"
+                checked={formState.isJumpingAllowed === "Don't Know"}
+                onChange={handleChange}
+              />
+              {" Don't Know"}
+            </RadioLabel>
+          </RadioGroup>
         </FormGroup>
         <FormGroup>
-          <Label htmlFor="isReservationAllowed">
-            <Checkbox
-              id="isReservationAllowed"
-              name="isReservationAllowed"
-              checked={formState.isReservationAllowed}
-              onChange={handleChange}
-            />
-            Reservation Allowed
-          </Label>
+          <Label>Pound On Table Allowed:</Label>
+          <RadioGroup>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isPoundOnTable"
+                value="Yes"
+                checked={formState.isPoundOnTable === "Yes"}
+                onChange={handleChange}
+              />
+              Yes
+            </RadioLabel>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isPoundOnTable"
+                value="No"
+                checked={formState.isPoundOnTable === "No"}
+                onChange={handleChange}
+              />
+              No
+            </RadioLabel>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isPoundOnTable"
+                value="Don't Know"
+                checked={formState.isPoundOnTable === "Don't Know"}
+                onChange={handleChange}
+              />
+              {"Don't Know"}
+            </RadioLabel>
+          </RadioGroup>
+        </FormGroup>
+        <FormGroup>
+          <Label>Reservation Allowed:</Label>
+          <RadioGroup>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isReservationAllowed"
+                value="Yes"
+                checked={formState.isReservationAllowed === "Yes"}
+                onChange={handleChange}
+              />
+              Yes
+            </RadioLabel>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isReservationAllowed"
+                value="No"
+                checked={formState.isReservationAllowed === "No"}
+                onChange={handleChange}
+              />
+              No
+            </RadioLabel>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isReservationAllowed"
+                value="Don't Know"
+                checked={formState.isReservationAllowed === "Don't Know"}
+                onChange={handleChange}
+              />
+              {"Don't Know"}
+            </RadioLabel>
+          </RadioGroup>
         </FormGroup>
         <Button type="submit">Add Pub</Button>
       </Form>

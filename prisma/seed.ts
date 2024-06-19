@@ -4,6 +4,13 @@ const prisma = new PrismaClient();
 
 async function main() {
   try {
+
+    await prisma.user.deleteMany({})
+    await prisma.pub.deleteMany({})
+    await prisma.table.deleteMany({})
+    await prisma.rules.deleteMany({})
+    await prisma.location.deleteMany({})
+    
     // Create users
     const user1 = await prisma.user.create({
       data: {
