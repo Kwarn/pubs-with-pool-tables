@@ -8,6 +8,7 @@ const Container = styled.div`
   justify-content: center;
   height: 100%;
   background-color: #4a4848;
+  color: white;
 `;
 
 const Table = styled.table`

@@ -85,6 +85,7 @@ const DraggableComponent = ({
 
   useEffect(() => {
     setPosition({ x: 300, y: 100 });
+    setIsMinimized(false)
   }, [isVisiable]);
 
   const onMouseDown = (e: React.MouseEvent<HTMLDivElement>): void => {
