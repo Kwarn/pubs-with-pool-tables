@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Pub } from "@/types";
 import { gql, useQuery } from "@apollo/client";
+import { GET_PUBS } from "@/graphql/queries";
 
 const Container = styled.div`
   display: flex;
@@ -31,35 +32,6 @@ const Td = styled.td`
   max-height: 40px;
 `;
 
-const GET_PUBS = gql`
-  query GetPubs {
-    pubs {
-      id
-      name
-      area
-      availability
-      description
-      location {
-        id
-        lat
-        lng
-      }
-      tables {
-        cost
-        description
-        quality
-        size
-      }
-      rules {
-        isCueDeposit
-        isJumpingAllowed
-        isPoundOnTable
-        isReservationAllowed
-      }
-    }
-  }
-`;
-
 const Pubs: React.FC = () => {
   const { data, loading, error } = useQuery<{ pubs: Pub[] }>(GET_PUBS);
 
@@ -85,9 +57,8 @@ const Pubs: React.FC = () => {
           {data?.pubs.map((pub) => (
             <tr key={pub.id}>
               <Td>{pub.name}</Td>
-              <Td>{pub.area}</Td>
+              <Td>{pub.address}</Td>
               <Td>{pub.description}</Td>
-              <Td>{pub.availability}</Td>
               <Td>{pub.rules.isCueDeposit ? "Yes" : "No"}</Td>
               <Td>{pub.rules.isJumpingAllowed ? "Yes" : "No"}</Td>
               <Td>{pub.rules.isPoundOnTable ? "Yes" : "No"}</Td>

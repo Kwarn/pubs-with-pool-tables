@@ -1,22 +1,22 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
-export const CREATE_PUB_MUTATION = gql`
-  mutation AddPub($input: PubInput!) {
-    addPub(input: $input) {
+export const GET_PUBS = gql`
+  query GetPubs {
+    pubs {
       id
       name
       address
       description
-      tables {
-        size
-        quality
-        cost
-        description
-      }
       location {
         id
         lat
         lng
+      }
+      tables {
+        cost
+        description
+        quality
+        size
       }
       rules {
         isCueDeposit

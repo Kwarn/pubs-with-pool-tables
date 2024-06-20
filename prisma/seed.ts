@@ -5,13 +5,13 @@ const prisma = new PrismaClient();
 async function main() {
   try {
     await prisma.table.deleteMany({});
-    console.log("delete table table");
+    console.log("delete table table data");
     await prisma.pub.deleteMany({});
-    console.log("delete pub table");
+    console.log("delete pub table data");
     await prisma.rules.deleteMany({});
-    console.log("delete rules table");
+    console.log("delete rules table data");
     await prisma.user.deleteMany({});
-    console.log("delete user table");
+    console.log("delete user table data");
   } catch (error) {
     console.error("Error executing seed script:", error);
     throw error;
@@ -38,7 +38,7 @@ async function main() {
     const pub1 = await prisma.pub.create({
       data: {
         name: "Pub 1 by User 1",
-        area: "Area 1",
+        address: "Area 1",
         description: "First pub created by User 1",
         location: {
           create: {
@@ -85,7 +85,7 @@ async function main() {
     const pub2 = await prisma.pub.create({
       data: {
         name: "Pub 1 by User 2",
-        area: "Area 1",
+        address: "Area 1",
         description: "First pub created by User 2",
         location: {
           create: {

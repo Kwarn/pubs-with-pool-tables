@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import MapComponent, { Place } from "./Map";
+import { useMutation } from "@apollo/client";
+import { CREATE_PUB_MUTATION } from "@/graphql/mutations";
 
 const Container = styled.div`
   width: 100%;
@@ -112,7 +114,7 @@ const Button = styled.button`
 const AddPubForm: React.FC = () => {
   const [formState, setFormState] = useState({
     name: "",
-    location: "",
+    address: "",
     description: "",
     availability: "",
     isCueDeposit: "Don't Know",
@@ -122,6 +124,9 @@ const AddPubForm: React.FC = () => {
   });
 
   const [place, setPlace] = useState<Place | null>(null);
+
+  const [createPub, { loading, error, data }] =
+    useMutation(CREATE_PUB_MUTATION);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -138,6 +143,33 @@ const AddPubForm: React.FC = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Submitted form with state: ", formState);
+    const {
+      name,
+      address,
+      description,
+      isCueDeposit,
+      isJumpingAllowed,
+      isPoundOnTable,
+      isReservationAllowed,
+    } = formState;
+
+    const input = {
+      name,
+      address,
+      description,
+      location: {
+        lat: place?.lat || 0,
+        lng: place?.lng || 0,
+      },
+      rules: {
+        isCueDeposit: isCueDeposit === "Yes",
+        isJumpingAllowed: isJumpingAllowed === "Yes",
+        isPoundOnTable: isPoundOnTable === "Yes",
+        isReservationAllowed: isReservationAllowed === "Yes",
+      },
+    };
+
+    createPub({ variables: { input } });
   };
 
   useEffect(() => {
@@ -145,9 +177,11 @@ const AddPubForm: React.FC = () => {
     setFormState((prevState) => ({
       ...prevState,
       name: place?.name || "",
-      location: place?.address || "",
+      address: place?.address || "",
     }));
   }, [place]);
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <Container>
@@ -168,12 +202,12 @@ const AddPubForm: React.FC = () => {
             />
           </FormGroup>
           <FormGroup>
-            <Label htmlFor="location">Area</Label>
+            <Label htmlFor="address">Address</Label>
             <Input
               type="text"
-              id="location"
-              name="location"
-              value={formState.location}
+              id="address"
+              name="address"
+              value={formState.address}
               onChange={handleChange}
               required
               disabled
@@ -188,21 +222,6 @@ const AddPubForm: React.FC = () => {
               onChange={handleChange}
               required
             />
-          </FormGroup>
-          <FormGroup>
-            <Label htmlFor="availability">Table Availability</Label>
-            <Select
-              id="availability"
-              name="availability"
-              value={formState.availability}
-              onChange={handleChange}
-              required
-            >
-              <Option value="">Select availability...</Option>
-              <Option value="High">High</Option>
-              <Option value="Medium">Medium</Option>
-              <Option value="Low">Low</Option>
-            </Select>
           </FormGroup>
         </Column>
         <Column>

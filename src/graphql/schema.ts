@@ -28,16 +28,47 @@ export const typeDefs = `
   type Pub {
     id: ID!
     name: String!
-    area: String!
-    description: String!
-    availability: Int
-    location: MapLocation
-    rules: Rules
+    address: String!
+    description: String
+    location: MapLocation!
+    rules: Rules!
     tables: [Table]
+  }
+
+  input PubInput {
+    name: String!
+    address: String!
+    description: String!
+    location: MapLocationInput
+    rules: RulesInput
+    tables: [TableInput]
+  }
+
+  input MapLocationInput {
+    lat: Float!
+    lng: Float!
+  }
+
+  input RulesInput {
+    isCueDeposit: Boolean
+    isJumpingAllowed: Boolean
+    isPoundOnTable: Boolean
+    isReservationAllowed: Boolean
+  }
+
+  input TableInput {
+    size: String
+    quality: String
+    cost: Float
+    description: String
   }
 
   type Query {
     users: [User]
     pubs: [Pub]
+  }
+
+  type Mutation {
+    addPub(input: PubInput!): Pub
   }
 `;

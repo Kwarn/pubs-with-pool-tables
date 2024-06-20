@@ -38,9 +38,8 @@ export interface MapLocation {
 export interface Pub {
   id: number;
   name: string;
-  area: string;
+  address: string;
   description: string;
-  availability: number | null;
   locationId: number; // Assuming this is a foreign key reference to MapLocation
   location: MapLocation; // Assuming a one-to-one relation with MapLocation
   rulesId: number; // Assuming this is a foreign key reference to Rules
@@ -49,4 +48,13 @@ export interface Pub {
   createdBy: User; // Assuming a one-to-one relation with User
   updatedBy?: User[]; // Optionally include relations
   userId: number; // Assuming this is a foreign key reference to User
+}
+
+export interface PubInput {
+  name: string;
+  address: string;
+  description: string;
+  location: MapLocation;
+  rules: Rules;
+  tables?: Table[];
 }

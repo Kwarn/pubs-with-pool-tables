@@ -43,9 +43,8 @@ CREATE TABLE "Table" (
 CREATE TABLE "Pub" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "area" TEXT NOT NULL,
+    "address" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "availability" INTEGER,
     "locationId" INTEGER NOT NULL,
     "rulesId" INTEGER NOT NULL,
     "userId" INTEGER NOT NULL,

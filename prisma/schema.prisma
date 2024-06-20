@@ -45,9 +45,8 @@ model Table {
 model Pub {
   id           Int         @id @default(autoincrement())
   name         String
-  area         String
+  address      String
   description  String
-  availability Int?
   locationId   Int
   location     MapLocation @relation(fields: [locationId], references: [id])
   rulesId      Int
