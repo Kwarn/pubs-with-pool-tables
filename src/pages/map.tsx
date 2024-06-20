@@ -1,9 +1,8 @@
-import React from 'react'
+import MapComponent from "@/components/Map";
+import React from "react";
 
 const Map = () => {
-  return (
-    <div>Map</div>
-  )
-}
+  return <MapComponent />;
+};
 
-export default Map
+export default Map;
