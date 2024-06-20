@@ -3,15 +3,16 @@ import { Loader } from "@googlemaps/js-api-loader";
 
 const containerStyle = {
   width: "100%",
-  height: "500px",
+  height: "300px",
 };
 
-const center = { // london
+const center = {
+  // london
   lat: 51.5074,
   lng: -0.1278,
 };
 
-interface Place {
+export interface Place {
   name: string;
   lat: number;
   lng: number;
@@ -19,11 +20,9 @@ interface Place {
   address: string;
 }
 
-const MapComponent: React.FC = () => {
+const MapComponent = ({ setPlace }: { setPlace: (place: Place) => void }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
   useEffect(() => {
     const loader = new Loader({
@@ -65,7 +64,7 @@ const MapComponent: React.FC = () => {
             address: place.formatted_address || "Unknown Address",
           };
 
-          setSelectedPlace(placeInfo);
+          setPlace(placeInfo);
 
           googleMap.data.forEach((feature) => {
             googleMap.data.remove(feature);
@@ -78,7 +77,7 @@ const MapComponent: React.FC = () => {
           });
 
           marker.addListener("click", () => {
-            setSelectedPlace(placeInfo);
+            setPlace(placeInfo);
           });
         });
 
@@ -108,14 +107,12 @@ const MapComponent: React.FC = () => {
                     address: placeResult.formatted_address || "Unknown Address",
                   };
 
-                  setSelectedPlace(placeInfo);
+                  setPlace(placeInfo);
                 }
               });
             }
           }
         );
-
-        setMap(googleMap);
       }
     };
 
@@ -123,29 +120,14 @@ const MapComponent: React.FC = () => {
   }, []);
 
   return (
-    <div>
+    <div style={{display: 'flex', justifyContent:'center', flexDirection: 'column'}}>
       <input
         type="text"
         ref={searchInputRef}
         placeholder="Search for a location"
-        style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+        style={{alignSelf: 'center', width: "500px", height: "30px", marginBottom: "10px"}}
       />
-      <div style={containerStyle} ref={mapRef}></div>
-      {selectedPlace && (
-        <div
-          style={{
-            position: "absolute",
-            bottom: "10px",
-            left: "10px",
-            background: "white",
-            padding: "10px",
-          }}
-        >
-          <h2>{selectedPlace.name}</h2>
-          <p>{selectedPlace.type}</p>
-          <p>{selectedPlace.address}</p>
-        </div>
-      )}
+      <div style={containerStyle} ref={mapRef} />
     </div>
   );
 };

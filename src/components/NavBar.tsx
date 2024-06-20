@@ -32,13 +32,19 @@ const NavBar = () => {
       >
         Map
       </Link>
-      <button onClick={toggleAddPub}>Add Pub</button>
-      <DraggableComponent
+      <Link
+        href="/add-pub"
+        style={router.pathname === "/add-pub" ? styles.activeLink : styles.link}
+      >
+        Add Pub
+      </Link>
+      {/* <button onClick={toggleAddPub}>Add Pub</button> */}
+      {/* <DraggableComponent
         isVisiable={isAddPubVisible}
         toggleIsVisiable={toggleAddPub}
       >
         <AddPubForm />
-      </DraggableComponent>
+      </DraggableComponent> */}
     </nav>
   );
 };
