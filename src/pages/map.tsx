@@ -2,7 +2,7 @@ import MapComponent from "@/components/Map";
 import React from "react";
 
 const Map = () => {
-  return <MapComponent />;
+  return <></>;
 };
 
 export default Map;
