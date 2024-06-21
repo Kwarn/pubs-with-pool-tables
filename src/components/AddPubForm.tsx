@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import MapComponent, { Place } from "./Map";
+import AddPubMap, { Place } from "./AddPubMap";
 import { useMutation } from "@apollo/client";
 import { CREATE_PUB_MUTATION } from "@/graphql/mutations";
 import { useRouter } from "next/router";
@@ -12,7 +12,6 @@ const Container = styled.div`
   border: 1px solid #ccc;
   background-color: #f9f9f9;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -25,6 +24,7 @@ const MapContainer = styled.div`
 
 const Form = styled.form`
   width: 50%;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -68,10 +68,16 @@ const RadioLabel = styled.label`
   margin-right: 10px;
   display: flex;
   align-items: center;
+  width: fit-content;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 10px;
 `;
 
 const RadioInput = styled.input`
   margin-right: 5px;
+  width: 20px;
+  height: 20px;
 `;
 
 const Button = styled.button`
@@ -184,10 +190,10 @@ const AddPubForm: React.FC = () => {
   return (
     <Container>
       <MapContainer>
-        <MapComponent setPlace={setPlace} />
+        <AddPubMap setPlace={setPlace} />
       </MapContainer>
       <Form onSubmit={handleSubmit}>
-        {!place && <div>Select a pub on the map to add</div>}
+        {!place && <div>Select a pub on the map to start</div>}
         {place && isNotPub && (
           <div style={{ color: "orange" }}>
             Are you sure this is a pub? Google considers it a {place?.type}. You

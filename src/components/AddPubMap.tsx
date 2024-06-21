@@ -20,7 +20,7 @@ export interface Place {
   address: string;
 }
 
-const MapComponent = ({ setPlace }: { setPlace: (place: Place) => void }) => {
+const AddPubMap = ({ setPlace }: { setPlace: (place: Place) => void }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -143,4 +143,4 @@ const MapComponent = ({ setPlace }: { setPlace: (place: Place) => void }) => {
   );
 };
 
-export default MapComponent;
+export default AddPubMap;
