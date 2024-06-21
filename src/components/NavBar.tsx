@@ -18,25 +18,19 @@ const NavBar = () => {
         href="/"
         style={router.pathname === "/" ? styles.activeLink : styles.link}
       >
-        Home
-      </Link>
-      <Link
-        href="/pubs"
-        style={router.pathname === "/pubs" ? styles.activeLink : styles.link}
-      >
-        Pubs
-      </Link>
-      <Link
-        href="/map"
-        style={router.pathname === "/map" ? styles.activeLink : styles.link}
-      >
-        Map
+        Find Pub
       </Link>
       <Link
         href="/add-pub"
         style={router.pathname === "/add-pub" ? styles.activeLink : styles.link}
       >
         Add Pub
+      </Link>
+      <Link
+        href="/pubs"
+        style={router.pathname === "/pubs" ? styles.activeLink : styles.link}
+      >
+        Pubs
       </Link>
       {/* <button onClick={toggleAddPub}>Add Pub</button> */}
       {/* <DraggableComponent
