@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import DraggableComponent from "./DraggableComponent";
 import AddPubForm from "./AddPubForm";
+import Login from "./Login";
 
 const NavBar = () => {
   const router = useRouter();
@@ -39,6 +40,7 @@ const NavBar = () => {
       >
         <AddPubForm />
       </DraggableComponent> */}
+      <Login />
     </nav>
   );
 };
