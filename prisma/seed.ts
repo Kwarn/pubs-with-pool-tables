@@ -48,10 +48,10 @@ async function main() {
         },
         rules: {
           create: {
-            isCueDeposit: true,
-            isJumpingAllowed: false,
-            isPoundOnTable: true,
-            isReservationAllowed: true,
+            isCueDeposit: "Yes",
+            isJumpingAllowed: "Yes",
+            isPoundOnTable: "No",
+            isReservationAllowed: "Don't Know",
           },
         },
         createdBy: {
@@ -95,10 +95,10 @@ async function main() {
         },
         rules: {
           create: {
-            isCueDeposit: false,
-            isJumpingAllowed: true,
-            isPoundOnTable: true,
-            isReservationAllowed: false,
+            isCueDeposit: "Yes",
+            isJumpingAllowed: "Yes",
+            isPoundOnTable: "No",
+            isReservationAllowed: "Don't Know",
           },
         },
         createdBy: {

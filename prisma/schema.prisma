@@ -25,10 +25,10 @@ model MapLocation {
 
 model Rules {
   id                   Int     @id @default(autoincrement())
-  isCueDeposit         Boolean
-  isJumpingAllowed     Boolean
-  isPoundOnTable       Boolean
-  isReservationAllowed Boolean
+  isCueDeposit         String
+  isJumpingAllowed     String
+  isPoundOnTable       String
+  isReservationAllowed String
   pubs                 Pub[]
 }
 

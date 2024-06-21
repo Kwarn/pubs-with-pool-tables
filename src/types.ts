@@ -11,10 +11,10 @@ export interface Table {
 // Rules interface
 export interface Rules {
   id: number;
-  isCueDeposit: boolean;
-  isJumpingAllowed: boolean;
-  isPoundOnTable: boolean;
-  isReservationAllowed: boolean;
+  isCueDeposit: string;
+  isJumpingAllowed: string;
+  isPoundOnTable: string;
+  isReservationAllowed: string;
 }
 
 // User interface

@@ -12,10 +12,10 @@ export const typeDefs = `
   }
 
   type Rules {
-    isCueDeposit: Boolean
-    isJumpingAllowed: Boolean
-    isPoundOnTable: Boolean
-    isReservationAllowed: Boolean
+    isCueDeposit: String!
+    isJumpingAllowed: String!
+    isPoundOnTable: String!
+    isReservationAllowed: String!
   }
 
   type Table { 
@@ -50,10 +50,10 @@ export const typeDefs = `
   }
 
   input RulesInput {
-    isCueDeposit: Boolean
-    isJumpingAllowed: Boolean
-    isPoundOnTable: Boolean
-    isReservationAllowed: Boolean
+    isCueDeposit: String!
+    isJumpingAllowed: String!
+    isPoundOnTable: String!
+    isReservationAllowed: String!
   }
 
   input TableInput {

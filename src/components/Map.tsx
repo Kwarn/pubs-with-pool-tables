@@ -3,7 +3,7 @@ import { Loader } from "@googlemaps/js-api-loader";
 
 const containerStyle = {
   width: "100%",
-  height: "300px",
+  height: "600px",
 };
 
 const center = {
@@ -120,12 +120,23 @@ const MapComponent = ({ setPlace }: { setPlace: (place: Place) => void }) => {
   }, []);
 
   return (
-    <div style={{display: 'flex', justifyContent:'center', flexDirection: 'column'}}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "column",
+      }}
+    >
       <input
         type="text"
         ref={searchInputRef}
-        placeholder="Search for a location"
-        style={{alignSelf: 'center', width: "500px", height: "30px", marginBottom: "10px"}}
+        placeholder="Search for a Pub"
+        style={{
+          alignSelf: "center",
+          width: "500px",
+          height: "30px",
+          marginBottom: "10px",
+        }}
       />
       <div style={containerStyle} ref={mapRef} />
     </div>

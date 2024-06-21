@@ -1,20 +1,19 @@
 import prisma from "@/lib/prisma";
 import { PubInput } from "@/types";
-import { v4 as uuidv4 } from "uuid";
 
 export const resolvers = {
   Query: {
-    users: (_: undefined, __: undefined) => {
+    users: async (_: undefined, __: undefined) => {
       try {
-        return prisma.user.findMany();
+        return await prisma.user.findMany();
       } catch (error) {
         console.error("Error fetching pubs:", error);
         throw new Error("Failed to fetch pubs");
       }
     },
-    pubs: (_: undefined, __: undefined) => {
+    pubs: async (_: undefined, __: undefined) => {
       try {
-        return prisma.pub.findMany({
+        return await prisma.pub.findMany({
           include: { tables: true, location: true, rules: true },
         });
       } catch (error) {
@@ -29,7 +28,7 @@ export const resolvers = {
         ...input,
         createdBy: {
           connect: {
-            id: 1,
+            id: 5, // until auth is in place
           },
         },
         location: {

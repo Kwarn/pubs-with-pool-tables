@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Pub } from "@/types";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { GET_PUBS } from "@/graphql/queries";
+import Spinner from "@/components/Spinner";
 
 const Container = styled.div`
   display: flex;
@@ -32,10 +33,28 @@ const Td = styled.td`
   max-height: 40px;
 `;
 
-const Pubs: React.FC = () => {
-  const { data, loading, error } = useQuery<{ pubs: Pub[] }>(GET_PUBS);
+const SpinnerContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+`;
 
-  if (loading) return <div>Loading...</div>;
+const Pubs: React.FC = () => {
+  const { data, loading, error, refetch } = useQuery<{ pubs: Pub[] }>(GET_PUBS);
+
+  useEffect(() => {
+    refetch();
+  }, []);
+
+  if (loading)
+    return (
+      <SpinnerContainer>
+        <Spinner size="lg" />
+      </SpinnerContainer>
+    );
+
   if (error) return <div>Error: {error.message}</div>;
 
   return (
@@ -46,7 +65,6 @@ const Pubs: React.FC = () => {
             <Th style={{ width: "20%" }}>Name</Th>
             <Th style={{ width: "10%" }}>Area</Th>
             <Th style={{ width: "30%" }}>Description</Th>
-            <Th style={{ width: "10%" }}>Availability</Th>
             <Th style={{ width: "10%" }}>Cue Deposit</Th>
             <Th style={{ width: "10%" }}>Jumping Allowed</Th>
             <Th style={{ width: "10%" }}>Pound On Table</Th>
@@ -59,10 +77,10 @@ const Pubs: React.FC = () => {
               <Td>{pub.name}</Td>
               <Td>{pub.address}</Td>
               <Td>{pub.description}</Td>
-              <Td>{pub.rules.isCueDeposit ? "Yes" : "No"}</Td>
-              <Td>{pub.rules.isJumpingAllowed ? "Yes" : "No"}</Td>
-              <Td>{pub.rules.isPoundOnTable ? "Yes" : "No"}</Td>
-              <Td>{pub.rules.isReservationAllowed ? "Yes" : "No"}</Td>
+              <Td>{pub.rules.isCueDeposit}</Td>
+              <Td>{pub.rules.isJumpingAllowed}</Td>
+              <Td>{pub.rules.isPoundOnTable}</Td>
+              <Td>{pub.rules.isReservationAllowed}</Td>
             </tr>
           ))}
         </tbody>

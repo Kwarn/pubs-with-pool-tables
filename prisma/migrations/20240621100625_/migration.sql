@@ -19,10 +19,10 @@ CREATE TABLE "MapLocation" (
 -- CreateTable
 CREATE TABLE "Rules" (
     "id" SERIAL NOT NULL,
-    "isCueDeposit" BOOLEAN NOT NULL,
-    "isJumpingAllowed" BOOLEAN NOT NULL,
-    "isPoundOnTable" BOOLEAN NOT NULL,
-    "isReservationAllowed" BOOLEAN NOT NULL,
+    "isCueDeposit" TEXT NOT NULL,
+    "isJumpingAllowed" TEXT NOT NULL,
+    "isPoundOnTable" TEXT NOT NULL,
+    "isReservationAllowed" TEXT NOT NULL,
 
     CONSTRAINT "Rules_pkey" PRIMARY KEY ("id")
 );

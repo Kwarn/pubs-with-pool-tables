@@ -3,6 +3,8 @@ import styled from "styled-components";
 import MapComponent, { Place } from "./Map";
 import { useMutation } from "@apollo/client";
 import { CREATE_PUB_MUTATION } from "@/graphql/mutations";
+import { useRouter } from "next/router";
+import Spinner from "./Spinner";
 
 const Container = styled.div`
   width: 100%;
@@ -11,28 +13,21 @@ const Container = styled.div`
   background-color: #f9f9f9;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 `;
 
-const Title = styled.h2`
-  text-align: center;
-  margin-bottom: 20px;
-  color: #333;
+const MapContainer = styled.div`
+  padding: 30px;
+  width: 50vw;
 `;
 
 const Form = styled.form`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
-const Column = styled.div`
+  width: 50%;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
-  flex: 1;
-  &:not(:last-child) {
-    margin-right: 20px;
-  }
+  justify-content: space-between;
 `;
 
 const FormGroup = styled.div`
@@ -79,20 +74,10 @@ const RadioInput = styled.input`
   margin-right: 5px;
 `;
 
-const Select = styled.select`
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-`;
-
-const Option = styled.option`
-  font-size: 16px;
-`;
-
 const Button = styled.button`
   padding: 10px 15px;
   background-color: #0070f3;
+  min-width: 100px;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -100,7 +85,7 @@ const Button = styled.button`
   cursor: pointer;
   transition: background-color 0.3s ease;
   align-self: flex-start;
-
+  justify-content: center;
   &:disabled {
     background-color: #999;
     cursor: not-allowed;
@@ -112,6 +97,7 @@ const Button = styled.button`
 `;
 
 const AddPubForm: React.FC = () => {
+  const router = useRouter();
   const [formState, setFormState] = useState({
     name: "",
     address: "",
@@ -124,6 +110,13 @@ const AddPubForm: React.FC = () => {
   });
 
   const [place, setPlace] = useState<Place | null>(null);
+  const [isNotPub, setIsNotPub] = useState<boolean>(false);
+  const [noSelectedPubError, setNoSelectedPubError] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (place?.type !== "bar") setIsNotPub(true);
+    else setIsNotPub(false);
+  }, [place]);
 
   const [createPub, { loading, error, data }] =
     useMutation(CREATE_PUB_MUTATION);
@@ -142,7 +135,6 @@ const AddPubForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Submitted form with state: ", formState);
     const {
       name,
       address,
@@ -153,6 +145,8 @@ const AddPubForm: React.FC = () => {
       isReservationAllowed,
     } = formState;
 
+    if (!name || !address) return setNoSelectedPubError(true);
+
     const input = {
       name,
       address,
@@ -162,211 +156,241 @@ const AddPubForm: React.FC = () => {
         lng: place?.lng || 0,
       },
       rules: {
-        isCueDeposit: isCueDeposit === "Yes",
-        isJumpingAllowed: isJumpingAllowed === "Yes",
-        isPoundOnTable: isPoundOnTable === "Yes",
-        isReservationAllowed: isReservationAllowed === "Yes",
+        isCueDeposit,
+        isJumpingAllowed,
+        isPoundOnTable,
+        isReservationAllowed,
       },
     };
-
     createPub({ variables: { input } });
   };
 
   useEffect(() => {
-    console.log("Place: ", place);
+    setNoSelectedPubError(false);
     setFormState((prevState) => ({
       ...prevState,
-      name: place?.name || "",
-      address: place?.address || "",
+      name: place?.name ?? "",
+      address: place?.address ?? "",
     }));
   }, [place]);
 
-  if (loading) return <div>Loading...</div>;
+  useEffect(() => {
+    if (data) {
+      console.log("Pub created:", data);
+      router.push("/pubs");
+    }
+  }, [data]);
 
   return (
     <Container>
-      <Title>Add a New Pub</Title>
-      <MapComponent setPlace={setPlace} />
+      <MapContainer>
+        <MapComponent setPlace={setPlace} />
+      </MapContainer>
       <Form onSubmit={handleSubmit}>
-        <Column>
-          <FormGroup>
-            <Label htmlFor="name">Name</Label>
-            <Input
-              type="text"
-              id="name"
-              name="name"
-              value={formState.name}
-              onChange={handleChange}
-              required
-              disabled
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label htmlFor="address">Address</Label>
-            <Input
-              type="text"
-              id="address"
-              name="address"
-              value={formState.address}
-              onChange={handleChange}
-              required
-              disabled
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              name="description"
-              value={formState.description}
-              onChange={handleChange}
-              required
-            />
-          </FormGroup>
-        </Column>
-        <Column>
-          <FormGroup>
-            <Label>Cue Deposit Required</Label>
-            <RadioGroup>
-              <RadioLabel>
-                <RadioInput
-                  type="radio"
-                  name="isCueDeposit"
-                  value="Yes"
-                  checked={formState.isCueDeposit === "Yes"}
-                  onChange={handleChange}
-                />
-                Yes
-              </RadioLabel>
-              <RadioLabel>
-                <RadioInput
-                  type="radio"
-                  name="isCueDeposit"
-                  value="No"
-                  checked={formState.isCueDeposit === "No"}
-                  onChange={handleChange}
-                />
-                No
-              </RadioLabel>
-              <RadioLabel>
-                <RadioInput
-                  type="radio"
-                  name="isCueDeposit"
-                  value="Don't Know"
-                  checked={formState.isCueDeposit === "Don't Know"}
-                  onChange={handleChange}
-                />
-                {"Don't Know"}
-              </RadioLabel>
-            </RadioGroup>
-          </FormGroup>
-          <FormGroup>
-            <Label>Jumping Whiteball Allowed</Label>
-            <RadioGroup>
-              <RadioLabel>
-                <RadioInput
-                  type="radio"
-                  name="isJumpingAllowed"
-                  value="Yes"
-                  checked={formState.isJumpingAllowed === "Yes"}
-                  onChange={handleChange}
-                />
-                Yes
-              </RadioLabel>
-              <RadioLabel>
-                <RadioInput
-                  type="radio"
-                  name="isJumpingAllowed"
-                  value="No"
-                  checked={formState.isJumpingAllowed === "No"}
-                  onChange={handleChange}
-                />
-                No
-              </RadioLabel>
-              <RadioLabel>
-                <RadioInput
-                  type="radio"
-                  name="isJumpingAllowed"
-                  value="Don't Know"
-                  checked={formState.isJumpingAllowed === "Don't Know"}
-                  onChange={handleChange}
-                />
-                {" Don't Know"}
-              </RadioLabel>
-            </RadioGroup>
-          </FormGroup>
-          <FormGroup>
-            <Label>Coin On Table Reservation Allowed</Label>
-            <RadioGroup>
-              <RadioLabel>
-                <RadioInput
-                  type="radio"
-                  name="isPoundOnTable"
-                  value="Yes"
-                  checked={formState.isPoundOnTable === "Yes"}
-                  onChange={handleChange}
-                />
-                Yes
-              </RadioLabel>
-              <RadioLabel>
-                <RadioInput
-                  type="radio"
-                  name="isPoundOnTable"
-                  value="No"
-                  checked={formState.isPoundOnTable === "No"}
-                  onChange={handleChange}
-                />
-                No
-              </RadioLabel>
-              <RadioLabel>
-                <RadioInput
-                  type="radio"
-                  name="isPoundOnTable"
-                  value="Don't Know"
-                  checked={formState.isPoundOnTable === "Don't Know"}
-                  onChange={handleChange}
-                />
-                {"Don't Know"}
-              </RadioLabel>
-            </RadioGroup>
-          </FormGroup>
-          <FormGroup>
-            <Label>Pre-booking Table Allowed</Label>
-            <RadioGroup>
-              <RadioLabel>
-                <RadioInput
-                  type="radio"
-                  name="isReservationAllowed"
-                  value="Yes"
-                  checked={formState.isReservationAllowed === "Yes"}
-                  onChange={handleChange}
-                />
-                Yes
-              </RadioLabel>
-              <RadioLabel>
-                <RadioInput
-                  type="radio"
-                  name="isReservationAllowed"
-                  value="No"
-                  checked={formState.isReservationAllowed === "No"}
-                  onChange={handleChange}
-                />
-                No
-              </RadioLabel>
-              <RadioLabel>
-                <RadioInput
-                  type="radio"
-                  name="isReservationAllowed"
-                  value="Don't Know"
-                  checked={formState.isReservationAllowed === "Don't Know"}
-                  onChange={handleChange}
-                />
-                {"Don't Know"}
-              </RadioLabel>
-            </RadioGroup>
-          </FormGroup>
-          <Button type="submit">Add Pub</Button>
-        </Column>
+        {!place && <div>Select a pub on the map to add</div>}
+        {place && isNotPub && (
+          <div style={{ color: "orange" }}>
+            Are you sure this is a pub? Google considers it a {place?.type}. You
+            can still add this venue but it will have to be manually reviewed
+            before others can see it.
+          </div>
+        )}
+        {noSelectedPubError && (
+          <div style={{ color: "red" }}>Please select a pub on the map</div>
+        )}
+        <FormGroup>
+          <Label htmlFor="name">Name</Label>
+          <Input
+            type="text"
+            id="name"
+            name="name"
+            value={formState.name}
+            onChange={handleChange}
+            required
+            readOnly
+            style={{ opacity: 0.5 }}
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label htmlFor="address">Address</Label>
+          <Input
+            type="text"
+            id="address"
+            name="address"
+            value={formState.address}
+            onChange={handleChange}
+            required
+            readOnly
+            style={{ opacity: 0.5 }}
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label htmlFor="description">Description</Label>
+          <Textarea
+            id="description"
+            name="description"
+            value={formState.description}
+            onChange={handleChange}
+            required
+            disabled={loading}
+          />
+        </FormGroup>
+
+        <FormGroup>
+          <Label>Cue Deposit Required</Label>
+          <RadioGroup>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isCueDeposit"
+                value="Yes"
+                checked={formState.isCueDeposit === "Yes"}
+                onChange={handleChange}
+                disabled={loading}
+              />
+              Yes
+            </RadioLabel>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isCueDeposit"
+                value="No"
+                checked={formState.isCueDeposit === "No"}
+                onChange={handleChange}
+                disabled={loading}
+              />
+              No
+            </RadioLabel>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isCueDeposit"
+                value="Don't Know"
+                checked={formState.isCueDeposit === "Don't Know"}
+                onChange={handleChange}
+                disabled={loading}
+              />
+              {"Don't Know"}
+            </RadioLabel>
+          </RadioGroup>
+        </FormGroup>
+        <FormGroup>
+          <Label>Jumping Whiteball Allowed</Label>
+          <RadioGroup>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isJumpingAllowed"
+                value="Yes"
+                checked={formState.isJumpingAllowed === "Yes"}
+                onChange={handleChange}
+                disabled={loading}
+              />
+              Yes
+            </RadioLabel>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isJumpingAllowed"
+                value="No"
+                checked={formState.isJumpingAllowed === "No"}
+                onChange={handleChange}
+                disabled={loading}
+              />
+              No
+            </RadioLabel>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isJumpingAllowed"
+                value="Don't Know"
+                checked={formState.isJumpingAllowed === "Don't Know"}
+                onChange={handleChange}
+                disabled={loading}
+              />
+              {" Don't Know"}
+            </RadioLabel>
+          </RadioGroup>
+        </FormGroup>
+        <FormGroup>
+          <Label>Coin On Table Reservation Allowed</Label>
+          <RadioGroup>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isPoundOnTable"
+                value="Yes"
+                checked={formState.isPoundOnTable === "Yes"}
+                onChange={handleChange}
+                disabled={loading}
+              />
+              Yes
+            </RadioLabel>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isPoundOnTable"
+                value="No"
+                checked={formState.isPoundOnTable === "No"}
+                onChange={handleChange}
+                disabled={loading}
+              />
+              No
+            </RadioLabel>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isPoundOnTable"
+                value="Don't Know"
+                checked={formState.isPoundOnTable === "Don't Know"}
+                onChange={handleChange}
+                disabled={loading}
+              />
+              {"Don't Know"}
+            </RadioLabel>
+          </RadioGroup>
+        </FormGroup>
+        <FormGroup>
+          <Label>Pre-booking Table Allowed</Label>
+          <RadioGroup>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isReservationAllowed"
+                value="Yes"
+                checked={formState.isReservationAllowed === "Yes"}
+                onChange={handleChange}
+                disabled={loading}
+              />
+              Yes
+            </RadioLabel>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isReservationAllowed"
+                value="No"
+                checked={formState.isReservationAllowed === "No"}
+                onChange={handleChange}
+                disabled={loading}
+              />
+              No
+            </RadioLabel>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                name="isReservationAllowed"
+                value="Don't Know"
+                checked={formState.isReservationAllowed === "Don't Know"}
+                onChange={handleChange}
+                disabled={loading}
+              />
+              {"Don't Know"}
+            </RadioLabel>
+          </RadioGroup>
+        </FormGroup>
+        <Button type="submit" disabled={loading}>
+          {loading ? <Spinner size="sm" /> : "Add Pub"}
+        </Button>
       </Form>
     </Container>
   );
