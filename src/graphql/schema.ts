@@ -1,10 +1,4 @@
 export const typeDefs = `
-  type User {
-    id: ID!
-    name: String!
-    email: String!
-  }
-
   type MapLocation { 
     id: ID!
     lat: Float!
@@ -33,6 +27,8 @@ export const typeDefs = `
     location: MapLocation!
     rules: Rules!
     tables: [Table]
+    createdBy: String!
+    updatedBy: [String]
   }
 
   input PubInput {
@@ -42,6 +38,7 @@ export const typeDefs = `
     location: MapLocationInput
     rules: RulesInput
     tables: [TableInput]
+    createdBy: String!
   }
 
   input MapLocationInput {
@@ -64,7 +61,6 @@ export const typeDefs = `
   }
 
   type Query {
-    users: [User]
     pubs: [Pub]
   }
 

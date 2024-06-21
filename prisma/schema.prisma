@@ -8,14 +8,6 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-model User {
-  id          Int     @id @default(autoincrement())
-  name        String? @db.VarChar(255)
-  email       String  @unique @db.VarChar(255)
-  createdPubs Pub[]   @relation("createdBy")
-  updatedPubs Pub[]   @relation("updatedBy")
-}
-
 model MapLocation {
   id   Int   @id @default(autoincrement())
   lat  Float
@@ -24,7 +16,7 @@ model MapLocation {
 }
 
 model Rules {
-  id                   Int     @id @default(autoincrement())
+  id                   Int    @id @default(autoincrement())
   isCueDeposit         String
   isJumpingAllowed     String
   isPoundOnTable       String
@@ -43,16 +35,15 @@ model Table {
 }
 
 model Pub {
-  id           Int         @id @default(autoincrement())
-  name         String
-  address      String
-  description  String
-  locationId   Int
-  location     MapLocation @relation(fields: [locationId], references: [id])
-  rulesId      Int
-  rules        Rules       @relation(fields: [rulesId], references: [id])
-  tables       Table[]
-  createdBy    User        @relation(fields: [userId], references: [id], name: "createdBy")
-  updatedBy    User[]      @relation("updatedBy")
-  userId       Int
+  id          Int         @id @default(autoincrement())
+  name        String
+  address     String
+  description String
+  locationId  Int
+  location    MapLocation @relation(fields: [locationId], references: [id])
+  rulesId     Int
+  rules       Rules       @relation(fields: [rulesId], references: [id])
+  tables      Table[]
+  createdBy   String
+  updatedBy   String[]
 }

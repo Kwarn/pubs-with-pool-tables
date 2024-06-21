@@ -10,8 +10,6 @@ async function main() {
     console.log("delete pub table data");
     await prisma.rules.deleteMany({});
     console.log("delete rules table data");
-    await prisma.user.deleteMany({});
-    console.log("delete user table data");
   } catch (error) {
     console.error("Error executing seed script:", error);
     throw error;
@@ -19,23 +17,7 @@ async function main() {
     await prisma.$disconnect();
   }
   try {
-    // Create users
-    const user1 = await prisma.user.create({
-      data: {
-        name: "User 1",
-        email: "user1@example.com",
-      },
-    });
-
-    const user2 = await prisma.user.create({
-      data: {
-        name: "User 2",
-        email: "user2@example.com",
-      },
-    });
-
-    // Create pubs for user1
-    const pub1 = await prisma.pub.create({
+    await prisma.pub.create({
       data: {
         name: "Pub 1 by User 1",
         address: "Area 1",
@@ -54,11 +36,7 @@ async function main() {
             isReservationAllowed: "Don't Know",
           },
         },
-        createdBy: {
-          connect: {
-            id: user1.id,
-          },
-        },
+        createdBy: "Karl Warner",
         tables: {
           create: [
             {
@@ -81,8 +59,7 @@ async function main() {
       },
     });
 
-    // Create pubs for user2
-    const pub2 = await prisma.pub.create({
+    await prisma.pub.create({
       data: {
         name: "Pub 1 by User 2",
         address: "Area 1",
@@ -101,11 +78,7 @@ async function main() {
             isReservationAllowed: "Don't Know",
           },
         },
-        createdBy: {
-          connect: {
-            id: user2.id,
-          },
-        },
+        createdBy: "Karl Warner",
         tables: {
           create: [
             {

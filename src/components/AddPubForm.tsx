@@ -5,6 +5,7 @@ import { useMutation } from "@apollo/client";
 import { CREATE_PUB_MUTATION } from "@/graphql/mutations";
 import { useRouter } from "next/router";
 import Spinner from "./Spinner";
+import { useUserStore } from "@/state/userStore";
 
 const Container = styled.div`
   width: 100%;
@@ -103,6 +104,7 @@ const Button = styled.button`
 `;
 
 const AddPubForm: React.FC = () => {
+  const { user } = useUserStore();
   const router = useRouter();
   const [formState, setFormState] = useState({
     name: "",
@@ -167,6 +169,7 @@ const AddPubForm: React.FC = () => {
         isPoundOnTable,
         isReservationAllowed,
       },
+      createdBy: user?.name || "",
     };
     createPub({ variables: { input } });
   };
@@ -182,8 +185,7 @@ const AddPubForm: React.FC = () => {
 
   useEffect(() => {
     if (data) {
-      console.log("Pub created:", data);
-      router.push("/pubs");
+      router.push("/find-pub");
     }
   }, [data]);
 

@@ -57,4 +57,5 @@ export interface PubInput {
   location: MapLocation;
   rules: Rules;
   tables?: Table[];
+  createdBy: string;
 }

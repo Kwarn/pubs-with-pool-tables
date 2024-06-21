@@ -1,9 +1,17 @@
+import { useUserStore } from "@/state/userStore";
 import { useUser } from "@auth0/nextjs-auth0/client";
 
-import React from "react";
+import React, { useEffect } from "react";
 
 const Login = () => {
+  const { updateUser } = useUserStore();
   const { user, error, isLoading } = useUser();
+
+  useEffect(() => {
+    if (user) {
+      updateUser(user);
+    }
+  }, [user]);
 
   if (isLoading) return <div>Loading...</div>;
 

@@ -1,17 +1,12 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import DraggableComponent from "./DraggableComponent";
-import AddPubForm from "./AddPubForm";
 import Login from "./Login";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 const NavBar = () => {
+  const { user, error, isLoading } = useUser();
   const router = useRouter();
-  const [isAddPubVisible, setIsAddPubVisible] = useState<boolean>(false);
-
-  const toggleAddPub = () => {
-    setIsAddPubVisible(!isAddPubVisible);
-  };
 
   return (
     <nav style={styles.nav}>
@@ -22,7 +17,7 @@ const NavBar = () => {
         Find Pub
       </Link>
       <Link
-        href="/add-pub"
+        href={user ? "/add-pub" : "/api/auth/login"}
         style={router.pathname === "/add-pub" ? styles.activeLink : styles.link}
       >
         Add Pub
@@ -33,13 +28,6 @@ const NavBar = () => {
       >
         Pubs
       </Link>
-      {/* <button onClick={toggleAddPub}>Add Pub</button> */}
-      {/* <DraggableComponent
-        isVisiable={isAddPubVisible}
-        toggleIsVisiable={toggleAddPub}
-      >
-        <AddPubForm />
-      </DraggableComponent> */}
       <Login />
     </nav>
   );

@@ -20,6 +20,10 @@ const Map = () => {
   const [place, setPlace] = React.useState<Place | null>(null);
   const [selectedPub, setSelectedPub] = React.useState<Pub | null>(null);
 
+  useEffect(() => {
+    refetch();
+  }, []);
+
   const pubs = data?.pubs.map((pub) => ({
     name: pub.name,
     lat: pub.location.lat,

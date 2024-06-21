@@ -3,14 +3,6 @@ import { PubInput } from "@/types";
 
 export const resolvers = {
   Query: {
-    users: async (_: undefined, __: undefined) => {
-      try {
-        return await prisma.user.findMany();
-      } catch (error) {
-        console.error("Error fetching pubs:", error);
-        throw new Error("Failed to fetch pubs");
-      }
-    },
     pubs: async (_: undefined, __: undefined) => {
       try {
         return await prisma.pub.findMany({
@@ -26,11 +18,6 @@ export const resolvers = {
     addPub: async (_: undefined, { input }: { input: PubInput }) => {
       const newPub = {
         ...input,
-        createdBy: {
-          connect: {
-            id: 5, // until auth is in place
-          },
-        },
         location: {
           create: {
             lat: input.location.lat,
@@ -64,7 +51,6 @@ export const resolvers = {
             location: true,
             rules: true,
             tables: true,
-            createdBy: true,
           },
         });
         return createdPub;
