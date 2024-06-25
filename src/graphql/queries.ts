@@ -6,6 +6,7 @@ export const GET_PUBS = gql`
       id
       name
       address
+      createdBy
       description
       location {
         id

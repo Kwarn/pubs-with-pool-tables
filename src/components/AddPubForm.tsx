@@ -126,6 +126,10 @@ const AddPubForm: React.FC = () => {
     else setIsNotPub(false);
   }, [place]);
 
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
+
   const [createPub, { loading, error, data }] =
     useMutation(CREATE_PUB_MUTATION);
 
@@ -171,7 +175,14 @@ const AddPubForm: React.FC = () => {
       },
       createdBy: user?.name || "",
     };
-    createPub({ variables: { input } });
+
+    console.log(input);
+
+    try {
+      createPub({ variables: { input } });
+    } catch (e: any) {
+      console.log(e);
+    }
   };
 
   useEffect(() => {
@@ -195,6 +206,7 @@ const AddPubForm: React.FC = () => {
         <AddPubMap setPlace={setPlace} />
       </MapContainer>
       <Form onSubmit={handleSubmit}>
+        {error && <div style={{ color: "red" }}>{error.message}</div>}
         {!place && <div>Select a pub on the map to start</div>}
         {place && isNotPub && (
           <div style={{ color: "orange" }}>

@@ -15,7 +15,7 @@ const Container = styled.div`
   width: 100%;
 `;
 
-const Map = () => {
+const Home = () => {
   const { data, loading, error, refetch } = useQuery<{ pubs: Pub[] }>(GET_PUBS);
   const [place, setPlace] = React.useState<Place | null>(null);
   const [selectedPub, setSelectedPub] = React.useState<Pub | null>(null);
@@ -51,4 +51,4 @@ const Map = () => {
   );
 };
 
-export default Map;
+export default Home;

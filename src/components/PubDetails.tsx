@@ -17,7 +17,7 @@ const PubDetails: React.FC<PubDetailsProps> = ({ pub }) => {
         <strong>Description:</strong> {pub.description}
       </Info>
       <Info>
-        <strong>Created By:</strong> {pub.createdBy?.name ?? "Unknown"}
+        <strong>Created By:</strong> {pub.createdBy ?? "Unknown"}
       </Info>
       {/* You can add more details as needed */}
       <Info>

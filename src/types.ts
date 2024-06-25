@@ -45,7 +45,7 @@ export interface Pub {
   rulesId: number; // Assuming this is a foreign key reference to Rules
   rules: Rules; // Assuming a one-to-one relation with Rules
   tables: Table[]; // Optionally include relations
-  createdBy: User; // Assuming a one-to-one relation with User
+  createdBy: string; // Assuming a one-to-one relation with User
   updatedBy?: User[]; // Optionally include relations
   userId: number; // Assuming this is a foreign key reference to User
 }

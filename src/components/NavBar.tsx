@@ -17,7 +17,11 @@ const NavBar = () => {
         Find Pub
       </Link>
       <Link
-        href={user ? "/add-pub" : "/api/auth/login"}
+        href={
+          user
+            ? "/add-pub"
+            : "/api/auth/login?returnTo=%2Fadd-pub"
+        }
         style={router.pathname === "/add-pub" ? styles.activeLink : styles.link}
       >
         Add Pub

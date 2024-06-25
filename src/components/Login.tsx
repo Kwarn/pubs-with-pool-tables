@@ -18,7 +18,7 @@ const LoginContainer = styled.div`
 `;
 
 const Login = () => {
-  const { updateUser } = useUserStore();
+  const { updateUser, updateLastRoute } = useUserStore();
   const { user, error, isLoading } = useUser();
 
   useEffect(() => {
@@ -35,7 +35,12 @@ const Login = () => {
     <LoginContainer>
       {user ? (
         <>
-          <NavLink href="/api/auth/logout">Logout</NavLink>
+          <NavLink
+            onClick={() => updateLastRoute("/add-pub")}
+            href="/api/auth/logout"
+          >
+            Logout
+          </NavLink>
           <span style={{ color: "#fff", marginLeft: "1rem" }}>
             Welcome, {user.name}!
           </span>

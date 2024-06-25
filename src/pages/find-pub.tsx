@@ -24,7 +24,7 @@ const Map = () => {
     refetch();
   }, []);
 
-  const pubs = data?.pubs.map((pub) => ({
+  const pubs = data?.pubs?.map((pub) => ({
     name: pub.name,
     lat: pub.location.lat,
     lng: pub.location.lng,

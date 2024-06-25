@@ -56,7 +56,6 @@ export const resolvers = {
         return createdPub;
       } catch (error) {
         console.error("Error creating pub:", error);
-        throw new Error("Failed to create pub");
       }
     },
   },
