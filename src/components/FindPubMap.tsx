@@ -26,7 +26,6 @@ const FindPubMap: React.FC<FindPubMapProps> = ({
   pubs,
   isMinimized,
   setPlace,
-  onFocusCallback,
 }) => {
   const mapRef = useRef<google.maps.Map | null>(null);
   const markers: google.maps.Marker[] = [];
@@ -50,7 +49,6 @@ const FindPubMap: React.FC<FindPubMapProps> = ({
 
         mapRef.current.addListener("click", () => {
           if (!isMarkerClicked) {
-            onFocusCallback();
             setPlace(null);
           }
           setIsMarkerClicked(false);
@@ -82,7 +80,7 @@ const FindPubMap: React.FC<FindPubMapProps> = ({
     };
 
     initializeMap();
-  }, [pubs, setPlace, onFocusCallback]);
+  }, [pubs, setPlace]);
 
   return (
     <Container $isMinimized={isMinimized}>

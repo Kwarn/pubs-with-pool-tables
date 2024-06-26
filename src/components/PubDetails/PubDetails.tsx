@@ -5,7 +5,7 @@ import { GET_PUB_COMMENTS } from "@/graphql/queries";
 import { useQuery } from "@apollo/client";
 import { useUserStore } from "@/state/userStore";
 import Spinner from "../Spinner";
-import PubComments from "./Comments/PubComments";
+import PubComments from "../Comments/Comments";
 
 interface PubDetailsProps {
   pub: Pub;

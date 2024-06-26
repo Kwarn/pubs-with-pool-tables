@@ -12,7 +12,6 @@ const Home = () => {
   const { data, loading, error, refetch } = useQuery<{ pubs: Pub[] }>(GET_PUBS);
   const [place, setPlace] = useState<Place | null>(null);
   const [selectedPub, setSelectedPub] = useState<Pub | null>(null);
-  const [isMapMinimized, setIsMapMinimized] = useState(false);
 
   const [
     createComment,
@@ -68,7 +67,6 @@ const Home = () => {
           setPlace={setPlace}
           pubs={pubs}
           isMinimized={selectedPub !== null}
-          onFocusCallback={() => setIsMapMinimized(false)}
         />
       )}
       <PubDetailsContainer $isVisible={selectedPub !== null}>

@@ -8,7 +8,7 @@ interface PubCommentsProps {
   loading: boolean;
 }
 
-const PubComments: React.FC<PubCommentsProps> = ({ comments, loading }) => {
+const Comments: React.FC<PubCommentsProps> = ({ comments, loading }) => {
   const commentsEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -62,4 +62,4 @@ const CommentContainer = styled.div`
   }
 `;
 
-export default PubComments;
+export default Comments;
