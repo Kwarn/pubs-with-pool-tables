@@ -19,7 +19,6 @@ const PubComments: React.FC<PubCommentsProps> = ({ comments, loading }) => {
 
   return (
     <CommentsList>
-      <h3>Comments</h3>
       {loading ? (
         <Spinner size="md" />
       ) : (

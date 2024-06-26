@@ -57,30 +57,31 @@ const PubDetails: React.FC<PubDetailsProps> = ({
     <Container id={pub.name}>
       <Details>
         <Name>{pub?.name ?? "unknown"}</Name>
-        <Info>
-          <strong>Address:</strong> {pub?.address || "unknown"}
-        </Info>
-        <Info>
-          <strong>Description:</strong> {pub.description}
-        </Info>
-        <Info>
-          <strong>Created By:</strong> {pub.createdBy ?? "Unknown"}
-        </Info>
-        <Info>
-          <strong>Cue Deposit Required:</strong> {pub.rules.isCueDeposit}
-        </Info>
-        <Info>
-          <strong>Jumping Whiteball Allowed:</strong>{" "}
-          {pub.rules.isJumpingAllowed}
-        </Info>
-        <Info>
-          <strong>Coin On Table Reservation Allowed:</strong>{" "}
-          {pub.rules.isPoundOnTable}
-        </Info>
-        <Info>
-          <strong>Pre-booking Table Allowed:</strong>{" "}
-          {pub.rules.isReservationAllowed}
-        </Info>
+        <Address>{pub?.address || "unknown"}</Address>
+        <AddedBy>
+          <strong>Added By:</strong> {pub.createdBy ?? "Unknown"}
+        </AddedBy>
+        <Divider />
+        <Block>
+          <Info>{pub.description}</Info>
+          <Rules>
+            <Info>
+              <strong>Cue Deposit Required:</strong> {pub.rules.isCueDeposit}
+            </Info>
+            <Info>
+              <strong>Pre-booking Table Allowed:</strong>
+              {pub.rules.isReservationAllowed}
+            </Info>
+            <Info>
+              <strong>Jumping Whiteball Allowed:</strong>
+              {pub.rules.isJumpingAllowed}
+            </Info>
+            <Info>
+              <strong>Coin On Table Reservation Allowed:</strong>
+              {pub.rules.isPoundOnTable}
+            </Info>
+          </Rules>
+        </Block>
         {pub.tables && pub.tables.length > 0 && (
           <Info>
             <strong>Tables:</strong>
@@ -112,7 +113,9 @@ const PubDetails: React.FC<PubDetailsProps> = ({
 };
 
 const Container = styled.div`
+  transition: height 2s ease-in-out;
   display: flex;
+  height: 100%;
   justify-content: space-between;
   border: 1px solid #ccc;
   padding: 20px;
@@ -124,8 +127,24 @@ const Details = styled.div`
   width: 60%;
 `;
 
-const Name = styled.h2`
+const Divider = styled.hr`
+  height: 2px;
+  background-color: black;
+`;
+
+const Name = styled.h1`
+  text-align: center;
   margin-bottom: 10px;
+`;
+
+const Address = styled.p`
+  text-align: center;
+  font-size: 18px;
+`;
+
+const AddedBy = styled.p`
+  position: absolute;
+  top: 100px;
 `;
 
 const Info = styled.div`
@@ -136,32 +155,22 @@ const Info = styled.div`
   }
 `;
 
+const Block = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+const Rules = styled.div`
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+`;
+
 const CommentsSection = styled.div`
   width: 35%;
   display: flex;
   flex-direction: column;
-`;
-
-const CommentsList = styled.div`
-  margin-bottom: 20px;
-`;
-
-const CommentsScrollable = styled.div`
-  max-height: 200px;
-  overflow-y: auto;
-`;
-
-const CommentContainer = styled.div`
-  border-bottom: 1px solid #ddd;
-  padding: 10px 0;
-
-  p {
-    margin: 0;
-  }
-
-  small {
-    color: #555;
-  }
 `;
 
 const CommentForm = styled.form`

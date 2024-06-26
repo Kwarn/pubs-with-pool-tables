@@ -4,6 +4,7 @@ rating system
 ranking system for user engagement
 tounament organization
 Adsense
+handle XSS for text fields
 
 error handling
 unit tests

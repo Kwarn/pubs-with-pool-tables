@@ -46,18 +46,12 @@ const Home = () => {
 
   useEffect(() => {
     // when a place on the map is clicked this finds and sets the selectedPub for use in PubDetails
-
     const matchingPub = data?.pubs.find((pub) => pub.name === place?.name);
     if (matchingPub) {
       setSelectedPub(matchingPub);
     } else {
       setSelectedPub(null);
     }
-    data?.pubs.find((pub) => {
-      if (pub.name === place?.name) {
-        setSelectedPub(pub);
-      }
-    });
   }, [place]);
 
   if (loading)
@@ -120,4 +114,6 @@ const PubDetailsContainer = styled.div<PubDetailsProps>`
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   transition: bottom 0.5s ease;
   z-index: 1000;
+  height: 400px;
+  max-height: 400px;
 `;

@@ -33,25 +33,31 @@ export const resolvers = {
   },
   Mutation: {
     addPub: async (_: undefined, { input }: { input: PubInput }) => {
+      const { name, address, description, createdBy, location, rules, tables } =
+        input;
+
       const newPub = {
-        ...input,
+        name: name,
+        address: address,
+        description: description,
+        createdBy: createdBy,
         location: {
           create: {
-            lat: input.location.lat,
-            lng: input.location.lng,
+            lat: location.lat,
+            lng: location.lng,
           },
         },
         rules: {
           create: {
-            isCueDeposit: input.rules.isCueDeposit,
-            isJumpingAllowed: input.rules.isJumpingAllowed,
-            isPoundOnTable: input.rules.isPoundOnTable,
-            isReservationAllowed: input.rules.isReservationAllowed,
+            isCueDeposit: rules.isCueDeposit,
+            isJumpingAllowed: rules.isJumpingAllowed,
+            isPoundOnTable: rules.isPoundOnTable,
+            isReservationAllowed: rules.isReservationAllowed,
           },
         },
-        tables: input.tables
+        tables: tables
           ? {
-              create: input.tables.map((table: Table) => ({
+              create: tables.map((table: Table) => ({
                 size: table.size,
                 quality: table.quality,
                 cost: table.cost,
