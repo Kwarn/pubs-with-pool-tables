@@ -45,7 +45,7 @@ const CommentsList = styled.div`
 `;
 
 const CommentsScrollable = styled.div`
-  max-height: 200px;
+  max-height: 140px;
   overflow-y: auto;
 `;
 

@@ -1,5 +1,5 @@
-import FindPubMap, { Place } from "@/components/FindPubMap";
-import PubDetails from "@/components/PubDetails/PubDetails";
+import FindPubMap, { Place } from "@/components/FindPub/FindPubMap";
+import PubDetails from "@/components/FindPub/PubDetails";
 import Spinner from "@/components/Spinner";
 import { CREATE_COMMENT_MUTATION } from "@/graphql/mutations";
 import { GET_PUBS } from "@/graphql/queries";
@@ -95,8 +95,8 @@ const SpinnerContainer = styled.div`
 const Container = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
   width: 100%;
+  height: calc(100vh - 90px);
 `;
 
 interface PubDetailsProps {
@@ -110,8 +110,8 @@ const PubDetailsContainer = styled.div<PubDetailsProps>`
   right: 0;
   background-color: #fff;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-  transition: bottom 0.5s ease;
+  transition: bottom 0.3s ease-in-out;
   z-index: 1000;
-  height: 400px;
-  max-height: 400px;
+  height: 30vh;
+  max-height: 30vh;
 `;

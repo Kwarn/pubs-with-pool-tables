@@ -1,4 +1,4 @@
-import React, { use, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import styled from "styled-components";
 
@@ -96,15 +96,12 @@ interface ContainerProps {
 
 const Container = styled.div<ContainerProps>`
   width: 100%;
-  display: flex;
-  justify-content: center;
   height: ${(props) =>
-    props.$isMinimized ? "calc(100vh - 390px)" : `calc(100vh - 90px)`};
-  transition: height 0.5s ease;
+    props.$isMinimized ? "calc(100% - 300px)" : `100%`};
+  transition: height 0.4s ease-in-out;
 `;
 
 const MapComponent = styled.div`
-  display: flex;
   height: 100%;
   width: 100%;
 `;

@@ -99,7 +99,6 @@ const PubDetails: React.FC<PubDetailsProps> = ({
       <CommentsSection>
         <PubComments comments={comments || []} loading={loading} />
         <CommentForm onSubmit={handleCommentSubmit}>
-          <h3>Add a Comment</h3>
           <Textarea
             placeholder="Your Comment"
             value={commentText}
@@ -113,7 +112,6 @@ const PubDetails: React.FC<PubDetailsProps> = ({
 };
 
 const Container = styled.div`
-  transition: height 2s ease-in-out;
   display: flex;
   height: 100%;
   justify-content: space-between;
@@ -191,6 +189,7 @@ const Button = styled.button`
   color: #fff;
   border: none;
   border-radius: 4px;
+  margin-bottom: 0;
   cursor: pointer;
 
   &:hover {
