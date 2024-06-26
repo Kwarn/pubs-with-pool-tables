@@ -19,6 +19,13 @@ export const typeDefs = `
     description: String
   }
 
+  type Comment {
+    id: ID!
+    text: String!
+    author: String!
+    createdAt: String!
+  }
+
   type Pub {
     id: ID!
     name: String!
@@ -27,6 +34,7 @@ export const typeDefs = `
     location: MapLocation!
     rules: Rules!
     tables: [Table]
+    comments: [Comment]
     createdBy: String!
     updatedBy: [String]
   }
@@ -60,11 +68,19 @@ export const typeDefs = `
     description: String
   }
 
+  input CommentInput {
+    text: String!
+    author: String!
+    pubId: ID!
+  }
+
   type Query {
     pubs: [Pub]
+    comments(pubId: ID!): [Comment]
   }
 
   type Mutation {
     addPub(input: PubInput!): Pub
+    addComment(input: CommentInput!): Comment
   }
 `;

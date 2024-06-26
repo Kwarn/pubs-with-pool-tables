@@ -5,19 +5,22 @@ const prisma = new PrismaClient();
 async function main() {
   try {
     await prisma.table.deleteMany({});
-    console.log("delete table table data");
+    console.log("Deleted table table data");
     await prisma.pub.deleteMany({});
-    console.log("delete pub table data");
+    console.log("Deleted pub table data");
     await prisma.rules.deleteMany({});
-    console.log("delete rules table data");
+    console.log("Deleted rules table data");
+    await prisma.comment.deleteMany({});
+    console.log("Deleted comment table data");
   } catch (error) {
     console.error("Error executing seed script:", error);
     throw error;
   } finally {
     await prisma.$disconnect();
   }
+
   try {
-    await prisma.pub.create({
+    const pub1 = await prisma.pub.create({
       data: {
         name: "Pub 1 by User 1",
         address: "Area 1",
@@ -53,13 +56,26 @@ async function main() {
             },
           ],
         },
+        comments: {
+          create: [
+            {
+              text: "Great pub!",
+              author: "Alice",
+            },
+            {
+              text: "Nice tables and friendly staff.",
+              author: "Bob",
+            },
+          ],
+        },
       },
       include: {
         tables: true,
+        comments: true,
       },
     });
 
-    await prisma.pub.create({
+    const pub2 = await prisma.pub.create({
       data: {
         name: "Pub 1 by User 2",
         address: "Area 1",
@@ -95,9 +111,26 @@ async function main() {
             },
           ],
         },
+        comments: {
+          create: [
+            {
+              text: "Lovely ambiance!",
+              author: "Charlie",
+            },
+            {
+              text: "Great drinks and music.",
+              author: "Dave",
+            },
+            {
+              text: "Would visit again.",
+              author: "Eve",
+            },
+          ],
+        },
       },
       include: {
         tables: true,
+        comments: true,
       },
     });
 

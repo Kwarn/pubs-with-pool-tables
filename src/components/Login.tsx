@@ -12,9 +12,9 @@ const NavLink = styled.a`
 `;
 
 const LoginContainer = styled.div`
-  display: flex;
-  margin-left: auto;
   align-items: center;
+  padding: 0;
+  margin: 0 5px 0 0;
 `;
 
 const Login = () => {

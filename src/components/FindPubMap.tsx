@@ -1,10 +1,6 @@
-import React, { useEffect, useRef } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
-
-const containerStyle = {
-  width: "100%",
-  height: "600px",
-};
+import { styled } from "styled-components";
 
 const center = {
   lat: 51.5074,
@@ -19,14 +15,16 @@ export interface Place {
   address: string;
 }
 
-interface MapProps {
+interface FindPubMapProps {
   pubs: Place[];
   setPlace: (place: Place) => void;
 }
 
-const Map: React.FC<MapProps> = ({ pubs, setPlace }) => {
+const FindPubMap: React.FC<FindPubMapProps> = ({ pubs, setPlace }) => {
   const mapRef = useRef<google.maps.Map | null>(null);
   const markers: google.maps.Marker[] = [];
+
+  const [isSmallMap, setIsSmallMap] = useState(false);
 
   useEffect(() => {
     const loader = new Loader({
@@ -52,7 +50,7 @@ const Map: React.FC<MapProps> = ({ pubs, setPlace }) => {
 
       markers.forEach((marker) => marker.setMap(null));
       markers.length = 0;
-      
+
       pubsToAdd.forEach((pub) => {
         const marker = new google.maps.Marker({
           position: { lat: pub.lat, lng: pub.lng },
@@ -62,6 +60,7 @@ const Map: React.FC<MapProps> = ({ pubs, setPlace }) => {
 
         marker.addListener("click", () => {
           setPlace(pub);
+          setIsSmallMap(true);
         });
 
         markers.push(marker);
@@ -72,16 +71,29 @@ const Map: React.FC<MapProps> = ({ pubs, setPlace }) => {
   }, [pubs, setPlace]);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        flexDirection: "column",
-      }}
-    >
-      <div id="map" style={containerStyle} />
-    </div>
+    <Container $isSmallMap={isSmallMap}>
+      <MapComponent id="map" />
+    </Container>
   );
 };
 
-export default Map;
+export default FindPubMap;
+
+interface ContainerProps {
+  $isSmallMap: boolean;
+}
+
+const Container = styled.div<ContainerProps>`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  height: ${(props) =>
+    props.$isSmallMap ? "calc(100vh - 390px)" : `calc(100vh - 90px)`};
+  transition: height 0.5s ease;
+`;
+
+const MapComponent = styled.div`
+  display: flex;
+  height: 100%;
+  width: 100%;
+`;

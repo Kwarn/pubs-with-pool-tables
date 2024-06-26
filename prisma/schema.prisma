@@ -44,6 +44,16 @@ model Pub {
   rulesId     Int
   rules       Rules       @relation(fields: [rulesId], references: [id])
   tables      Table[]
+  comments    Comment[]
   createdBy   String
   updatedBy   String[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  text      String
+  author    String
+  pubId     Int
+  pub       Pub      @relation(fields: [pubId], references: [id])
+  createdAt DateTime @default(now())
 }

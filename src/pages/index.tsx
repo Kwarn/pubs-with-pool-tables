@@ -4,29 +4,29 @@ import Spinner from "@/components/Spinner";
 import { GET_PUBS } from "@/graphql/queries";
 import { Pub } from "@/types";
 import { useQuery } from "@apollo/client";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100%;
-`;
 
 const Home = () => {
   const { data, loading, error, refetch } = useQuery<{ pubs: Pub[] }>(GET_PUBS);
-  const [place, setPlace] = React.useState<Place | null>(null);
-  const [selectedPub, setSelectedPub] = React.useState<Pub | null>(null);
+  const [place, setPlace] = useState<Place | null>(null);
+  const [selectedPub, setSelectedPub] = useState<Pub | null>(null);
 
-  const pubs = data?.pubs.map((pub) => ({
-    name: pub.name,
-    lat: pub.location.lat,
-    lng: pub.location.lng,
-    type: "pub",
-    address: pub.address,
-  }));
+  useEffect(() => {
+    refetch();
+  }, []);
+
+  const pubs = useMemo(
+    () =>
+      data?.pubs?.map((pub) => ({
+        name: pub.name,
+        lat: pub.location.lat,
+        lng: pub.location.lng,
+        type: "pub",
+        address: pub.address,
+      })) ?? [],
+    [data?.pubs]
+  );
 
   useEffect(() => {
     data?.pubs.find((pub) => {
@@ -38,17 +38,49 @@ const Home = () => {
 
   if (loading)
     return (
-      <Container>
+      <SpinnerContainer>
         <Spinner size="lg" />
-      </Container>
+      </SpinnerContainer>
     );
 
   return (
-    <>
+    <Container>
       {pubs && <FindPubMap setPlace={setPlace} pubs={pubs} />}
-      {selectedPub && <PubDetails pub={selectedPub} />}
-    </>
+      <PubDetailsContainer isVisible={selectedPub !== null}>
+        {selectedPub && <PubDetails pub={selectedPub} />}
+      </PubDetailsContainer>
+    </Container>
   );
 };
 
 export default Home;
+
+const SpinnerContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+`;
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+`;
+
+interface PubDetailsProps {
+  isVisible: boolean;
+}
+
+const PubDetailsContainer = styled.div<PubDetailsProps>`
+  position: fixed;
+  bottom: ${(props) => (props.isVisible ? "0" : "-100%")};
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  transition: bottom 0.5s ease;
+  z-index: 1000;
+`;

@@ -7,105 +7,9 @@ import { useRouter } from "next/router";
 import Spinner from "./Spinner";
 import { useUserStore } from "@/state/userStore";
 
-const Container = styled.div`
-  width: 100%;
-  margin: 0 auto;
-  border: 1px solid #ccc;
-  background-color: #f9f9f9;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-`;
-
-const MapContainer = styled.div`
-  padding: 30px;
-  width: 50vw;
-`;
-
-const Form = styled.form`
-  width: 50%;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-
-const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 15px;
-`;
-
-const Label = styled.label`
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #333;
-`;
-
-const Input = styled.input`
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-`;
-
-const Textarea = styled.textarea`
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-  resize: vertical;
-  height: 100px;
-`;
-
-const RadioGroup = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 5px;
-`;
-
-const RadioLabel = styled.label`
-  margin-right: 10px;
-  display: flex;
-  align-items: center;
-  width: fit-content;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-  padding: 10px;
-`;
-
-const RadioInput = styled.input`
-  margin-right: 5px;
-  width: 20px;
-  height: 20px;
-`;
-
-const Button = styled.button`
-  padding: 10px 15px;
-  background-color: #0070f3;
-  min-width: 100px;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  align-self: flex-start;
-  justify-content: center;
-  &:disabled {
-    background-color: #999;
-    cursor: not-allowed;
-  }
-
-  &:hover:not(:disabled) {
-    background-color: #005bb5;
-  }
-`;
-
 const AddPubForm: React.FC = () => {
-  const { user } = useUserStore();
   const router = useRouter();
+  const { user } = useUserStore();
   const [formState, setFormState] = useState({
     name: "",
     address: "",
@@ -119,16 +23,14 @@ const AddPubForm: React.FC = () => {
 
   const [place, setPlace] = useState<Place | null>(null);
   const [isNotPub, setIsNotPub] = useState<boolean>(false);
-  const [noSelectedPubError, setNoSelectedPubError] = useState<boolean>(false);
+  const [noSelectedPubError, setNoSelectedPubError] = useState<boolean>(false); // review how useMutation error works
+  const [isFullScreenMap, setIsFullScreenMap] = useState<boolean>(true);
 
   useEffect(() => {
+    if (place) setIsFullScreenMap(false);
     if (place?.type !== "bar") setIsNotPub(true);
     else setIsNotPub(false);
   }, [place]);
-
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
 
   const [createPub, { loading, error, data }] =
     useMutation(CREATE_PUB_MUTATION);
@@ -145,7 +47,7 @@ const AddPubForm: React.FC = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const {
       name,
@@ -164,8 +66,8 @@ const AddPubForm: React.FC = () => {
       address,
       description,
       location: {
-        lat: place?.lat || 0,
-        lng: place?.lng || 0,
+        lat: place?.lat ?? 0,
+        lng: place?.lng ?? 0,
       },
       rules: {
         isCueDeposit,
@@ -173,13 +75,11 @@ const AddPubForm: React.FC = () => {
         isPoundOnTable,
         isReservationAllowed,
       },
-      createdBy: user?.name || "",
+      createdBy: user?.name ?? "",
     };
 
-    console.log(input);
-
     try {
-      createPub({ variables: { input } });
+      await createPub({ variables: { input } });
     } catch (e: any) {
       console.log(e);
     }
@@ -202,12 +102,16 @@ const AddPubForm: React.FC = () => {
 
   return (
     <Container>
-      <MapContainer>
+      <MapContainer $isFullScreen={isFullScreenMap}>
         <AddPubMap setPlace={setPlace} />
       </MapContainer>
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit} $isFullScreen={isFullScreenMap}>
         {error && <div style={{ color: "red" }}>{error.message}</div>}
-        {!place && <div>Select a pub on the map to start</div>}
+        {!place && (
+          <div style={{ color: "green" }}>
+            Search for a pub or select a pub on the map to start
+          </div>
+        )}
         {place && isNotPub && (
           <div style={{ color: "orange" }}>
             Are you sure this is a pub? Google considers it a {place?.type}. You
@@ -228,7 +132,7 @@ const AddPubForm: React.FC = () => {
             onChange={handleChange}
             required
             readOnly
-            style={{ opacity: 0.5 }}
+            style={{ opacity: 0.2 }}
           />
         </FormGroup>
         <FormGroup>
@@ -241,7 +145,7 @@ const AddPubForm: React.FC = () => {
             onChange={handleChange}
             required
             readOnly
-            style={{ opacity: 0.5 }}
+            style={{ opacity: 0.2 }}
           />
         </FormGroup>
         <FormGroup>
@@ -417,3 +321,114 @@ const AddPubForm: React.FC = () => {
 };
 
 export default AddPubForm;
+
+const Container = styled.div`
+  width: 100%;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  transition: width 0.5s ease;
+`;
+
+interface MapContainerProps {
+  $isFullScreen?: boolean;
+}
+
+const MapContainer = styled.div<MapContainerProps>`
+  margin-top: 20px;
+  width: ${(props) => (props.$isFullScreen ? "100vw" : "70vw")};
+  transition: width 0.5s ease;
+  height: 100%;
+`;
+
+interface FormProps {
+  $isFullScreen?: boolean;
+}
+
+const Form = styled.form<FormProps>`
+  width: ${(props) => (props.$isFullScreen ? "0" : "30vw")};
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  opacity: ${(props) => (props.$isFullScreen ? "0" : "1")};
+  pointer-events: ${(props) => (props.$isFullScreen ? "none" : "auto")};
+  transition: opacity 0.5s ease,
+    pointer-events 0s linear ${(props) => (props.$isFullScreen ? "0.5s" : "0s")};
+`;
+
+const FormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+`;
+
+const Label = styled.label`
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+`;
+
+const Input = styled.input`
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+`;
+
+const Textarea = styled.textarea`
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  resize: vertical;
+  height: 100px;
+`;
+
+const RadioGroup = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 5px;
+`;
+
+const RadioLabel = styled.label`
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 10px;
+`;
+
+const RadioInput = styled.input`
+  margin-right: 5px;
+  width: 20px;
+  height: 20px;
+`;
+
+const Button = styled.button`
+  padding: 10px 15px;
+  background-color: #0070f3;
+  min-width: 100px;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  align-self: flex-start;
+  justify-content: center;
+  &:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: #005bb5;
+  }
+`;

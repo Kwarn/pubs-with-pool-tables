@@ -1,0 +1,24 @@
+Comments section - WIP
+user profiles
+rating system
+ranking system for user engagement
+tounament organization
+Adsense
+
+
+
+Todos and thoughts: 
+
+Do we also need to keep track of auth0 users in the DB so we can link comments to them - probably?
+
+making browsing pubs quicker and cheaper - Can we use the googleMaps component to display basic pub info ON the map,
+full details with comments can go into the full pub info section at the bottom 
+
+do we like useContext or are we going with zustand again?
+
+figure out all the potential security issues and API caps to avoid griefers ruining your life - also add profanity filtering
+
+do we want to use vercel long term? fix the M2 mac being crap with docker & postgres images.
+
+Fix the god aweful Pub-admin page - we need to be able to search easily through pubs comments and users..  and use pagination to avoid burning down vercels server rack
+

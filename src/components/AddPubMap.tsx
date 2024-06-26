@@ -1,13 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
-
-const containerStyle = {
-  width: "100%",
-  height: "600px",
-};
+import styled from "styled-components";
 
 const center = {
-  // london
   lat: 51.5074,
   lng: -0.1278,
 };
@@ -120,27 +115,33 @@ const AddPubMap = ({ setPlace }: { setPlace: (place: Place) => void }) => {
   }, []);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        flexDirection: "column",
-      }}
-    >
-      <input
+    <Container>
+      <SearchInput
         type="text"
         ref={searchInputRef}
         placeholder="Search for a Pub"
-        style={{
-          alignSelf: "center",
-          width: "500px",
-          height: "30px",
-          marginBottom: "10px",
-        }}
       />
-      <div style={containerStyle} ref={mapRef} />
-    </div>
+      <MapContainer ref={mapRef} />
+    </Container>
   );
 };
 
 export default AddPubMap;
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+`;
+
+const SearchInput = styled.input`
+  align-self: center;
+  width: 500px;
+  height: 30px;
+  margin-bottom: 10px;
+`;
+
+const MapContainer = styled.div`
+  width: 100%;
+  height: calc(100vh - 200px);
+`;

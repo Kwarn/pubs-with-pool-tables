@@ -1,4 +1,3 @@
-// Table interface
 export interface Table {
   id: number;
   size: string | null;
@@ -8,7 +7,6 @@ export interface Table {
   pubId: number;
 }
 
-// Rules interface
 export interface Rules {
   id: number;
   isCueDeposit: string;
@@ -17,37 +15,43 @@ export interface Rules {
   isReservationAllowed: string;
 }
 
-// User interface
 export interface User {
   id: number;
-  name: string | null; // Nullable fields in the database
+  name: string | null;
   email: string;
-  createdPubs?: Pub[]; // Optionally include relations
-  updatedPubs?: Pub[]; // Optionally include relations
+  createdPubs?: Pub[];
+  updatedPubs?: Pub[];
 }
 
-// MapLocation interface
 export interface MapLocation {
   id: number;
   lat: number;
   lng: number;
-  pubs?: Pub[]; // Optionally include relations
+  pubs?: Pub[];
 }
 
-// Pub interface
+export interface Comment {
+  id: number;
+  text: string;
+  author: string;
+  createdAt: Date;
+  pubId: number;
+}
+
 export interface Pub {
   id: number;
   name: string;
   address: string;
   description: string;
-  locationId: number; // Assuming this is a foreign key reference to MapLocation
-  location: MapLocation; // Assuming a one-to-one relation with MapLocation
-  rulesId: number; // Assuming this is a foreign key reference to Rules
-  rules: Rules; // Assuming a one-to-one relation with Rules
-  tables: Table[]; // Optionally include relations
-  createdBy: string; // Assuming a one-to-one relation with User
-  updatedBy?: User[]; // Optionally include relations
-  userId: number; // Assuming this is a foreign key reference to User
+  locationId: number;
+  location: MapLocation;
+  rulesId: number;
+  rules: Rules;
+  tables: Table[];
+  comments: Comment[];
+  createdBy: string;
+  updatedBy?: User[];
+  userId: number;
 }
 
 export interface PubInput {
@@ -58,4 +62,10 @@ export interface PubInput {
   rules: Rules;
   tables?: Table[];
   createdBy: string;
+}
+
+export interface CommentInput {
+  text: string;
+  author: string;
+  pubId: number;
 }

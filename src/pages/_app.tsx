@@ -9,15 +9,13 @@ import { UserStoreProvider } from "@/state/userStore";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <>
-      <UserProvider>
-        <UserStoreProvider>
-          <ApolloProvider client={client}>
-            <NavBar />
-            <Component {...pageProps} />
-          </ApolloProvider>
-        </UserStoreProvider>
-      </UserProvider>
-    </>
+    <UserProvider>
+      <UserStoreProvider>
+        <ApolloProvider client={client}>
+          <NavBar />
+          <Component {...pageProps} />
+        </ApolloProvider>
+      </UserStoreProvider>
+    </UserProvider>
   );
 }

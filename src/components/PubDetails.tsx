@@ -52,6 +52,7 @@ const PubDetails: React.FC<PubDetailsProps> = ({ pub }) => {
 };
 
 const Container = styled.div`
+  height: 260px;
   border: 1px solid #ccc;
   padding: 20px;
   border-radius: 5px;
