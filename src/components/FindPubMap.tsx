@@ -19,7 +19,6 @@ interface FindPubMapProps {
   pubs: Place[];
   isMinimized: boolean;
   setPlace: (place: Place | null) => void;
-  onFocusCallback: () => void;
 }
 
 const FindPubMap: React.FC<FindPubMapProps> = ({
