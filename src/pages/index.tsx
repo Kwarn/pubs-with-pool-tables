@@ -1,9 +1,10 @@
 import FindPubMap, { Place } from "@/components/FindPubMap";
-import PubDetails from "@/components/PubDetails";
+import PubDetails from "@/components/PubDetails/PubDetails";
 import Spinner from "@/components/Spinner";
+import { CREATE_COMMENT_MUTATION } from "@/graphql/mutations";
 import { GET_PUBS } from "@/graphql/queries";
-import { Pub } from "@/types";
-import { useQuery } from "@apollo/client";
+import { CommentInput, Pub } from "@/types";
+import { useMutation, useQuery } from "@apollo/client";
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
@@ -11,11 +12,26 @@ const Home = () => {
   const { data, loading, error, refetch } = useQuery<{ pubs: Pub[] }>(GET_PUBS);
   const [place, setPlace] = useState<Place | null>(null);
   const [selectedPub, setSelectedPub] = useState<Pub | null>(null);
+  const [isMapMinimized, setIsMapMinimized] = useState(false);
+
+  const [
+    createComment,
+    { loading: commentLoading, error: commentError, data: commentData },
+  ] = useMutation(CREATE_COMMENT_MUTATION);
+
+  const handleCommentSubmit = async (input: CommentInput) => {
+    try {
+      await createComment({ variables: { input } });
+    } catch (e: any) {
+      console.log(e);
+    }
+  };
 
   useEffect(() => {
     refetch();
   }, []);
 
+  // Map the data to the format required by the FindPubMap component
   const pubs = useMemo(
     () =>
       data?.pubs?.map((pub) => ({
@@ -29,6 +45,14 @@ const Home = () => {
   );
 
   useEffect(() => {
+    // when a place on the map is clicked this finds and sets the selectedPub for use in PubDetails
+
+    const matchingPub = data?.pubs.find((pub) => pub.name === place?.name);
+    if (matchingPub) {
+      setSelectedPub(matchingPub);
+    } else {
+      setSelectedPub(null);
+    }
     data?.pubs.find((pub) => {
       if (pub.name === place?.name) {
         setSelectedPub(pub);
@@ -45,9 +69,22 @@ const Home = () => {
 
   return (
     <Container>
-      {pubs && <FindPubMap setPlace={setPlace} pubs={pubs} />}
-      <PubDetailsContainer isVisible={selectedPub !== null}>
-        {selectedPub && <PubDetails pub={selectedPub} />}
+      {pubs && (
+        <FindPubMap
+          setPlace={setPlace}
+          pubs={pubs}
+          isMinimized={selectedPub !== null}
+          onFocusCallback={() => setIsMapMinimized(false)}
+        />
+      )}
+      <PubDetailsContainer $isVisible={selectedPub !== null}>
+        {selectedPub && (
+          <PubDetails
+            pub={selectedPub}
+            onAddComment={handleCommentSubmit}
+            newComment={commentData?.addComment || null}
+          />
+        )}
       </PubDetailsContainer>
     </Container>
   );
@@ -71,12 +108,12 @@ const Container = styled.div`
 `;
 
 interface PubDetailsProps {
-  isVisible: boolean;
+  $isVisible: boolean;
 }
 
 const PubDetailsContainer = styled.div<PubDetailsProps>`
   position: fixed;
-  bottom: ${(props) => (props.isVisible ? "0" : "-100%")};
+  bottom: ${(props) => (props.$isVisible ? "0" : "-100%")};
   left: 0;
   right: 0;
   background-color: #fff;

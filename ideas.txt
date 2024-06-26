@@ -5,6 +5,8 @@ ranking system for user engagement
 tounament organization
 Adsense
 
+error handling
+unit tests
 
 
 Todos and thoughts: 

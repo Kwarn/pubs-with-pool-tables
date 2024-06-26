@@ -27,3 +27,17 @@ export const CREATE_PUB_MUTATION = gql`
     }
   }
 `;
+
+export const CREATE_COMMENT_MUTATION = gql`
+  mutation AddComment($input: CommentInput!) {
+    addComment(input: $input) {
+      id
+      text
+      author
+      pub {
+        id
+        name
+      }
+    }
+  }
+`;

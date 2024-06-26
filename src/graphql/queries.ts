@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const GET_PUBS = gql`
   query GetPubs {
@@ -25,6 +25,17 @@ export const GET_PUBS = gql`
         isPoundOnTable
         isReservationAllowed
       }
+    }
+  }
+`;
+
+export const GET_PUB_COMMENTS = gql`
+  query GetPubComments($pubId: ID!) {
+    comments(pubId: $pubId) {
+      id
+      text
+      author
+      createdAt
     }
   }
 `;

@@ -47,8 +47,8 @@ export interface Pub {
   location: MapLocation;
   rulesId: number;
   rules: Rules;
-  tables: Table[];
-  comments: Comment[];
+  tables?: Table[];
+  comments?: Comment[];
   createdBy: string;
   updatedBy?: User[];
   userId: number;

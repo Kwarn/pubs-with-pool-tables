@@ -1,6 +1,6 @@
 import React, { use, useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
-import { styled } from "styled-components";
+import styled from "styled-components";
 
 const center = {
   lat: 51.5074,
@@ -17,14 +17,20 @@ export interface Place {
 
 interface FindPubMapProps {
   pubs: Place[];
-  setPlace: (place: Place) => void;
+  isMinimized: boolean;
+  setPlace: (place: Place | null) => void;
+  onFocusCallback: () => void;
 }
 
-const FindPubMap: React.FC<FindPubMapProps> = ({ pubs, setPlace }) => {
+const FindPubMap: React.FC<FindPubMapProps> = ({
+  pubs,
+  isMinimized,
+  setPlace,
+  onFocusCallback,
+}) => {
   const mapRef = useRef<google.maps.Map | null>(null);
   const markers: google.maps.Marker[] = [];
-
-  const [isSmallMap, setIsSmallMap] = useState(false);
+  const [isMarkerClicked, setIsMarkerClicked] = useState<boolean>(false);
 
   useEffect(() => {
     const loader = new Loader({
@@ -40,6 +46,14 @@ const FindPubMap: React.FC<FindPubMapProps> = ({ pubs, setPlace }) => {
         mapRef.current = new google.maps.Map(document.getElementById("map")!, {
           center,
           zoom: 12,
+        });
+
+        mapRef.current.addListener("click", () => {
+          if (!isMarkerClicked) {
+            onFocusCallback();
+            setPlace(null);
+          }
+          setIsMarkerClicked(false);
         });
       }
       addMarkers(pubs);
@@ -60,7 +74,7 @@ const FindPubMap: React.FC<FindPubMapProps> = ({ pubs, setPlace }) => {
 
         marker.addListener("click", () => {
           setPlace(pub);
-          setIsSmallMap(true);
+          setIsMarkerClicked(true);
         });
 
         markers.push(marker);
@@ -68,10 +82,10 @@ const FindPubMap: React.FC<FindPubMapProps> = ({ pubs, setPlace }) => {
     };
 
     initializeMap();
-  }, [pubs, setPlace]);
+  }, [pubs, setPlace, onFocusCallback]);
 
   return (
-    <Container $isSmallMap={isSmallMap}>
+    <Container $isMinimized={isMinimized}>
       <MapComponent id="map" />
     </Container>
   );
@@ -80,7 +94,7 @@ const FindPubMap: React.FC<FindPubMapProps> = ({ pubs, setPlace }) => {
 export default FindPubMap;
 
 interface ContainerProps {
-  $isSmallMap: boolean;
+  $isMinimized: boolean;
 }
 
 const Container = styled.div<ContainerProps>`
@@ -88,7 +102,7 @@ const Container = styled.div<ContainerProps>`
   display: flex;
   justify-content: center;
   height: ${(props) =>
-    props.$isSmallMap ? "calc(100vh - 390px)" : `calc(100vh - 90px)`};
+    props.$isMinimized ? "calc(100vh - 390px)" : `calc(100vh - 90px)`};
   transition: height 0.5s ease;
 `;
 

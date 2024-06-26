@@ -1,9 +1,10 @@
 import prisma from "@/lib/prisma";
-import { PubInput, CommentInput } from "@/types";
+import { CommentInput, PubInput } from "@/types";
+import { Table } from "@prisma/client";
 
 export const resolvers = {
   Query: {
-    pubs: async (_: undefined, __: undefined) => {
+    pubs: async () => {
       try {
         return await prisma.pub.findMany({
           include: {
@@ -21,7 +22,8 @@ export const resolvers = {
     comments: async (_: undefined, { pubId }: { pubId: number }) => {
       try {
         return await prisma.comment.findMany({
-          where: { pubId },
+          where: { pubId: Number(pubId) },
+          include: { pub: true },
         });
       } catch (error) {
         console.error("Error fetching comments:", error);
@@ -49,7 +51,7 @@ export const resolvers = {
         },
         tables: input.tables
           ? {
-              create: input.tables.map((table) => ({
+              create: input.tables.map((table: Table) => ({
                 size: table.size,
                 quality: table.quality,
                 cost: table.cost,
@@ -66,7 +68,6 @@ export const resolvers = {
             location: true,
             rules: true,
             tables: true,
-            comments: true,
           },
         });
         return createdPub;
@@ -81,7 +82,10 @@ export const resolvers = {
           data: {
             text: input.text,
             author: input.author,
-            pubId: input.pubId,
+            pubId: Number(input.pubId),
+          },
+          include: {
+            pub: true,
           },
         });
         return createdComment;
