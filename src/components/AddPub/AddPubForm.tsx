@@ -43,6 +43,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
       name: place?.name ?? "",
       address: place?.address ?? "",
     }));
+    setNoSelectedPubError(false);
   }, [place]);
 
   const handleChange = (
