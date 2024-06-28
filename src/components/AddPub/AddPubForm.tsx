@@ -25,7 +25,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
   const [formState, setFormState] = useState({
     name: "",
     address: "",
-    description: "",
     isCueDeposit: "Don't Know",
     isJumpingAllowed: "Don't Know",
     isPoundOnTable: "Don't Know",
@@ -59,8 +58,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
     onSubmit({
       name: formState.name,
       address: formState.address,
-      description: formState.description,
-
       location: {
         lat: place?.lat ?? 0,
         lng: place?.lng ?? 0,
@@ -116,17 +113,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
           required
           readOnly
           style={{ opacity: 0.2 }}
-        />
-      </FormGroup>
-      <FormGroup>
-        <Label htmlFor="description">Description</Label>
-        <Textarea
-          id="description"
-          name="description"
-          value={formState.description}
-          onChange={handleChange}
-          required
-          disabled={loading}
         />
       </FormGroup>
 

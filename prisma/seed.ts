@@ -20,11 +20,10 @@ async function main() {
   }
 
   try {
-    const pub1 = await prisma.pub.create({
+    await prisma.pub.create({
       data: {
         name: "Pub 1 by User 1",
         address: "Area 1",
-        description: "First pub created by User 1",
         location: {
           create: {
             lat: 51.5074,
@@ -75,11 +74,10 @@ async function main() {
       },
     });
 
-    const pub2 = await prisma.pub.create({
+    await prisma.pub.create({
       data: {
         name: "Pub 1 by User 2",
         address: "Area 1",
-        description: "First pub created by User 2",
         location: {
           create: {
             lat: 51.5074,

@@ -7,7 +7,6 @@ export const GET_PUBS = gql`
       name
       address
       createdBy
-      description
       location {
         id
         lat

@@ -97,7 +97,7 @@ interface ContainerProps {
 const Container = styled.div<ContainerProps>`
   width: 100%;
   height: ${(props) =>
-    props.$isMinimized ? "calc(100% - 300px)" : `100%`};
+    props.$isMinimized ? "calc(100% - 284px)" : `100%`};
   transition: height 0.4s ease-in-out;
 `;
 

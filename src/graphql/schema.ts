@@ -31,7 +31,6 @@ type Pub {
   id: ID!
   name: String!
   address: String!
-  description: String
   location: MapLocation!
   rules: Rules!
   tables: [Table]
@@ -43,7 +42,6 @@ type Pub {
 input PubInput {
   name: String!
   address: String!
-  description: String!
   location: MapLocationInput
   rules: RulesInput
   tables: [TableInput]

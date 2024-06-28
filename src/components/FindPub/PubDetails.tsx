@@ -63,7 +63,6 @@ const PubDetails: React.FC<PubDetailsProps> = ({
         </AddedBy>
         <Divider />
         <Block>
-          <Info>{pub.description}</Info>
           <Rules>
             <Info>
               <strong>Cue Deposit Required:</strong> {pub.rules.isCueDeposit}
@@ -116,13 +115,13 @@ const Container = styled.div`
   height: 100%;
   justify-content: space-between;
   border: 1px solid #ccc;
-  padding: 20px;
   border-radius: 5px;
   margin-bottom: 20px;
 `;
 
 const Details = styled.div`
-  width: 60%;
+  width: 100%;
+  padding: 0 20px;
 `;
 
 const Divider = styled.hr`
@@ -142,7 +141,7 @@ const Address = styled.p`
 
 const AddedBy = styled.p`
   position: absolute;
-  top: 100px;
+  top: 80px;
 `;
 
 const Info = styled.div`
@@ -162,29 +161,35 @@ const Block = styled.div`
 const Rules = styled.div`
   display: flex;
   flex-direction: column;
-  text-align: right;
 `;
 
 const CommentsSection = styled.div`
-  width: 35%;
+  margin-right: 10px;
+  width: 40%;
   display: flex;
+  height: 100%;
   flex-direction: column;
+  justify-content: space-between;
 `;
 
 const CommentForm = styled.form`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  margin: 10px 0;
 `;
 
 const Textarea = styled.textarea`
-  margin-bottom: 10px;
-  padding: 8px;
-  border: 1px solid #ddd;
+  height: 40px;
+  width: 100%;
   border-radius: 4px;
+  border: 1px solid #ddd;
+  resize: none;
 `;
 
 const Button = styled.button`
+  height: 100%;
   padding: 10px;
+  margin-left: 10px;
   background-color: #0070f3;
   color: #fff;
   border: none;

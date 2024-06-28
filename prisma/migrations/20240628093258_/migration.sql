@@ -35,7 +35,6 @@ CREATE TABLE "Pub" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "address" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
     "locationId" INTEGER NOT NULL,
     "rulesId" INTEGER NOT NULL,
     "createdBy" TEXT NOT NULL,

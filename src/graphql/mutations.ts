@@ -6,7 +6,6 @@ export const CREATE_PUB_MUTATION = gql`
       id
       name
       address
-      description
       tables {
         size
         quality

@@ -64,7 +64,6 @@ const Pubs: React.FC = () => {
           <tr>
             <Th style={{ width: "20%" }}>Name</Th>
             <Th style={{ width: "10%" }}>Area</Th>
-            <Th style={{ width: "30%" }}>Description</Th>
             <Th style={{ width: "10%" }}>Cue Deposit</Th>
             <Th style={{ width: "10%" }}>Jumping Allowed</Th>
             <Th style={{ width: "10%" }}>Pound On Table</Th>
@@ -76,7 +75,6 @@ const Pubs: React.FC = () => {
             <tr key={pub.id}>
               <Td>{pub.name}</Td>
               <Td>{pub.address}</Td>
-              <Td>{pub.description}</Td>
               <Td>{pub.rules.isCueDeposit}</Td>
               <Td>{pub.rules.isJumpingAllowed}</Td>
               <Td>{pub.rules.isPoundOnTable}</Td>

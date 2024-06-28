@@ -33,13 +33,12 @@ export const resolvers = {
   },
   Mutation: {
     addPub: async (_: undefined, { input }: { input: PubInput }) => {
-      const { name, address, description, createdBy, location, rules, tables } =
+      const { name, address, createdBy, location, rules, tables } =
         input;
 
       const newPub = {
         name: name,
         address: address,
-        description: description,
         createdBy: createdBy,
         location: {
           create: {

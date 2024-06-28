@@ -42,7 +42,6 @@ export interface Pub {
   id: number;
   name: string;
   address: string;
-  description: string;
   locationId: number;
   location: MapLocation;
   rulesId: number;
@@ -57,7 +56,6 @@ export interface Pub {
 export interface PubInput {
   name: string;
   address: string;
-  description: string;
   location: MapLocation;
   rules: Rules;
   tables?: Table[];
