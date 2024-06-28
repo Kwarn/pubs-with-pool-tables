@@ -30,12 +30,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
   });
 
   const [noSelectedPubError, setNoSelectedPubError] = useState<boolean>(false);
-  const [alertFlashing, setAlertFlashing] = useState(false);
-
-  const handleDisabledFieldClick = () => {
-    setAlertFlashing(true);
-    setTimeout(() => setAlertFlashing(false), 500); // Reset flashing after 500ms
-  };
 
   useEffect(() => {
     setFormState((prevState) => ({
@@ -95,7 +89,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
         </Alert>
       )}
       {!place && !noSelectedPubError && (
-        <Alert bgColor={alertFlashing ? "#52d969" : "#a3eeaf"}>
+        <Alert bgColor="#a3eeaf">
           <p>Search for a pub or select a pub on the map to start</p>
         </Alert>
       )}
@@ -107,7 +101,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
       )}
       {place && (
         <DisabledInputsContainer bgColor={isNotPub ? "tranparent" : "#a3eeaf"}>
-          <FormGroup onClick={handleDisabledFieldClick}>
+          <FormGroup>
             <DisabledInput
               type="text"
               id="name"
@@ -120,7 +114,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
               fontSize={34}
             />
           </FormGroup>
-          <FormGroup onClick={handleDisabledFieldClick}>
+          <FormGroup>
             <DisabledInput
               type="text"
               id="address"
