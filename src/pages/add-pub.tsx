@@ -13,7 +13,6 @@ const AddPub: React.FC = () => {
   const { user } = useUserStore();
   const [place, setPlace] = useState<Place | null>(null);
   const [isNotPub, setIsNotPub] = useState<boolean>(false);
-  const [noSelectedPubError, setNoSelectedPubError] = useState<boolean>(false);
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -26,8 +25,6 @@ const AddPub: React.FC = () => {
     useMutation(CREATE_PUB_MUTATION);
 
   const handleFormSubmit = async (formData: PubInput) => {
-    setNoSelectedPubError(false);
-
     const input = {
       ...formData,
       createdBy: user?.name ?? "",
@@ -55,7 +52,6 @@ const AddPub: React.FC = () => {
         place={place}
         isNotPub={isNotPub}
         isOpen={isFormOpen}
-        noSelectedPubError={noSelectedPubError}
         loading={loading}
         error={error}
         onSubmit={handleFormSubmit}
@@ -68,13 +64,12 @@ export default AddPub;
 
 const Container = styled.div`
   width: 100%;
-  border: 1px solid #ccc;
   background-color: #f9f9f9;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: row;
   justify-content: center;
-  height: calc(100vh - 90px); // account for navbar & search bar height
+  height: calc(100vh - 80px); // account for navbar & search bar height
 `;
 
 interface MapContainerProps {

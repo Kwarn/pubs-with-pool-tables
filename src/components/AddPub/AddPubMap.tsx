@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import styled from "styled-components";
+import SearchBar from "@/components/AddPub/SearchBar";
 
-const center = {
+const center = { // London
   lat: 51.5074,
   lng: -0.1278,
 };
@@ -17,7 +18,8 @@ export interface Place {
 
 const AddPubMap = ({ setPlace }: { setPlace: (place: Place) => void }) => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [google, setGoogle] = useState<any>(null); // TODO: type this
+  const [googleMap, setGoogleMap] = useState<google.maps.Map | null>(null);
 
   useEffect(() => {
     const loader = new Loader({
@@ -28,55 +30,16 @@ const AddPubMap = ({ setPlace }: { setPlace: (place: Place) => void }) => {
     const initializeMap = async () => {
       const google = await loader.load();
       await google.maps.importLibrary("places");
+      setGoogle(google);
 
       if (mapRef.current) {
-        const googleMap = new google.maps.Map(mapRef.current, {
+        const map = new google.maps.Map(mapRef.current, {
           center,
           zoom: 12,
         });
+        setGoogleMap(map);
 
-        const input = searchInputRef.current as HTMLInputElement;
-        const autocomplete = new google.maps.places.Autocomplete(input);
-        autocomplete.bindTo("bounds", googleMap);
-
-        autocomplete.addListener("place_changed", () => {
-          const place = autocomplete.getPlace();
-          if (!place.geometry || !place.geometry.location) {
-            return;
-          }
-
-          googleMap.setCenter(place.geometry.location);
-          googleMap.setZoom(15);
-
-          const lat = place.geometry.location.lat();
-          const lng = place.geometry.location.lng();
-
-          const placeInfo: Place = {
-            name: place.name || "Unknown Place",
-            lat: lat,
-            lng: lng,
-            type: place.types ? place.types[0] : "unknown",
-            address: place.formatted_address || "Unknown Address",
-          };
-
-          setPlace(placeInfo);
-
-          googleMap.data.forEach((feature) => {
-            googleMap.data.remove(feature);
-          });
-
-          const marker = new google.maps.Marker({
-            position: { lat, lng },
-            map: googleMap,
-            title: placeInfo.name,
-          });
-
-          marker.addListener("click", () => {
-            setPlace(placeInfo);
-          });
-        });
-
-        googleMap.addListener(
+        map.addListener(
           "click",
           (event: google.maps.MapMouseEvent | google.maps.IconMouseEvent) => {
             if ((event as google.maps.IconMouseEvent).placeId) {
@@ -86,9 +49,7 @@ const AddPubMap = ({ setPlace }: { setPlace: (place: Place) => void }) => {
                 fields: ["name", "types", "formatted_address", "geometry"],
               };
 
-              const placesService = new google.maps.places.PlacesService(
-                googleMap
-              );
+              const placesService = new google.maps.places.PlacesService(map);
               placesService.getDetails(request, (placeResult, status) => {
                 if (
                   status === google.maps.places.PlacesServiceStatus.OK &&
@@ -116,11 +77,9 @@ const AddPubMap = ({ setPlace }: { setPlace: (place: Place) => void }) => {
 
   return (
     <Container>
-      <SearchInput
-        type="text"
-        ref={searchInputRef}
-        placeholder="Search for a Pub"
-      />
+      {google && googleMap && (
+        <SearchBar google={google} googleMap={googleMap} setPlace={setPlace} />
+      )}
       <MapContainer ref={mapRef} />
     </Container>
   );
@@ -135,13 +94,7 @@ const Container = styled.div`
   width: 100%;
 `;
 
-const SearchInput = styled.input`
-  padding: 0;
-  height: 40px;
-  font-size: 20x;
-`;
-
 const MapContainer = styled.div`
   width: 100%;
-  height: calc(100% - 40px);
+  height: 100%;
 `;
