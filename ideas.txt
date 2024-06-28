@@ -1,4 +1,5 @@
-Comments section - WIP
+
+move add pub search to the pub form - remove name & address.
 user profiles
 rating system
 ranking system for user engagement

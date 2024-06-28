@@ -54,7 +54,7 @@ const AddPub: React.FC = () => {
       <AddPubForm
         place={place}
         isNotPub={isNotPub}
-        isOpen={!isFormOpen}
+        isOpen={isFormOpen}
         noSelectedPubError={noSelectedPubError}
         loading={loading}
         error={error}
@@ -68,14 +68,13 @@ export default AddPub;
 
 const Container = styled.div`
   width: 100%;
-  margin: 0 auto;
   border: 1px solid #ccc;
   background-color: #f9f9f9;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: row;
   justify-content: center;
-  transition: width 0.5s ease;
+  height: calc(100vh - 90px); // account for navbar & search bar height
 `;
 
 interface MapContainerProps {
@@ -83,8 +82,6 @@ interface MapContainerProps {
 }
 
 const MapContainer = styled.div<MapContainerProps>`
-  margin-top: 20px;
-  width: ${(props) => (props.$isFullScreen ? "100vw" : "70vw")};
-  transition: width 0.5s ease;
+  width: 100%;
   height: 100%;
 `;

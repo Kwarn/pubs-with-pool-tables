@@ -286,7 +286,6 @@ const Form = styled.form<FormProps>`
   padding: ${(props) => (props.$isOpen ? "0" : "20px")};
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   opacity: ${(props) => (props.$isOpen ? "0" : "1")};
   pointer-events: ${(props) => (props.$isOpen ? "none" : "auto")};
   transition: opacity 0.5s ease,
@@ -311,15 +310,6 @@ const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
-`;
-
-const Textarea = styled.textarea`
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-  resize: vertical;
-  height: 100px;
 `;
 
 const RadioGroup = styled.div`

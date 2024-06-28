@@ -130,18 +130,18 @@ export default AddPubMap;
 
 const Container = styled.div`
   display: flex;
-  justify-content: center;
   flex-direction: column;
+  height: 100%;
+  width: 100%;
 `;
 
 const SearchInput = styled.input`
-  align-self: center;
-  width: 500px;
-  height: 30px;
-  margin-bottom: 10px;
+  padding: 0;
+  height: 40px;
+  font-size: 20x;
 `;
 
 const MapContainer = styled.div`
   width: 100%;
-  height: calc(100vh - 200px);
+  height: calc(100% - 40px);
 `;
