@@ -30,6 +30,12 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
   });
 
   const [noSelectedPubError, setNoSelectedPubError] = useState<boolean>(false);
+  const [alertFlashing, setAlertFlashing] = useState(false);
+
+  const handleDisabledFieldClick = () => {
+    setAlertFlashing(true);
+    setTimeout(() => setAlertFlashing(false), 500); // Reset flashing after 500ms
+  };
 
   useEffect(() => {
     setFormState((prevState) => ({
@@ -88,17 +94,8 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
         </Alert>
       )}
       {!place && !noSelectedPubError && (
-        <Alert bgColor="#a3eeaf">
+        <Alert bgColor={alertFlashing ? "#52d969" : "#a3eeaf"}>
           <p>Search for a pub or select a pub on the map to start</p>
-        </Alert>
-      )}
-      {place && isNotPub && (
-        <Alert bgColor="#f3cca8">
-          <p>
-            Are you sure this is a pub? Google considers it a {place?.type}. You
-            can still add this venue but it will have to be manually reviewed
-            before others can see it.
-          </p>
         </Alert>
       )}
 
@@ -107,35 +104,48 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
           <p>Please select a pub on the map</p>
         </Alert>
       )}
-      <FormGroup>
-        <Label>Name</Label>
-        <Input
-          type="text"
-          id="name"
-          name="name"
-          value={formState.name}
-          onChange={handleChange}
-          required
-          readOnly
-          hasValue={formState.name.length > 0}
-        />
-      </FormGroup>
-      <FormGroup>
-        <Label>Address</Label>
-        <Input
-          type="text"
-          id="address"
-          name="address"
-          value={formState.address}
-          onChange={handleChange}
-          required
-          readOnly
-          hasValue={formState.address.length > 0}
-        />
-      </FormGroup>
+      {place && (
+        <DisabledInputsContainer bgColor={isNotPub ? "tranparent" : "#a3eeaf"}>
+          <FormGroup onClick={handleDisabledFieldClick}>
+            <DisabledInput
+              type="text"
+              id="name"
+              name="name"
+              value={formState.name}
+              onChange={handleChange}
+              required
+              readOnly
+              hasValue={formState.name.length > 0}
+              fontSize={34}
+            />
+          </FormGroup>
+          <FormGroup onClick={handleDisabledFieldClick}>
+            <DisabledInput
+              type="text"
+              id="address"
+              name="address"
+              value={formState.address}
+              onChange={handleChange}
+              required
+              readOnly
+              hasValue={formState.address.length > 0}
+              fontSize={16}
+            />
+          </FormGroup>
+        </DisabledInputsContainer>
+      )}
+      {place && isNotPub && (
+        <Alert bgColor="#f3cca8">
+          <p>
+            Are you sure this is a pub? Google thinks {"it's"} a {place?.type}.
+            <br /> You can still add this venue but it will have to be manually
+            reviewed before others can see it.
+          </p>
+        </Alert>
+      )}
 
       <FormGroup>
-        <Label>Cue Deposit Required</Label>
+        <Label>is a deposit for the cue required?</Label>
         <ButtonGroup>
           <Button
             type="button"
@@ -165,7 +175,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
       </FormGroup>
 
       <FormGroup>
-        <Label>Jumping Whiteball Allowed</Label>
+        <Label>is jumping the whiteball allowed?</Label>
         <ButtonGroup>
           <Button
             type="button"
@@ -195,7 +205,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
       </FormGroup>
 
       <FormGroup>
-        <Label>Coin On Table Reservation Allowed</Label>
+        <Label>Can you resserve your place in line with a coin?</Label>
         <ButtonGroup>
           <Button
             type="button"
@@ -225,7 +235,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
       </FormGroup>
 
       <FormGroup>
-        <Label>Pre-booking Table Allowed</Label>
+        <Label>Can the tables here be pre-booked?</Label>
         <ButtonGroup>
           <Button
             type="button"
@@ -280,25 +290,41 @@ const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: 15px;
+  margin: 0;
 `;
 
 const Label = styled.label`
-  margin-bottom: 5px;
-  font-weight: bold;
+  margin: 10px 0 5px 0;
+  font-size: 20px;
   color: #333;
 `;
 
-interface InputProps {
-  hasValue: boolean;
+interface DisabledInputsContainerProps {
+  bgColor: string;
 }
-const Input = styled.input<InputProps>`
-  padding: 8px;
-  border: 1px solid #ccc;
+
+const DisabledInputsContainer = styled.div<DisabledInputsContainerProps>`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  background-color: ${(props) => props.bgColor};
   border-radius: 4px;
+`;
+
+interface DisabledInputProps {
+  hasValue: boolean;
+  fontSize: number;
+}
+const DisabledInput = styled.input<DisabledInputProps>`
+  border: none;
+  background-color: transparent;
   font-size: 16px;
   pointer-events: none;
+  margin: 0;
   user-select: none;
   opacity: ${(props) => (props.hasValue ? 0.7 : 0.3)};
+  font-size: ${(props) => `${props.fontSize}px`};
+  text-align: center;
 `;
 
 const ButtonGroup = styled.div`
@@ -334,6 +360,7 @@ const Button = styled.button<{ selected: boolean }>`
 `;
 
 const SubmitButton = styled.button`
+  margin-top: 15px;
   padding: 10px 15px;
   background-color: #2e92ea;
   color: #fff;
@@ -359,8 +386,7 @@ const Alert = styled.div<AlertProps>`
   margin-bottom: 15px;
   border-radius: 4px;
   p {
-    font-size: 20px;
-    text-align: center;
+    font-size: 18px;
     margin: auto;
     align-self: center;
   }

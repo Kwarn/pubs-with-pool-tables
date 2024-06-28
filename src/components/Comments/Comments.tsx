@@ -25,8 +25,8 @@ const Comments: React.FC<PubCommentsProps> = ({ comments, loading }) => {
         <CommentsScrollable>
           {comments.map((comment) => (
             <CommentContainer key={comment.id}>
+              <Author>{comment.author}</Author>
               <CommentText>{comment.text}</CommentText>
-              <Author>- {comment.author}</Author>
             </CommentContainer>
           ))}
           <div ref={commentsEndRef}></div>
@@ -56,13 +56,15 @@ const CommentsScrollable = styled.div`
 `;
 
 const CommentContainer = styled.div`
+  background-color: #f9f9f9;
   border-bottom: 1px solid #ddd;
   padding: 10px 0;
+  margin: 1px 0;
   width: 100%;
 `;
 
 const CommentText = styled.p`
-  margin: 0;
+  margin: 0 0 0 5px;
 `;
 
 const Author = styled.small`
