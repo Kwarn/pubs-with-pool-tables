@@ -282,15 +282,10 @@ interface FormProps {
 }
 
 const Form = styled.form<FormProps>`
-  width: ${(props) => (props.$isOpen ? "0" : "30vw")};
-  padding: ${(props) => (props.$isOpen ? "0" : "20px")};
+  width: 30vw;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  opacity: ${(props) => (props.$isOpen ? "0" : "1")};
-  pointer-events: ${(props) => (props.$isOpen ? "none" : "auto")};
-  transition: opacity 0.5s ease,
-    pointer-events 0s linear ${(props) => (props.$isOpen ? "0.5s" : "0s")},
-    width 0.5s ease;
 `;
 
 const FormGroup = styled.div`
