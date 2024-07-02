@@ -32,6 +32,9 @@ const AddPub: React.FC = () => {
 
     try {
       await createPub({ variables: { input } });
+      await fetch("/api/revalidate-find-pub", {
+        method: "POST",
+      });
     } catch (e: any) {
       console.log(e);
     }

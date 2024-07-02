@@ -84,23 +84,23 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
   return (
     <Form onSubmit={handleSubmit} $isOpen={isOpen}>
       {error && (
-        <Alert bgColor="#f8d7da">
+        <Alert $bgColor="#f8d7da">
           <p>{error?.message || "Something went wrong.."}</p>
         </Alert>
       )}
       {!place && !noSelectedPubError && (
-        <Alert bgColor="#a3eeaf">
+        <Alert $bgColor="#a3eeaf">
           <p>Search for a pub or select a pub on the map to start</p>
         </Alert>
       )}
 
       {noSelectedPubError && (
-        <Alert bgColor="#f8d7da">
+        <Alert $bgColor="#f8d7da">
           <p>Please select a pub on the map</p>
         </Alert>
       )}
       {place && (
-        <DisabledInputsContainer bgColor={isNotPub ? "tranparent" : "#a3eeaf"}>
+        <DisabledInputsContainer $bgColor={isNotPub ? "tranparent" : "#a3eeaf"}>
           <FormGroup>
             <DisabledInput
               type="text"
@@ -110,8 +110,8 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
               onChange={handleChange}
               required
               readOnly
-              hasValue={formState.name.length > 0}
-              fontSize={34}
+              $hasValue={formState.name.length > 0}
+              $fontSize={34}
             />
           </FormGroup>
           <FormGroup>
@@ -123,14 +123,14 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
               onChange={handleChange}
               required
               readOnly
-              hasValue={formState.address.length > 0}
-              fontSize={16}
+              $hasValue={formState.address.length > 0}
+              $fontSize={16}
             />
           </FormGroup>
         </DisabledInputsContainer>
       )}
       {place && isNotPub && (
-        <Alert bgColor="#f3cca8">
+        <Alert $bgColor="#f3cca8">
           <p>
             Are you sure this is a pub? Google thinks {"it's"} a {place?.type}.
             <br /> You can still add this venue but it will have to be manually
@@ -295,20 +295,20 @@ const Label = styled.label`
 `;
 
 interface DisabledInputsContainerProps {
-  bgColor: string;
+  $bgColor: string;
 }
 
 const DisabledInputsContainer = styled.div<DisabledInputsContainerProps>`
   display: flex;
   flex-direction: column;
   margin-bottom: 15px;
-  background-color: ${(props) => props.bgColor};
+  background-color: ${(props) => props.$bgColor};
   border-radius: 4px;
 `;
 
 interface DisabledInputProps {
-  hasValue: boolean;
-  fontSize: number;
+  $hasValue: boolean;
+  $fontSize: number;
 }
 const DisabledInput = styled.input<DisabledInputProps>`
   border: none;
@@ -317,8 +317,8 @@ const DisabledInput = styled.input<DisabledInputProps>`
   pointer-events: none;
   margin: 0;
   user-select: none;
-  opacity: ${(props) => (props.hasValue ? 0.7 : 0.3)};
-  font-size: ${(props) => `${props.fontSize}px`};
+  opacity: ${(props) => (props.$hasValue ? 0.7 : 0.3)};
+  font-size: ${(props) => `${props.$fontSize}px`};
   text-align: center;
 `;
 
@@ -367,12 +367,12 @@ const SubmitButton = styled.button`
 `;
 
 interface AlertProps {
-  bgColor: string;
+  $bgColor: string;
 }
 
 const Alert = styled.div<AlertProps>`
   display: flex;
-  background-color: ${(props) => props.bgColor};
+  background-color: ${(props) => props.$bgColor};
   height: fit-content;
   width: calc(100% - 20px);
   padding: 10px;

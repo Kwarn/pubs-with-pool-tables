@@ -1,15 +1,15 @@
+import { GetStaticProps } from "next";
 import FindPubMap, { Place } from "@/components/FindPub/FindPubMap";
 import PubDetails from "@/components/FindPub/PubDetails";
-import Spinner from "@/components/Spinner";
 import { CREATE_COMMENT_MUTATION } from "@/graphql/mutations";
 import { GET_PUBS } from "@/graphql/queries";
 import { CommentInput, Pub } from "@/types";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
+import client from "@/lib/apolloClient";
 
-const Home = () => {
-  const { data, loading, error, refetch } = useQuery<{ pubs: Pub[] }>(GET_PUBS);
+const Home = ({ pubsData }: { pubsData: Pub[] }) => {
   const [place, setPlace] = useState<Place | null>(null);
   const [selectedPub, setSelectedPub] = useState<Pub | null>(null);
 
@@ -26,39 +26,28 @@ const Home = () => {
     }
   };
 
-  useEffect(() => {
-    refetch();
-  }, []);
-
   // Map the data to the format required by the FindPubMap component
   const pubs = useMemo(
     () =>
-      data?.pubs?.map((pub) => ({
+      pubsData?.map((pub) => ({
         name: pub.name,
         lat: pub.location.lat,
         lng: pub.location.lng,
         type: "pub",
         address: pub.address,
       })) ?? [],
-    [data?.pubs]
+    [pubsData]
   );
 
   useEffect(() => {
     // when a place on the map is clicked this finds and sets the selectedPub for use in PubDetails
-    const matchingPub = data?.pubs.find((pub) => pub.name === place?.name);
+    const matchingPub = pubsData.find((pub) => pub.name === place?.name);
     if (matchingPub) {
       setSelectedPub(matchingPub);
     } else {
       setSelectedPub(null);
     }
-  }, [place]);
-
-  if (loading)
-    return (
-      <SpinnerContainer>
-        <Spinner size="lg" />
-      </SpinnerContainer>
-    );
+  }, [place, pubsData]);
 
   return (
     <Container>
@@ -84,13 +73,18 @@ const Home = () => {
 
 export default Home;
 
-const SpinnerContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100%;
-`;
+export const getStaticProps: GetStaticProps = async () => {
+  const { data } = await client.query({
+    query: GET_PUBS,
+  });
+
+  return {
+    props: {
+      pubsData: data.pubs,
+    },
+    revalidate: 900, // Revalidate every 15 mins
+  };
+};
 
 const Container = styled.div`
   display: flex;
