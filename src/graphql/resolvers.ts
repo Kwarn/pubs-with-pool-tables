@@ -33,7 +33,15 @@ export const resolvers = {
   },
   Mutation: {
     addPub: async (_: undefined, { input }: { input: PubInput }) => {
-      const { name, address, createdBy, location, rules, tables } = input;
+      const {
+        name,
+        address,
+        createdBy,
+        location,
+        rules,
+        tables,
+        isRequiresManualReview,
+      } = input;
 
       const newPub = {
         name: name,
@@ -63,6 +71,7 @@ export const resolvers = {
               })),
             }
           : undefined,
+        isRequiresManualReview,
       };
 
       try {
@@ -78,6 +87,44 @@ export const resolvers = {
       } catch (error) {
         console.error("Error creating pub:", error);
         throw new Error("Failed to create pub");
+      }
+    },
+    deletePub: async (_: undefined, { id }: { id: number }) => {
+      const pubId = Number(id);
+      try {
+        await prisma.comment.deleteMany({
+          where: { pubId },
+        });
+
+        const deletedPub = await prisma.pub.delete({
+          where: { id: pubId },
+        });
+
+        return deletedPub;
+      } catch (error) {
+        console.error("Error deleting pub:", error);
+        throw new Error("Failed to delete pub");
+      }
+    },
+    approvePub: async (_: undefined, { id }: { id: number }) => {
+      try {
+        const updatedPub = await prisma.pub.update({
+          where: { id },
+          data: {
+            isRequiresManualReview: false,
+          },
+          include: {
+            tables: true,
+            location: true,
+            rules: true,
+            comments: true,
+          },
+        });
+
+        return updatedPub;
+      } catch (error) {
+        console.error("Error approving pub:", error);
+        throw new Error("Failed to approve pub");
       }
     },
     addComment: async (_: undefined, { input }: { input: CommentInput }) => {
@@ -96,23 +143,6 @@ export const resolvers = {
       } catch (error) {
         console.error("Error creating comment:", error);
         throw new Error("Failed to create comment");
-      }
-    },
-    deletePub: async (_: undefined, { id }: { id: number }) => {
-      const pubId = Number(id);
-      try {
-        await prisma.comment.deleteMany({
-          where: { pubId },
-        });
-
-        const deletedPub = await prisma.pub.delete({
-          where: { id: pubId },
-        });
-
-        return deletedPub;
-      } catch (error) {
-        console.error("Error deleting pub:", error);
-        throw new Error("Failed to delete pub");
       }
     },
   },

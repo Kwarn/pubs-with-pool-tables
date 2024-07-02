@@ -4,14 +4,14 @@ const prisma = new PrismaClient();
 
 async function main() {
   try {
+    await prisma.comment.deleteMany({});
+    console.log("Deleted comment table data");
     await prisma.table.deleteMany({});
     console.log("Deleted table table data");
     await prisma.pub.deleteMany({});
     console.log("Deleted pub table data");
     await prisma.rules.deleteMany({});
     console.log("Deleted rules table data");
-    await prisma.comment.deleteMany({});
-    console.log("Deleted comment table data");
   } catch (error) {
     console.error("Error executing seed script:", error);
     throw error;
@@ -67,6 +67,7 @@ async function main() {
             },
           ],
         },
+        isRequiresManualReview: true,
       },
       include: {
         tables: true,
@@ -125,6 +126,7 @@ async function main() {
             },
           ],
         },
+        isRequiresManualReview: false,
       },
       include: {
         tables: true,

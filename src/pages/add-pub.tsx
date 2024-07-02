@@ -4,19 +4,15 @@ import AddPubMap, { Place } from "@/components/AddPub/AddPubMap";
 import { useMutation } from "@apollo/client";
 import { CREATE_PUB_MUTATION } from "@/graphql/mutations";
 import { useRouter } from "next/router";
-import { useUserStore } from "@/state/userStore";
 import AddPubForm from "@/components/AddPub/AddPubForm";
 import { PubInput } from "@/types";
 
 const AddPub: React.FC = () => {
   const router = useRouter();
-  const { user } = useUserStore();
   const [place, setPlace] = useState<Place | null>(null);
   const [isNotPub, setIsNotPub] = useState<boolean>(false);
-  const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    if (place) setIsFormOpen(true);
     if (place?.type !== "bar") setIsNotPub(true);
     else setIsNotPub(false);
   }, [place]);
@@ -25,13 +21,8 @@ const AddPub: React.FC = () => {
     useMutation(CREATE_PUB_MUTATION);
 
   const handleFormSubmit = async (formData: PubInput) => {
-    const input = {
-      ...formData,
-      createdBy: user?.name ?? "",
-    };
-
     try {
-      await createPub({ variables: { input } });
+      await createPub({ variables: { input: formData } });
       await fetch("/api/revalidate-find-pub", {
         method: "POST",
       });
@@ -48,13 +39,12 @@ const AddPub: React.FC = () => {
 
   return (
     <Container>
-      <MapContainer $isFullScreen={!isFormOpen}>
+      <MapContainer>
         <AddPubMap setPlace={setPlace} />
       </MapContainer>
       <AddPubForm
         place={place}
         isNotPub={isNotPub}
-        isOpen={isFormOpen}
         loading={loading}
         error={error}
         onSubmit={handleFormSubmit}
@@ -72,7 +62,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  height: calc(100vh - 80px); // account for navbar & search bar height
+  height: calc(100vh - 80px); // account for navbar height
 `;
 
 interface MapContainerProps {

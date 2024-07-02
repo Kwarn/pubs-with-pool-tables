@@ -2,34 +2,34 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Spinner from "@/components/Spinner";
 import { Place } from "./AddPubMap";
+import { PubInput } from "@/types";
+import { useUserStore } from "@/state/userStore";
 
 interface AddPubFormProps {
   place: Place | null;
   isNotPub: boolean;
-  isOpen: boolean;
   loading: boolean;
   error: any;
-  onSubmit: (input: any) => void;
+  onSubmit: (input: PubInput) => void;
 }
 
 const AddPubForm: React.FC<AddPubFormProps> = ({
-  isOpen,
   place,
   isNotPub,
   loading,
   error,
   onSubmit,
 }) => {
+  const { user } = useUserStore();
+
   const [formState, setFormState] = useState({
     name: "",
     address: "",
-    isCueDeposit: "",
-    isJumpingAllowed: "",
-    isPoundOnTable: "",
-    isReservationAllowed: "",
+    isCueDeposit: "Don't Know",
+    isJumpingAllowed: "Don't Know",
+    isPoundOnTable: "Don't Know",
+    isReservationAllowed: "Don't Know",
   });
-
-  const [noSelectedPubError, setNoSelectedPubError] = useState<boolean>(false);
 
   useEffect(() => {
     setFormState((prevState) => ({
@@ -37,7 +37,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
       name: place?.name ?? "",
       address: place?.address ?? "",
     }));
-    setNoSelectedPubError(false);
   }, [place]);
 
   const handleChange = (
@@ -59,11 +58,9 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!place) {
-      setNoSelectedPubError(true);
-      return;
+    if (!user?.name) {
+      return; // TODO: need auth redirect
     }
-    if (!formState.name || !formState.address) return;
 
     onSubmit({
       name: formState.name,
@@ -73,32 +70,29 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
         lng: place?.lng ?? 0,
       },
       rules: {
-        isCueDeposit: formState.isCueDeposit ?? "Don't Know",
-        isJumpingAllowed: formState.isJumpingAllowed ?? "Don't Know",
-        isPoundOnTable: formState.isPoundOnTable ?? "Don't Know",
-        isReservationAllowed: formState.isReservationAllowed ?? "Don't Know",
+        isCueDeposit: formState.isCueDeposit,
+        isJumpingAllowed: formState.isJumpingAllowed,
+        isPoundOnTable: formState.isPoundOnTable,
+        isReservationAllowed: formState.isReservationAllowed
       },
+      isRequiresManualReview: isNotPub,
+      createdBy: user.name,
     });
   };
 
   return (
-    <Form onSubmit={handleSubmit} $isOpen={isOpen}>
+    <Form onSubmit={handleSubmit}>
       {error && (
         <Alert $bgColor="#f8d7da">
           <p>{error?.message || "Something went wrong.."}</p>
         </Alert>
       )}
-      {!place && !noSelectedPubError && (
+      {!place && (
         <Alert $bgColor="#a3eeaf">
           <p>Search for a pub or select a pub on the map to start</p>
         </Alert>
       )}
 
-      {noSelectedPubError && (
-        <Alert $bgColor="#f8d7da">
-          <p>Please select a pub on the map</p>
-        </Alert>
-      )}
       {place && (
         <DisabledInputsContainer $bgColor={isNotPub ? "tranparent" : "#a3eeaf"}>
           <FormGroup>
@@ -271,11 +265,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
 
 export default AddPubForm;
 
-interface FormProps {
-  $isOpen: boolean;
-}
-
-const Form = styled.form<FormProps>`
+const Form = styled.form`
   width: 30vw;
   padding: 20px;
   display: flex;

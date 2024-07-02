@@ -78,9 +78,13 @@ export const getStaticProps: GetStaticProps = async () => {
     query: GET_PUBS,
   });
 
+  const approvedPubs = data.pubs.filter(
+    (pub: Pub) => !pub.isRequiresManualReview
+  );
+
   return {
     props: {
-      pubsData: data.pubs,
+      pubsData: approvedPubs,
     },
     revalidate: 900, // Revalidate every 15 mins
   };

@@ -22,8 +22,8 @@ const NavBar = () => {
           </Link>
         </LinkWrapper>
         {user && (
-          <LinkWrapper $active={router.pathname === "/pubs"}>
-            <Link href="/pubs">Pubs Admin</Link>
+          <LinkWrapper $active={router.pathname === "/pubs-admin"}>
+            <Link href="/pubs-admin">Pubs Admin</Link>
           </LinkWrapper>
         )}
       </Links>

@@ -37,6 +37,7 @@ type Pub {
   comments: [Comment]
   createdBy: String!
   updatedBy: [String]
+  isRequiresManualReview: Boolean!
 }
 
 input PubInput {
@@ -46,6 +47,7 @@ input PubInput {
   rules: RulesInput
   tables: [TableInput]
   createdBy: String!
+  isRequiresManualReview: Boolean!
 }
 
 input MapLocationInput {
@@ -79,9 +81,10 @@ type Query {
 }
 
 type Mutation {
-  addPub(input: PubInput!): Pub
-  addComment(input: CommentInput!): Comment
-  deletePub(id: ID!): Pub
+  addPub(input: PubInput!): Pub!
+  addComment(input: CommentInput!): Comment!
+  deletePub(id: ID!): Pub!
+  approvePub(id: Int!): Pub!
 }
 
 `;

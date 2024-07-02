@@ -8,7 +8,7 @@ export interface Table {
 }
 
 export interface Rules {
-  id: number;
+  id?: number;
   isCueDeposit: string;
   isJumpingAllowed: string;
   isPoundOnTable: string;
@@ -24,7 +24,7 @@ export interface User {
 }
 
 export interface MapLocation {
-  id: number;
+  id?: number;
   lat: number;
   lng: number;
   pubs?: Pub[];
@@ -51,6 +51,7 @@ export interface Pub {
   createdBy: string;
   updatedBy?: User[];
   userId: number;
+  isRequiresManualReview: boolean;
 }
 
 export interface PubInput {
@@ -60,6 +61,7 @@ export interface PubInput {
   rules: Rules;
   tables?: Table[];
   createdBy: string;
+  isRequiresManualReview: boolean;
 }
 
 export interface CommentInput {

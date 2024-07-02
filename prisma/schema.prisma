@@ -35,17 +35,18 @@ model Table {
 }
 
 model Pub {
-  id          Int         @id @default(autoincrement())
-  name        String
-  address     String
-  locationId  Int
-  location    MapLocation @relation(fields: [locationId], references: [id])
-  rulesId     Int
-  rules       Rules       @relation(fields: [rulesId], references: [id])
-  tables      Table[]
-  comments    Comment[]
-  createdBy   String
-  updatedBy   String[]
+  id                   Int         @id @default(autoincrement())
+  name                 String
+  address              String
+  locationId           Int
+  location             MapLocation @relation(fields: [locationId], references: [id])
+  rulesId              Int
+  rules                Rules       @relation(fields: [rulesId], references: [id])
+  tables               Table[]
+  comments             Comment[]
+  createdBy            String
+  updatedBy            String[]
+  isRequiresManualReview Boolean @default(false)
 }
 
 model Comment {

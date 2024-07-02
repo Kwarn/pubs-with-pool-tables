@@ -24,6 +24,7 @@ export const GET_PUBS = gql`
         isPoundOnTable
         isReservationAllowed
       }
+      isRequiresManualReview
     }
   }
 `;
