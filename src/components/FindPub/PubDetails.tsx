@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Pub, CommentInput, Comment } from "@/types";
 import { GET_PUB_COMMENTS } from "@/graphql/queries";
 import { useQuery } from "@apollo/client";
 import { useUserStore } from "@/state/userStore";
-import Spinner from "../Spinner";
-import PubComments from "../Comments/Comments";
+import Comments from "../Comments/Comments";
+import CommentsForm from "@/components/Comments/CommentsForm";
 
 interface PubDetailsProps {
   pub: Pub;
@@ -19,7 +19,6 @@ const PubDetails: React.FC<PubDetailsProps> = ({
   newComment,
 }) => {
   const { user } = useUserStore();
-  const [commentText, setCommentText] = useState("");
 
   const [comments, setComments] = useState<Comment[]>([]);
 
@@ -30,17 +29,14 @@ const PubDetails: React.FC<PubDetailsProps> = ({
     }
   );
 
-  const handleCommentSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (commentText) {
-      onAddComment({
-        text: commentText,
-        author: user?.name || "unknown",
-        pubId: pub.id,
-      });
-      setCommentText("");
-    }
+  const handleCommentSubmit = (text: string) => {
+    onAddComment({
+      text,
+      author: user?.name ?? "unknown",
+      pubId: pub.id,
+    });
   };
+
   useEffect(() => {
     if (data?.comments) {
       setComments(data.comments);
@@ -96,15 +92,8 @@ const PubDetails: React.FC<PubDetailsProps> = ({
         )}
       </Details>
       <CommentsSection>
-        <PubComments comments={comments || []} loading={loading} />
-        <CommentForm onSubmit={handleCommentSubmit}>
-          <Textarea
-            placeholder="Your Comment"
-            value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
-          />
-          <Button type="submit">Submit</Button>
-        </CommentForm>
+        <Comments comments={comments || []} loading={loading} />
+        <CommentsForm onSubmit={handleCommentSubmit} />
       </CommentsSection>
     </Container>
   );
@@ -170,36 +159,6 @@ const CommentsSection = styled.div`
   height: 100%;
   flex-direction: column;
   justify-content: space-between;
-`;
-
-const CommentForm = styled.form`
-  display: flex;
-  flex-direction: row;
-  margin: 10px 0;
-`;
-
-const Textarea = styled.textarea`
-  height: 40px;
-  width: 100%;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  resize: none;
-`;
-
-const Button = styled.button`
-  height: 100%;
-  padding: 10px;
-  margin-left: 10px;
-  background-color: #0070f3;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  margin-bottom: 0;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #005bb5;
-  }
 `;
 
 export default PubDetails;
