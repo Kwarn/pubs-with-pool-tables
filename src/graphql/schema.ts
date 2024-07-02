@@ -81,6 +81,7 @@ type Query {
 type Mutation {
   addPub(input: PubInput!): Pub
   addComment(input: CommentInput!): Comment
+  deletePub(id: ID!): Pub
 }
 
 `;

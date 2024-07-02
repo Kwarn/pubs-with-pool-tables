@@ -40,3 +40,11 @@ export const CREATE_COMMENT_MUTATION = gql`
     }
   }
 `;
+
+export const DELETE_PUB_MUTATION = gql`
+  mutation DeletePub($id: ID!) {
+    deletePub(id: $id) {
+      id
+    }
+  }
+`;

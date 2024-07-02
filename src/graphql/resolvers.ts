@@ -33,8 +33,7 @@ export const resolvers = {
   },
   Mutation: {
     addPub: async (_: undefined, { input }: { input: PubInput }) => {
-      const { name, address, createdBy, location, rules, tables } =
-        input;
+      const { name, address, createdBy, location, rules, tables } = input;
 
       const newPub = {
         name: name,
@@ -97,6 +96,23 @@ export const resolvers = {
       } catch (error) {
         console.error("Error creating comment:", error);
         throw new Error("Failed to create comment");
+      }
+    },
+    deletePub: async (_: undefined, { id }: { id: number }) => {
+      const pubId = Number(id);
+      try {
+        await prisma.comment.deleteMany({
+          where: { pubId },
+        });
+
+        const deletedPub = await prisma.pub.delete({
+          where: { id: pubId },
+        });
+
+        return deletedPub;
+      } catch (error) {
+        console.error("Error deleting pub:", error);
+        throw new Error("Failed to delete pub");
       }
     },
   },
