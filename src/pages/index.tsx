@@ -7,7 +7,7 @@ import { CommentInput, Pub } from "@/types";
 import { useMutation } from "@apollo/client";
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { addApolloState, initializeApollo } from "@/lib/apolloClient";
+import prisma from "@/lib/prisma";
 
 const Home = ({ pubsData }: { pubsData: Pub[] }) => {
   const [place, setPlace] = useState<Place | null>(null);
@@ -74,22 +74,20 @@ const Home = ({ pubsData }: { pubsData: Pub[] }) => {
 export default Home;
 
 export const getStaticProps: GetStaticProps = async () => {
-  const apolloClient = initializeApollo();
-
-  const { data } = await apolloClient.query({
-    query: GET_PUBS,
+  const pubsData = await prisma.pub.findMany({
+    include: {
+      location: true, // Assuming location is a related model
+    },
   });
 
-  const approvedPubs = data.pubs.filter(
-    (pub: Pub) => !pub.isRequiresManualReview
-  );
+  const approvedPubs = pubsData.filter((pub) => !pub.isRequiresManualReview);
 
-  return addApolloState(apolloClient, {
+  return {
     props: {
       pubsData: approvedPubs,
     },
     revalidate: 900, // Revalidate every 15 mins
-  });
+  };
 };
 
 const Container = styled.div`

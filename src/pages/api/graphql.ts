@@ -1,14 +1,14 @@
 import { ApolloServer } from "apollo-server-micro";
-import { typeDefs } from "../../graphql/schema";
-import { resolvers } from "../../graphql/resolvers";
 import Cors from "cors";
 import { NextApiRequest, NextApiResponse } from "next";
+import { typeDefs } from "../../graphql/schema";
+import { resolvers } from "../../graphql/resolvers";
 
 const getOrigin = () => {
   if (process.env.NODE_ENV === "development") {
     return "http://localhost:3000";
   } else {
-    return "https://pubs-with-pool-tables.vercel.app/";
+    return "https://pubs-with-pool-tables.vercel.app";
   }
 };
 
@@ -34,7 +34,11 @@ function runMiddleware(
   });
 }
 
-const apolloServer = new ApolloServer({ typeDefs, resolvers });
+const apolloServer = new ApolloServer({
+  typeDefs,
+  resolvers,
+  persistedQueries: false, // Todo: resolve this for future use - quick fix for 'Persisted queries are enabled and are using an unbounded cache. Your server is vulnerable to denial of service attacks via memory exhaustion.'
+});
 
 const startServer = apolloServer.start();
 
@@ -48,13 +52,18 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  await runMiddleware(req, res, cors);
+  try {
+    await runMiddleware(req, res, cors);
 
-  if (req.method === "OPTIONS") {
-    res.end(); // Handle OPTIONS request
-    return;
+    if (req.method === "OPTIONS") {
+      res.end(); // Handle OPTIONS request
+      return;
+    }
+
+    await startServer;
+    await apolloServer.createHandler({ path: "/api/graphql" })(req, res);
+  } catch (error) {
+    console.error("Error in API handler:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
-
-  await startServer;
-  await apolloServer.createHandler({ path: "/api/graphql" })(req, res);
 }

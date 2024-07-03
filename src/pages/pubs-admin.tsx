@@ -5,8 +5,6 @@ import { useQuery, useMutation } from "@apollo/client";
 import { GET_PUBS } from "@/graphql/queries";
 import { APPROVE_PUB_MUTATION, DELETE_PUB_MUTATION } from "@/graphql/mutations";
 import Spinner from "@/components/Spinner";
-import { GetServerSideProps } from "next";
-import { initializeApollo, addApolloState } from "@/lib/apolloClient";
 
 const Pubs: React.FC = () => {
   const { data, loading, error, refetch } = useQuery<{ pubs: Pub[] }>(GET_PUBS);
@@ -148,18 +146,6 @@ const Pubs: React.FC = () => {
       </Table>
     </Container>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  const apolloClient = initializeApollo();
-
-  await apolloClient.query({
-    query: GET_PUBS,
-  });
-
-  return addApolloState(apolloClient, {
-    props: {},
-  });
 };
 
 export default Pubs;
