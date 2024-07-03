@@ -61,19 +61,20 @@ const PubDetails: React.FC<PubDetailsProps> = ({
         <Block>
           <Rules>
             <Info>
-              <strong>Cue Deposit Required:</strong> {pub.rules.isCueDeposit}
+              <strong>Cue Deposit Required:</strong>{" "}
+              {pub?.rules?.isCueDeposit || "unknown"}
             </Info>
             <Info>
               <strong>Pre-booking Table Allowed:</strong>
-              {pub.rules.isReservationAllowed}
+              {pub?.rules?.isReservationAllowed || "unknown"}
             </Info>
             <Info>
               <strong>Jumping Whiteball Allowed:</strong>
-              {pub.rules.isJumpingAllowed}
+              {pub?.rules?.isJumpingAllowed || "unknown"}
             </Info>
             <Info>
               <strong>Coin On Table Reservation Allowed:</strong>
-              {pub.rules.isPoundOnTable}
+              {pub?.rules?.isPoundOnTable || "unknown"}
             </Info>
           </Rules>
         </Block>
@@ -81,7 +82,7 @@ const PubDetails: React.FC<PubDetailsProps> = ({
           <Info>
             <strong>Tables:</strong>
             <ul>
-              {pub.tables.map((table) => (
+              {pub?.tables?.map((table) => (
                 <li key={table.id}>
                   Size: {table.size}, Quality: {table.quality}, Cost:{" "}
                   {table.cost}
