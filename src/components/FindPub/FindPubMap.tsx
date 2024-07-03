@@ -96,9 +96,11 @@ interface ContainerProps {
 
 const Container = styled.div<ContainerProps>`
   width: 100%;
-  height: ${(props) =>
-    props.$isMinimized ? "calc(100% - 284px)" : `100%`};
+  height: ${(props) => (props.$isMinimized ? "calc(100% - 284px)" : `100%`)};
   transition: height 0.4s ease-in-out;
+  @media (max-width: 768px) {
+    height: ${(props) => (props.$isMinimized ? "22vh" : `100%`)}; // TODO: review this
+  }
 `;
 
 const MapComponent = styled.div`

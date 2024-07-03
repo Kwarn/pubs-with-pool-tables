@@ -73,7 +73,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
         isCueDeposit: formState.isCueDeposit,
         isJumpingAllowed: formState.isJumpingAllowed,
         isPoundOnTable: formState.isPoundOnTable,
-        isReservationAllowed: formState.isReservationAllowed
+        isReservationAllowed: formState.isReservationAllowed,
       },
       isRequiresManualReview: isNotPub,
       createdBy: user.name,
@@ -270,6 +270,12 @@ const Form = styled.form`
   padding: 20px;
   display: flex;
   flex-direction: column;
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 30vh;
+    transition: height 0.3s ease;
+    padding: 0;
+  }
 `;
 
 const FormGroup = styled.div`
@@ -277,6 +283,9 @@ const FormGroup = styled.div`
   flex-direction: column;
   margin-bottom: 15px;
   margin: 0;
+  @media (max-width: 768px) {
+    margin: 0 10px;
+  }
 `;
 
 const Label = styled.label`

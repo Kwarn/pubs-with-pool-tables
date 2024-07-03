@@ -42,6 +42,7 @@ const AddPub: React.FC = () => {
       <MapContainer>
         <AddPubMap setPlace={setPlace} />
       </MapContainer>
+
       <AddPubForm
         place={place}
         isNotPub={isNotPub}
@@ -63,6 +64,9 @@ const Container = styled.div`
   flex-direction: row;
   justify-content: center;
   height: calc(100vh - 80px); // account for navbar height
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 interface MapContainerProps {

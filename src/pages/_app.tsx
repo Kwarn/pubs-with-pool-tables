@@ -1,3 +1,5 @@
+import "normalize.css";
+import "@/styles/globals.css";
 import { AppProps } from "next/app";
 import { ApolloProvider } from "@apollo/client";
 import { ThemeProvider } from "styled-components";

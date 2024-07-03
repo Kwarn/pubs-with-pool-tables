@@ -58,26 +58,24 @@ const PubDetails: React.FC<PubDetailsProps> = ({
           <strong>Added By:</strong> {pub.createdBy ?? "Unknown"}
         </AddedBy>
         <Divider />
-        <Block>
-          <Rules>
-            <Info>
-              <strong>Cue Deposit Required:</strong>{" "}
-              {pub?.rules?.isCueDeposit || "unknown"}
-            </Info>
-            <Info>
-              <strong>Pre-booking Table Allowed:</strong>
-              {pub?.rules?.isReservationAllowed || "unknown"}
-            </Info>
-            <Info>
-              <strong>Jumping Whiteball Allowed:</strong>
-              {pub?.rules?.isJumpingAllowed || "unknown"}
-            </Info>
-            <Info>
-              <strong>Coin On Table Reservation Allowed:</strong>
-              {pub?.rules?.isPoundOnTable || "unknown"}
-            </Info>
-          </Rules>
-        </Block>
+        <Rules>
+          <Info>
+            <strong>Cue Deposit Required:</strong>{" "}
+            {pub?.rules?.isCueDeposit || "unknown"}
+          </Info>
+          <Info>
+            <strong>Pre-booking Table Allowed:</strong>
+            {pub?.rules?.isReservationAllowed || "unknown"}
+          </Info>
+          <Info>
+            <strong>Jumping Whiteball Allowed:</strong>
+            {pub?.rules?.isJumpingAllowed || "unknown"}
+          </Info>
+          <Info>
+            <strong>Coin On Table Reservation Allowed:</strong>
+            {pub?.rules?.isPoundOnTable || "unknown"}
+          </Info>
+        </Rules>
         {pub.tables && pub.tables.length > 0 && (
           <Info>
             <strong>Tables:</strong>
@@ -103,15 +101,22 @@ const PubDetails: React.FC<PubDetailsProps> = ({
 const Container = styled.div`
   display: flex;
   height: 100%;
-  justify-content: space-between;
   border: 1px solid #ccc;
+  justify-content: space-between;
   border-radius: 5px;
   margin-bottom: 20px;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 0 1rem;
+  }
 `;
 
 const Details = styled.div`
   width: 100%;
   padding: 0 20px;
+  @media (max-width: 768px) {
+    padding: 0;
+  }
 `;
 
 const Divider = styled.hr`
@@ -122,6 +127,9 @@ const Divider = styled.hr`
 const Name = styled.h1`
   text-align: center;
   margin-bottom: 10px;
+  @media (max-width: 768px) {
+    margin-top: 4rem;
+  }
 `;
 
 const Address = styled.p`
@@ -132,6 +140,10 @@ const Address = styled.p`
 const AddedBy = styled.p`
   position: absolute;
   top: 80px;
+  @media (max-width: 768px) {
+    top: 0px;
+    font-size: 14px;
+  }
 `;
 
 const Info = styled.div`
@@ -140,12 +152,6 @@ const Info = styled.div`
   strong {
     margin-right: 5px;
   }
-`;
-
-const Block = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
 `;
 
 const Rules = styled.div`
@@ -159,7 +165,11 @@ const CommentsSection = styled.div`
   display: flex;
   height: 100%;
   flex-direction: column;
-  justify-content: space-between;
+  margin-bottom: 10px;
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 30%;
+  }
 `;
 
 export default PubDetails;

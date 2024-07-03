@@ -1,13 +1,25 @@
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import FindPubMap, { Place } from "@/components/FindPub/FindPubMap";
 import PubDetails from "@/components/FindPub/PubDetails";
 import { CREATE_COMMENT_MUTATION } from "@/graphql/mutations";
-import { GET_PUBS } from "@/graphql/queries";
 import { CommentInput, Pub } from "@/types";
 import { useMutation } from "@apollo/client";
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import prisma from "@/lib/prisma";
+
+const fetchPubs = async () => {
+  const pubsData = await prisma.pub.findMany({
+    include: {
+      location: true,
+      rules: true,
+      tables: true,
+    },
+  });
+
+  const approvedPubs = pubsData.filter((pub) => !pub.isRequiresManualReview);
+  return approvedPubs;
+};
 
 const Home = ({ pubsData }: { pubsData: Pub[] }) => {
   const [place, setPlace] = useState<Place | null>(null);
@@ -73,20 +85,13 @@ const Home = ({ pubsData }: { pubsData: Pub[] }) => {
 
 export default Home;
 
-export const getStaticProps: GetStaticProps = async () => {
-  const pubsData = await prisma.pub.findMany({
-    include: {
-      location: true, // Assuming location is a related model
-    },
-  });
-
-  const approvedPubs = pubsData.filter((pub) => !pub.isRequiresManualReview);
+export const getServerSideProps: GetServerSideProps = async () => {
+  const pubs = await fetchPubs();
 
   return {
     props: {
-      pubsData: approvedPubs,
+      pubsData: pubs,
     },
-    revalidate: 900, // Revalidate every 15 mins
   };
 };
 
@@ -112,4 +117,9 @@ const PubDetailsContainer = styled.div<PubDetailsProps>`
   z-index: 1000;
   height: 30vh;
   max-height: 30vh;
+
+  @media (max-width: 768px) {
+    height: 70vh;
+    max-height: 70vh;
+  }
 `;

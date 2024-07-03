@@ -105,17 +105,27 @@ const SearchBar: React.FC<SearchBarProps> = ({
 export default SearchBar;
 
 const SearchContainer = styled.div`
+  z-index: 2;
   position: absolute;
-  right: calc(50% - 100px);
+  left: calc(50% - 400px);
   top: 10vh;
-  z-index: 1000;
+  width: 30vw;
+  border: 10px solid #ccc;
+  padding: 0;
+  margin: 0;
+  @media (max-width: 768px) {
+    width: 80vw;
+    top: 14vh;
+    left: calc(50% - 40vw - 20px);
+  }
 `;
 
 const SearchInput = styled.input`
-  padding: 0 20px;
+  padding: 0;
+  margin: 0;
   height: 40px;
   font-size: 20px;
-  width: 400px;
+  width: 100%;
 `;
 
 const ClearButton = styled.button`
@@ -127,4 +137,7 @@ const ClearButton = styled.button`
   border: none;
   cursor: pointer;
   color: #999;
+  @media (max-width: 768px) {
+    right: -30px;
+  }
 `;

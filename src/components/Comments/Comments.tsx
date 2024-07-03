@@ -41,16 +41,19 @@ const Comments: React.FC<PubCommentsProps> = ({ comments, loading }) => {
 const CommentsList = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   width: 100%;
-  max-height: 240px;
-  height: 100%;
+  height: 14rem;
+  @media (max-width: 768px) {
+    margin-bottom: 0;
+    height: 10rem;
+  }
 `;
 
 const CommentsScrollable = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  flex-grow: 1;
+  justify-content: flex-start;
   overflow-y: auto;
   width: 100%;
 `;
@@ -79,6 +82,9 @@ const NoComments = styled.p`
   height: 100%;
   text-align: center;
   margin: 0;
+  @media (max-width: 768px) {
+    height: 20%;
+  }
 `;
 
 export default Comments;

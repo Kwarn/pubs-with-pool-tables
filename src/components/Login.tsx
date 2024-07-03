@@ -3,20 +3,6 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import React, { useEffect } from "react";
 import styled from "styled-components";
 
-const NavLink = styled.a`
-  color: #fff;
-  text-decoration: none;
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
-const LoginContainer = styled.div`
-  align-items: center;
-  padding: 0;
-  margin: 0 5px 0 0;
-`;
-
 const Login = () => {
   const { updateUser, updateLastRoute } = useUserStore();
   const { user, error, isLoading } = useUser();
@@ -34,22 +20,55 @@ const Login = () => {
   return (
     <LoginContainer>
       {user ? (
-        <>
+        <LinkWrapper>
           <NavLink
             onClick={() => updateLastRoute("/add-pub")}
             href="/api/auth/logout"
           >
             Logout
           </NavLink>
-          <span style={{ color: "#fff", marginLeft: "1rem" }}>
-            Welcome, {user.name}!
-          </span>
-        </>
+        </LinkWrapper>
       ) : (
-        <NavLink href="/api/auth/login">Login</NavLink>
+        <LinkWrapper>
+          <NavLink href="/api/auth/login">Login</NavLink>
+        </LinkWrapper>
       )}
     </LoginContainer>
   );
 };
 
 export default Login;
+
+const NavLink = styled.a`
+  color: #fff;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const LinkWrapper = styled.div<{ $active?: boolean }>`
+  margin-left: 1rem;
+  width: fit-content;
+
+  a {
+    width: fit-content;
+    color: ${(props) => (props.$active ? "#fff" : "#ccc")};
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    margin: 1rem 0;
+  }
+`;
+
+const LoginContainer = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin: 0 5px 0 0;
+`;
