@@ -7,7 +7,7 @@ import { CommentInput, Pub } from "@/types";
 import { useMutation } from "@apollo/client";
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import client from "@/lib/apolloClient";
+import { addApolloState, initializeApollo } from "@/lib/apolloClient";
 
 const Home = ({ pubsData }: { pubsData: Pub[] }) => {
   const [place, setPlace] = useState<Place | null>(null);
@@ -74,7 +74,9 @@ const Home = ({ pubsData }: { pubsData: Pub[] }) => {
 export default Home;
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { data } = await client.query({
+  const apolloClient = initializeApollo();
+
+  const { data } = await apolloClient.query({
     query: GET_PUBS,
   });
 
@@ -82,12 +84,12 @@ export const getStaticProps: GetStaticProps = async () => {
     (pub: Pub) => !pub.isRequiresManualReview
   );
 
-  return {
+  return addApolloState(apolloClient, {
     props: {
       pubsData: approvedPubs,
     },
     revalidate: 900, // Revalidate every 15 mins
-  };
+  });
 };
 
 const Container = styled.div`

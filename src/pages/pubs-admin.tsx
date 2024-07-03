@@ -1,13 +1,16 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Pub } from "@/types";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_PUBS } from "@/graphql/queries";
 import { APPROVE_PUB_MUTATION, DELETE_PUB_MUTATION } from "@/graphql/mutations";
 import Spinner from "@/components/Spinner";
+import { GetServerSideProps } from "next";
+import { initializeApollo, addApolloState } from "@/lib/apolloClient";
 
 const Pubs: React.FC = () => {
   const { data, loading, error, refetch } = useQuery<{ pubs: Pub[] }>(GET_PUBS);
+
   const [deletePub] = useMutation(DELETE_PUB_MUTATION);
   const [approvePub] = useMutation(APPROVE_PUB_MUTATION);
 
@@ -15,10 +18,6 @@ const Pubs: React.FC = () => {
     (pub) => pub.isRequiresManualReview
   );
   const approvedPubs = data?.pubs.filter((pub) => !pub.isRequiresManualReview);
-
-  useEffect(() => {
-    refetch();
-  }, []);
 
   const handleDelete = async (id: number) => {
     try {
@@ -36,6 +35,7 @@ const Pubs: React.FC = () => {
           });
         },
       });
+      refetch();
     } catch (error) {
       console.error("Error deleting pub:", error);
     }
@@ -63,6 +63,7 @@ const Pubs: React.FC = () => {
           });
         },
       });
+      refetch();
     } catch (error) {
       console.error("Error approving pub:", error);
     }
@@ -79,36 +80,43 @@ const Pubs: React.FC = () => {
 
   return (
     <Container>
-      <TableTitle>REVIEW REQUIRED</TableTitle>
-      <Table>
-        <thead>
-          <tr>
-            <Th style={{ width: "20%" }}>Name</Th>
-            <Th style={{ width: "10%" }}>Address</Th>
-            <Th style={{ width: "10%" }}>Cue Deposit</Th>
-            <Th style={{ width: "10%" }}>Jumping Allowed</Th>
-            <Th style={{ width: "10%" }}>Pound On Table</Th>
-            <Th style={{ width: "10%" }}>Reservation Allowed</Th>
-            <Th style={{ width: "20%" }}>Actions</Th>
-          </tr>
-        </thead>
-        <tbody>
-          {reviewRequiredPubs?.map((pub) => (
-            <tr key={pub.id}>
-              <Td>{pub.name}</Td>
-              <Td>{pub.address}</Td>
-              <Td>{pub.rules.isCueDeposit}</Td>
-              <Td>{pub.rules.isJumpingAllowed}</Td>
-              <Td>{pub.rules.isPoundOnTable}</Td>
-              <Td>{pub.rules.isReservationAllowed}</Td>
-              <ActionTd>
-                <Button onClick={() => handleDelete(pub.id)}>Delete</Button>
-                <Button onClick={() => handleApprove(pub.id)}>Approve</Button>
-              </ActionTd>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      {reviewRequiredPubs && reviewRequiredPubs.length > 0 && (
+        <>
+          <TableTitle>REVIEW REQUIRED</TableTitle>
+          <Table>
+            <thead>
+              <tr>
+                <Th style={{ width: "20%" }}>Name</Th>
+                <Th style={{ width: "10%" }}>Address</Th>
+                <Th style={{ width: "10%" }}>Cue Deposit</Th>
+                <Th style={{ width: "10%" }}>Jumping Allowed</Th>
+                <Th style={{ width: "10%" }}>Pound On Table</Th>
+                <Th style={{ width: "10%" }}>Reservation Allowed</Th>
+                <Th style={{ width: "20%" }}>Actions</Th>
+              </tr>
+            </thead>
+            <tbody>
+              {reviewRequiredPubs.map((pub) => (
+                <tr key={pub.id}>
+                  <Td>{pub.name}</Td>
+                  <Td>{pub.address}</Td>
+                  <Td>{pub.rules.isCueDeposit}</Td>
+                  <Td>{pub.rules.isJumpingAllowed}</Td>
+                  <Td>{pub.rules.isPoundOnTable}</Td>
+                  <Td>{pub.rules.isReservationAllowed}</Td>
+                  <ActionTd>
+                    <Button onClick={() => handleDelete(pub.id)}>Delete</Button>
+                    <Button onClick={() => handleApprove(pub.id)}>
+                      Approve
+                    </Button>
+                  </ActionTd>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </>
+      )}
+
       <TableTitle>APPROVED</TableTitle>
       <Table>
         <thead>
@@ -133,7 +141,6 @@ const Pubs: React.FC = () => {
               <Td>{pub.rules.isReservationAllowed}</Td>
               <ActionTd>
                 <Button onClick={() => handleDelete(pub.id)}>Delete</Button>
-                {/* Add an edit button here */}
               </ActionTd>
             </tr>
           ))}
@@ -141,6 +148,18 @@ const Pubs: React.FC = () => {
       </Table>
     </Container>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const apolloClient = initializeApollo();
+
+  await apolloClient.query({
+    query: GET_PUBS,
+  });
+
+  return addApolloState(apolloClient, {
+    props: {},
+  });
 };
 
 export default Pubs;

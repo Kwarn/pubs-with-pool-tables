@@ -1,6 +1,5 @@
 import prisma from "@/lib/prisma";
-import { CommentInput, PubInput } from "@/types";
-import { Table } from "@prisma/client";
+import { CommentInput, PubInput, Table } from "@/types";
 
 export const resolvers = {
   Query: {
