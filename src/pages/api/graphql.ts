@@ -4,8 +4,16 @@ import { resolvers } from "../../graphql/resolvers";
 import Cors from "cors";
 import { NextApiRequest, NextApiResponse } from "next";
 
+const getOrigin = () => {
+  if (process.env.NODE_ENV === "development") {
+    return "http://localhost:3000";
+  } else {
+    return "https://pubs-with-pool-tables.vercel.app/";
+  }
+};
+
 const cors = Cors({
-  origin: "http://localhost:3000",
+  origin: getOrigin(),
   methods: ["POST", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
