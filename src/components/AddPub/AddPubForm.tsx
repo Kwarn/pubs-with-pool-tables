@@ -94,36 +94,14 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
       )}
 
       {place && (
-        <DisabledInputsContainer
-          $bgColor={isNotPub ? "#f8d7da" : "transparent"}
-        >
+        <PlaceContainer>
           <FormGroup>
-            <DisabledInput
-              type="text"
-              id="name"
-              name="name"
-              value={formState.name}
-              onChange={handleChange}
-              required
-              readOnly
-              $hasValue={formState.name.length > 0}
-              $fontSize={34}
-            />
+            <PlaceTitle>{formState.name}</PlaceTitle>
           </FormGroup>
           <FormGroup>
-            <DisabledInput
-              type="text"
-              id="address"
-              name="address"
-              value={formState.address}
-              onChange={handleChange}
-              required
-              readOnly
-              $hasValue={formState.address.length > 0}
-              $fontSize={16}
-            />
+            <PlaceAddress>{formState.address}</PlaceAddress>
           </FormGroup>
-        </DisabledInputsContainer>
+        </PlaceContainer>
       )}
       {place && isNotPub && (
         <Alert $bgColor="#f3cca8">
@@ -197,7 +175,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
       </FormGroup>
 
       <FormGroup>
-        <Label>Can you resserve your place in line with a coin?</Label>
+        <Label>Can you hold a place in queue with a coin?</Label>
         <ButtonGroup>
           <Button
             type="button"
@@ -285,40 +263,30 @@ const FormGroup = styled.div`
 `;
 
 const Label = styled.label`
+  color: white;
   margin: 10px 0 5px 0;
   font-size: 20px;
-  color: #333;
   @media (max-width: 768px) {
     margin: 5px 0;
   }
 `;
 
-// TODO: do we need this to be an input anymore? It could be a heading
-interface DisabledInputsContainerProps {
-  $bgColor: string;
-}
-
-const DisabledInputsContainer = styled.div<DisabledInputsContainerProps>`
+const PlaceContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 15px;
-  background-color: ${(props) => props.$bgColor};
+  margin: 10px;
   border-radius: 4px;
+  color: white;
 `;
 
-interface DisabledInputProps {
-  $hasValue: boolean;
-  $fontSize: number;
-}
-const DisabledInput = styled.input<DisabledInputProps>`
-  border: none;
-  background-color: transparent;
+const PlaceTitle = styled.h2`
+  font-family: "Neat Chalk", sans-serif;
   font-size: 16px;
-  pointer-events: none;
-  margin: 0;
-  user-select: none;
-  opacity: ${(props) => (props.$hasValue ? 0.7 : 0.3)};
-  font-size: ${(props) => `${props.$fontSize}px`};
+  margin: 20px 0 0 0;
+  text-align: center;
+`;
+
+const PlaceAddress = styled.p`
   text-align: center;
 `;
 
@@ -361,7 +329,7 @@ const Button = styled.button<{ $selected: boolean }>`
 `;
 
 const SubmitButton = styled.button`
-  margin-top: 15px;
+  margin: 15px 10px 0px 10px;
   padding: 10px 15px;
   background-color: #2e92ea;
   color: #fff;
@@ -377,6 +345,7 @@ interface AlertProps {
 }
 
 const Alert = styled.div<AlertProps>`
+  text-align: center;
   display: flex;
   background-color: ${(props) => props.$bgColor};
   height: fit-content;
@@ -384,7 +353,6 @@ const Alert = styled.div<AlertProps>`
   margin: 0 10px;
   align-items: center;
   justify-content: center;
-  margin-bottom: 15px;
   border-radius: 4px;
   p {
     font-size: 18px;

@@ -64,13 +64,14 @@ const Container = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  height: calc(100vh - 80px); // account for navbar height
+  height: calc(100vh - 72px); // account for navbar height
   @media (max-width: 768px) {
     flex-direction: column;
   }
 `;
 
 const AddPubFormContainer = styled.div<{ $isOpen: boolean }>`
+  background-color: #294b2b;
   width: ${({ $isOpen }) => ($isOpen ? "30vw" : "0")};
   transition: width 0.3s ease-in-out;
   height: 100%;
