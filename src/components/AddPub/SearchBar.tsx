@@ -110,11 +110,11 @@ const SearchContainer = styled.div`
   left: calc(50% - 400px);
   top: 10vh;
   width: 30vw;
-  border: 10px solid #ccc;
+  border: 4px solid white;
   padding: 0;
   margin: 0;
   @media (max-width: 768px) {
-    width: 80vw;
+    width: 85vw;
     top: 14vh;
     left: calc(50% - 40vw - 20px);
   }

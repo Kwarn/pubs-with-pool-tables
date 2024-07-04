@@ -3,7 +3,8 @@ import { Loader } from "@googlemaps/js-api-loader";
 import styled from "styled-components";
 import SearchBar from "@/components/AddPub/SearchBar";
 
-const center = { // London
+const center = {
+  // London
   lat: 51.5074,
   lng: -0.1278,
 };
@@ -16,7 +17,13 @@ export interface Place {
   address: string;
 }
 
-const AddPubMap = ({ setPlace }: { setPlace: (place: Place) => void }) => {
+const AddPubMap = ({
+  setPlace,
+  place,
+}: {
+  setPlace: (place: Place | null) => void;
+  place: Place | null;
+}) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [google, setGoogle] = useState<any>(null); // TODO: type this
   const [googleMap, setGoogleMap] = useState<google.maps.Map | null>(null);
@@ -64,8 +71,12 @@ const AddPubMap = ({ setPlace }: { setPlace: (place: Place) => void }) => {
                   };
 
                   setPlace(placeInfo);
+                } else {
+                  setPlace(null);
                 }
               });
+            } else {
+              setPlace(null);
             }
           }
         );
@@ -77,7 +88,7 @@ const AddPubMap = ({ setPlace }: { setPlace: (place: Place) => void }) => {
 
   return (
     <Container>
-      {google && googleMap && (
+      {google && googleMap && !place && (
         <SearchBar google={google} googleMap={googleMap} setPlace={setPlace} />
       )}
       <MapContainer ref={mapRef} />

@@ -39,17 +39,18 @@ const AddPub: React.FC = () => {
 
   return (
     <Container>
-      <MapContainer>
-        <AddPubMap setPlace={setPlace} />
+      <MapContainer $isFullScreen={!place}>
+        <AddPubMap setPlace={setPlace} place={place} />
       </MapContainer>
-
-      <AddPubForm
-        place={place}
-        isNotPub={isNotPub}
-        loading={loading}
-        error={error}
-        onSubmit={handleFormSubmit}
-      />
+      <AddPubFormContainer $isOpen={!!place}>
+        <AddPubForm
+          place={place}
+          isNotPub={isNotPub}
+          loading={loading}
+          error={error}
+          onSubmit={handleFormSubmit}
+        />
+      </AddPubFormContainer>
     </Container>
   );
 };
@@ -69,11 +70,21 @@ const Container = styled.div`
   }
 `;
 
-interface MapContainerProps {
-  $isFullScreen?: boolean;
-}
+const AddPubFormContainer = styled.div<{ $isOpen: boolean }>`
+  width: 30vw;
+  height: 100%;
+  @media (max-width: 768px) {
+    width: 100%;
+    height: ${({ $isOpen }) => ($isOpen ? "100%" : "0")};
+    transition: height 0.3s ease-in-out;
+  }
+`;
 
-const MapContainer = styled.div<MapContainerProps>`
+const MapContainer = styled.div<{ $isFullScreen?: boolean }>`
   width: 100%;
   height: 100%;
+  @media (max-width: 768px) {
+    height: ${({ $isFullScreen }) => ($isFullScreen ? "100%" : "30vh")};
+    transition: height 0.3s ease-in-out;
+  }
 `;

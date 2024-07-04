@@ -88,13 +88,15 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
         </Alert>
       )}
       {!place && (
-        <Alert $bgColor="#a3eeaf">
+        <Alert $bgColor="transparent">
           <p>Search for a pub or select a pub on the map to start</p>
         </Alert>
       )}
 
       {place && (
-        <DisabledInputsContainer $bgColor={isNotPub ? "tranparent" : "#a3eeaf"}>
+        <DisabledInputsContainer
+          $bgColor={isNotPub ? "#f8d7da" : "transparent"}
+        >
           <FormGroup>
             <DisabledInput
               type="text"
@@ -135,7 +137,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
       )}
 
       <FormGroup>
-        <Label>is a deposit for the cue required?</Label>
+        <Label>is a deposit for the cues required?</Label>
         <ButtonGroup>
           <Button
             type="button"
@@ -267,12 +269,10 @@ export default AddPubForm;
 
 const Form = styled.form`
   width: 30vw;
-  padding: 20px;
   display: flex;
   flex-direction: column;
   @media (max-width: 768px) {
     width: 100%;
-    height: 30vh;
     transition: height 0.3s ease;
     padding: 0;
   }
@@ -281,19 +281,19 @@ const Form = styled.form`
 const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 15px;
-  margin: 0;
-  @media (max-width: 768px) {
-    margin: 0 10px;
-  }
+  margin: 5px 10px;
 `;
 
 const Label = styled.label`
   margin: 10px 0 5px 0;
   font-size: 20px;
   color: #333;
+  @media (max-width: 768px) {
+    margin: 5px 0;
+  }
 `;
 
+// TODO: do we need this to be an input anymore? It could be a heading
 interface DisabledInputsContainerProps {
   $bgColor: string;
 }
@@ -327,6 +327,9 @@ const ButtonGroup = styled.div`
   flex-direction: row;
   margin-bottom: 5px;
   justify-content: space-between;
+  @media (max-width: 768px) {
+    margin: 0;
+  }
 `;
 
 const Button = styled.button<{ $selected: boolean }>`
@@ -352,6 +355,9 @@ const Button = styled.button<{ $selected: boolean }>`
   &:hover:not(:disabled) {
     background-color: ${(props) => (props.$selected ? "#25913e" : "#DDD")};
   }
+  @media (max-width: 768px) {
+    padding: 5px 10px;
+  }
 `;
 
 const SubmitButton = styled.button`
@@ -375,14 +381,14 @@ const Alert = styled.div<AlertProps>`
   background-color: ${(props) => props.$bgColor};
   height: fit-content;
   width: calc(100% - 20px);
-  padding: 10px;
+  margin: 0 10px;
   align-items: center;
   justify-content: center;
   margin-bottom: 15px;
   border-radius: 4px;
   p {
     font-size: 18px;
-    margin: auto;
+    margin: 5px;
     align-self: center;
   }
 `;

@@ -1,17 +1,31 @@
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Login from "./Login";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import styled from "styled-components";
-import { useState } from "react";
 
 const NavBar = () => {
-  const { user, error, isLoading } = useUser();
+  const { user } = useUser();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const navRef = useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (navRef.current && !navRef.current.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   return (
-    <StyledNav>
+    <StyledNav ref={navRef}>
       <BurgerMenu $isOpen={isOpen} onClick={() => setIsOpen(!isOpen)}>
         <div />
         <div />
@@ -51,6 +65,8 @@ const NavBar = () => {
   );
 };
 
+export default NavBar;
+
 const StyledNav = styled.nav`
   z-index: 10000;
   height: 40px;
@@ -59,7 +75,7 @@ const StyledNav = styled.nav`
   align-items: center;
   justify-content: space-between;
   padding: 1rem 0;
-  background-color: #333;
+  background-color: #294b2b;
   color: #fff;
   font-size: 1.2rem;
   position: relative;
@@ -113,8 +129,11 @@ const Links = styled.div<{ $isOpen: boolean }>`
   display: flex;
   flex-direction: row;
   width: 80%;
-
+  font-family: "Neat Chalk", sans-serif;
+  font-size: 0.6rem;
+  
   @media (max-width: 768px) {
+    font-size: 0.9rem;
     flex-direction: column;
     position: fixed;
     top: 0;
@@ -122,7 +141,7 @@ const Links = styled.div<{ $isOpen: boolean }>`
     height: 100vh;
     width: ${({ $isOpen }) => ($isOpen ? "60%" : "0")};
     overflow: hidden;
-    background-color: #333;
+    background-color: #294b2b;
     transition: width 0.3s ease-in-out;
     z-index: 9;
     padding-top: 5rem;
@@ -130,8 +149,10 @@ const Links = styled.div<{ $isOpen: boolean }>`
 `;
 
 const Title = styled.div`
+  font-size: 1rem;
+  font-family: "Neat Chalk", sans-serif;
   position: absolute;
-  left: calc(50% - 80px);
+  left: 38%;
 
   @media (max-width: 768px) {
     position: relative;
@@ -139,6 +160,7 @@ const Title = styled.div`
     transform: none;
     text-align: center;
     width: 100%;
+    font-size: 0.7rem;
   }
 `;
 
@@ -168,5 +190,3 @@ const LinkWrapper = styled.div<{ $active: boolean }>`
     margin: 1rem;
   }
 `;
-
-export default NavBar;
