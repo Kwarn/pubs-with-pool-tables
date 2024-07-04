@@ -107,7 +107,7 @@ export default SearchBar;
 const SearchContainer = styled.div`
   z-index: 2;
   position: absolute;
-  left: calc(50% - 400px);
+  left: calc(50% - 300px);
   top: 10vh;
   width: 30vw;
   border: 4px solid white;

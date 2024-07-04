@@ -71,7 +71,8 @@ const Container = styled.div`
 `;
 
 const AddPubFormContainer = styled.div<{ $isOpen: boolean }>`
-  width: 30vw;
+  width: ${({ $isOpen }) => ($isOpen ? "30vw" : "0")};
+  transition: width 0.3s ease-in-out;
   height: 100%;
   @media (max-width: 768px) {
     width: 100%;
