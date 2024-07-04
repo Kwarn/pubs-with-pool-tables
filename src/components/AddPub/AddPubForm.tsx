@@ -81,7 +81,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} $isOpen={!!place}>
       {error && (
         <Alert $bgColor="#f8d7da">
           <p>{error?.message || "Something went wrong.."}</p>
@@ -245,13 +245,14 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
 
 export default AddPubForm;
 
-const Form = styled.form`
+const Form = styled.form<{$isOpen: boolean}>`
   width: 30vw;
   display: flex;
   flex-direction: column;
   @media (max-width: 768px) {
+    height: ${({ $isOpen }) => ($isOpen ? "100%" : "0")};
+    display: ${({ $isOpen }) => ($isOpen ? "flex" : "none")};
     width: 100%;
-    transition: height 0.3s ease;
     padding: 0;
   }
 `;
