@@ -70,7 +70,7 @@ const Container = styled.div`
 `;
 
 const AddPubFormContainer = styled.div<{ $isOpen: boolean }>`
-  background-color: #294b2b;
+  background-color: ${({ theme }) => theme.colors.primary};
   width: ${({ $isOpen }) => ($isOpen ? "30vw" : "0")};
   transition: width 0.3s ease-in-out;
   height: 100%;

@@ -1,0 +1,14 @@
+export const defaultTheme = {
+  colors: {
+    primary: "#294b2b",
+    text: "#f5f7f6",
+  },
+  fonts: {
+    heading: "'Neat Chalk', sans-serif",
+  },
+  spacing: {
+    small: "8px",
+    medium: "16px",
+    large: "24px",
+  },
+};

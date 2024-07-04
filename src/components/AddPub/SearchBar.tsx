@@ -110,7 +110,7 @@ const SearchContainer = styled.div`
   left: calc(50% - 300px);
   top: 10vh;
   width: 30vw;
-  border: 4px solid white;
+  border: 4px solid ${({ theme }) => theme.colors.text};
   padding: 0;
   margin: 0;
   @media (max-width: 768px) {

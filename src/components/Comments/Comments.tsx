@@ -59,7 +59,7 @@ const CommentsScrollable = styled.div`
 `;
 
 const CommentContainer = styled.div`
-  background-color: #f9f9f9;
+  background-color: ${({ theme }) => theme.colors.primary};
   border-bottom: 1px solid #ddd;
   padding: 10px 0;
   margin: 1px 0;

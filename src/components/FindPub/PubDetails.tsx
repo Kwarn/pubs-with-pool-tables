@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { Pub, CommentInput, Comment } from "@/types";
 import { GET_PUB_COMMENTS } from "@/graphql/queries";
 import { useQuery } from "@apollo/client";
@@ -99,11 +99,12 @@ const PubDetails: React.FC<PubDetailsProps> = ({
 };
 
 const Container = styled.div`
+  color: ${({ theme }) => theme.colors.text};
   display: flex;
+  background-color: ${({ theme }) => theme.colors.primary};
   height: 100%;
   border: 1px solid #ccc;
   justify-content: space-between;
-  border-radius: 5px;
   margin-bottom: 20px;
   @media (max-width: 768px) {
     flex-direction: column;
@@ -121,12 +122,14 @@ const Details = styled.div`
 
 const Divider = styled.hr`
   height: 2px;
-  background-color: black;
+  background-color: ${({ theme }) => theme.colors.text};
 `;
 
 const Name = styled.h1`
+  font-family: ${({ theme }) => theme.fonts.heading};
+  font-size: 1.5rem;
   text-align: center;
-  margin-bottom: 10px;
+  margin: 30px 0 10px 0;
   @media (max-width: 768px) {
     margin-top: 4rem;
   }

@@ -39,16 +39,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
     }));
   }, [place]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormState({
-      ...formState,
-      [name]: value,
-    });
-  };
-
   const handleButtonToggle = (name: keyof typeof formState, value: string) => {
     setFormState({
       ...formState,
@@ -264,7 +254,7 @@ const FormGroup = styled.div`
 `;
 
 const Label = styled.label`
-  color: white;
+  color: ${({ theme }) => theme.colors.text};
   margin: 10px 0 5px 0;
   font-size: 20px;
   @media (max-width: 768px) {
@@ -277,11 +267,11 @@ const PlaceContainer = styled.div`
   flex-direction: column;
   margin: 10px;
   border-radius: 4px;
-  color: white;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 const PlaceTitle = styled.h2`
-  font-family: "Neat Chalk", sans-serif;
+  font-family: ${({ theme }) => theme.fonts.heading};
   font-size: 16px;
   margin: 20px 0 0 0;
   text-align: center;

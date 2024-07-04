@@ -75,7 +75,7 @@ const StyledNav = styled.nav`
   align-items: center;
   justify-content: space-between;
   padding: 1rem 0;
-  background-color: #294b2b;
+  background-color: ${({ theme }) => theme.colors.primary};
   color: #fff;
   font-size: 1.2rem;
   position: relative;
@@ -129,9 +129,9 @@ const Links = styled.div<{ $isOpen: boolean }>`
   display: flex;
   flex-direction: row;
   width: 80%;
-  font-family: "Neat Chalk", sans-serif;
+  font-family: ${({ theme }) => theme.fonts.heading};
   font-size: 0.6rem;
-  
+
   @media (max-width: 768px) {
     font-size: 0.9rem;
     flex-direction: column;
@@ -141,7 +141,7 @@ const Links = styled.div<{ $isOpen: boolean }>`
     height: 100vh;
     width: ${({ $isOpen }) => ($isOpen ? "60%" : "0")};
     overflow: hidden;
-    background-color: #294b2b;
+    background-color: ${({ theme }) => theme.colors.primary};
     transition: width 0.3s ease-in-out;
     z-index: 9;
     padding-top: 5rem;
@@ -150,7 +150,7 @@ const Links = styled.div<{ $isOpen: boolean }>`
 
 const Title = styled.div`
   font-size: 1rem;
-  font-family: "Neat Chalk", sans-serif;
+  font-family: ${({ theme }) => theme.fonts.heading};
   position: absolute;
   left: 38%;
 

@@ -111,7 +111,6 @@ const PubDetailsContainer = styled.div<PubDetailsProps>`
   bottom: ${(props) => (props.$isVisible ? "0" : "-100%")};
   left: 0;
   right: 0;
-  background-color: #fff;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   transition: bottom 0.3s ease-in-out;
   z-index: 1000;

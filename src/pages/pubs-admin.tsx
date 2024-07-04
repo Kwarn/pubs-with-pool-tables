@@ -156,7 +156,7 @@ const Container = styled.div`
   flex-direction: column;
   height: 100%;
   background-color: #4a4848;
-  color: white;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 const TableTitle = styled.h2`
@@ -202,7 +202,7 @@ const Button = styled.button`
   margin: 0 5px;
   padding: 5px 10px;
   background-color: #798dcf;
-  color: white;
+  color: ${({ theme }) => theme.colors.text};
   border: none;
   cursor: pointer;
 `;

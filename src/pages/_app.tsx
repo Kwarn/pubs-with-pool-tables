@@ -8,6 +8,7 @@ import { UserStoreProvider } from "@/state/userStore";
 import Head from "next/head";
 import { useApollo } from "@/lib/apolloClient";
 import NavBar from "@/components/NavBar";
+import { defaultTheme } from "@/styles/themes";
 
 export default function App({ Component, pageProps }: AppProps) {
   const apolloClient = useApollo(pageProps);
@@ -16,7 +17,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <UserProvider>
       <UserStoreProvider>
         <ApolloProvider client={apolloClient}>
-          <ThemeProvider theme={{}}>
+          <ThemeProvider theme={defaultTheme}>
             <Head>
               <meta
                 name="viewport"
