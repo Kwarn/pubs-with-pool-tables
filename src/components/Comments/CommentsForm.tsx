@@ -1,3 +1,4 @@
+import { useUserStore } from "@/state/userStore";
 import React, { useState } from "react";
 import styled from "styled-components";
 
@@ -7,6 +8,7 @@ interface CommentFormProps {
 
 const CommentForm: React.FC<CommentFormProps> = ({ onSubmit }) => {
   const [commentText, setCommentText] = useState("");
+  const { user } = useUserStore();
 
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,14 +18,21 @@ const CommentForm: React.FC<CommentFormProps> = ({ onSubmit }) => {
     }
   };
 
+
   return (
     <Form onSubmit={handleCommentSubmit}>
-      <Textarea
-        placeholder="Your Comment"
-        value={commentText}
-        onChange={(e) => setCommentText(e.target.value)}
-      />
-      <Button type="submit">Submit</Button>
+      {user ? (
+        <>
+          <Textarea
+            placeholder="Your Comment"
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
+          />
+          <Button type="submit">Submit</Button>
+        </>
+      ) : (
+        <p>Login to add comments</p>
+      )}
     </Form>
   );
 };

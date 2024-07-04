@@ -17,14 +17,16 @@ const Login = () => {
 
   if (error) return <NavLink>{error.message}</NavLink>;
 
+  const handleLogout = () => {
+    updateUser(null); //  handle this more gracefully on return from auth0
+    updateLastRoute("/");
+  };
+
   return (
     <LoginContainer>
       {user ? (
         <LinkWrapper>
-          <NavLink
-            onClick={() => updateLastRoute("/add-pub")}
-            href="/api/auth/logout"
-          >
+          <NavLink onClick={handleLogout} href="/api/auth/logout">
             Logout
           </NavLink>
         </LinkWrapper>
