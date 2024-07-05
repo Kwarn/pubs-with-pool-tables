@@ -121,11 +121,12 @@ const SearchContainer = styled.div`
 `;
 
 const SearchInput = styled.input`
-  padding: 0;
+  padding: 0 10px;
   margin: 0;
   height: 40px;
   font-size: 20px;
   width: 100%;
+  box-sizing: border-box;
 `;
 
 const ClearButton = styled.button`

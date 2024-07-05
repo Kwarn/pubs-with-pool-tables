@@ -135,7 +135,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
         />
       </FormGroup>
       <FormGroup>
-        <Label>Cost of tables</Label>
+        <Label>Cost of tables (£)</Label>
         <CurrencyInput
           type="number"
           step="0.01"

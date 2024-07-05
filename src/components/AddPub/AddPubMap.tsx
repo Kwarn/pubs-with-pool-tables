@@ -19,10 +19,10 @@ export interface Place {
 
 const AddPubMap = ({
   setPlace,
-  place,
+  showSearch,
 }: {
   setPlace: (place: Place | null) => void;
-  place: Place | null;
+  showSearch: boolean;
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [google, setGoogle] = useState<any>(null); // TODO: type this
@@ -88,7 +88,7 @@ const AddPubMap = ({
 
   return (
     <Container>
-      {google && googleMap && !place && (
+      {google && googleMap && showSearch && (
         <SearchBar google={google} googleMap={googleMap} setPlace={setPlace} />
       )}
       <MapContainer ref={mapRef} />

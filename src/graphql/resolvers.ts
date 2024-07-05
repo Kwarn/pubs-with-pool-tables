@@ -3,6 +3,18 @@ import { CommentInput, PubInput, Table, UserInput } from "@/types";
 
 export const resolvers = {
   Query: {
+    pub: async (_: undefined, { pubAddress }: { pubAddress: string }) => {
+      try {
+        const pub = await prisma.pub.findFirst({
+          where: { address: pubAddress },
+        });
+
+        return pub;
+      } catch (error) {
+        console.error("Error fetching pub:", error);
+        throw new Error("Failed to fetch pub");
+      }
+    },
     pubs: async () => {
       try {
         return await prisma.pub.findMany({

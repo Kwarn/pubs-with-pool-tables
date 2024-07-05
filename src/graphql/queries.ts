@@ -24,7 +24,24 @@ export const GET_PUBS = gql`
         isPoundOnTable
         isReservationAllowed
       }
+      pubInformation {
+        cueQuality
+        hasChalk
+        kidsFriendly
+        numberOfTables
+        tableCost
+        tableQuality
+        wheelchairAccess
+      }
       isRequiresManualReview
+    }
+  }
+`;
+
+export const GET_PUB = gql`
+  query GetPub($pubAddress: String!) {
+    pub(pubAddress: $pubAddress) {
+      id
     }
   }
 `;

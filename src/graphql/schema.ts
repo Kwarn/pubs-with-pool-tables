@@ -115,6 +115,7 @@ type Admin {
 }
 
 type Query {
+  pub(pubAddress: String!): Pub
   pubs: [Pub]
   comments(pubId: ID!): [Comment]
   users: [User]
