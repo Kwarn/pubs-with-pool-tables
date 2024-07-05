@@ -27,6 +27,17 @@ type Comment {
   pub: Pub!
 }
 
+type PubInformation {
+  id: ID!
+  numberOfTables: Int
+  tableQuality: String
+  tableCost: Float
+  cueQuality: String
+  hasChalk: String
+  wheelchairAccess: String
+  kidsFriendly: String
+}
+
 type Pub {
   id: ID!
   name: String!
@@ -38,6 +49,7 @@ type Pub {
   createdBy: String!
   updatedBy: [String]
   isRequiresManualReview: Boolean!
+  pubInformation: PubInformation
 }
 
 type User {
@@ -54,6 +66,17 @@ input PubInput {
   tables: [TableInput]
   createdBy: String!
   isRequiresManualReview: Boolean!
+  pubInformation: PubInformationInput
+}
+
+input PubInformationInput {
+  numberOfTables: Int
+  tableQuality: String
+  tableCost: Float
+  cueQuality: String
+  hasChalk: String
+  wheelchairAccess: String
+  kidsFriendly: String
 }
 
 input MapLocationInput {
@@ -98,7 +121,6 @@ type Query {
   admin(userId: ID!): Admin
   admins: [Admin]
 }
-
 
 type Mutation {
   addPub(input: PubInput!): Pub!

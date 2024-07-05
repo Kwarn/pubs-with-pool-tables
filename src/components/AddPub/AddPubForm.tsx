@@ -29,6 +29,13 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
     isJumpingAllowed: "Don't Know",
     isPoundOnTable: "Don't Know",
     isReservationAllowed: "Don't Know",
+    numberOfTables: 0,
+    tableQuality: "",
+    tableCost: 0,
+    cueQuality: "",
+    hasChalk: "Don't Know",
+    wheelchairAccess: "Don't Know",
+    kidsFriendly: "Don't Know",
   });
 
   useEffect(() => {
@@ -64,6 +71,15 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
         isJumpingAllowed: formState.isJumpingAllowed,
         isPoundOnTable: formState.isPoundOnTable,
         isReservationAllowed: formState.isReservationAllowed,
+      },
+      pubInformation: {
+        numberOfTables: formState.numberOfTables,
+        tableQuality: formState.tableQuality,
+        tableCost: formState.tableCost,
+        cueQuality: formState.cueQuality,
+        hasChalk: formState.hasChalk,
+        wheelchairAccess: formState.wheelchairAccess,
+        kidsFriendly: formState.kidsFriendly,
       },
       isRequiresManualReview: isNotPub,
       createdBy: localUser.name,
@@ -225,7 +241,163 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
           </Button>
         </ButtonGroup>
       </FormGroup>
+      <FormGroup>
+        <Label>Cost of tables</Label>
+        <input
+          type="number"
+          step="0.01"
+          value={formState.tableCost}
+          onChange={(e) =>
+            setFormState({
+              ...formState,
+              tableCost: parseFloat(e.target.value),
+            })
+          }
+          disabled={loading || !place}
+          required
+        />
+      </FormGroup>
+      <FormGroup>
+        <Label>Number of tables</Label>
+        <input
+          type="number"
+          value={formState.numberOfTables}
+          onChange={(e) =>
+            setFormState({
+              ...formState,
+              numberOfTables: parseInt(e.target.value),
+            })
+          }
+          disabled={loading || !place}
+          required
+        />
+      </FormGroup>
+      <FormGroup>
+        <Label>Quality of tables</Label>
+        <select
+          value={formState.tableQuality}
+          onChange={(e) =>
+            setFormState({
+              ...formState,
+              tableQuality: e.target.value,
+            })
+          }
+          disabled={loading || !place}
+          required
+        >
+          <option value="">Select quality</option>
+          <option value="Low">Low</option>
+          <option value="Average">Average</option>
+          <option value="High">High</option>
+        </select>
+      </FormGroup>
 
+      <FormGroup>
+        <Label>Quality of cues</Label>
+        <select
+          value={formState.cueQuality}
+          onChange={(e) =>
+            setFormState({
+              ...formState,
+              cueQuality: e.target.value,
+            })
+          }
+          disabled={loading || !place}
+          required
+        >
+          <option value="">Select quality</option>
+          <option value="Low">Low</option>
+          <option value="Average">Average</option>
+          <option value="High">High</option>
+        </select>
+      </FormGroup>
+      <FormGroup>
+        <Label>Kids friendly</Label>
+        <ButtonGroup>
+          <Button
+            type="button"
+            onClick={() => handleButtonToggle("kidsFriendly", "Yes")}
+            $selected={formState.kidsFriendly === "Yes"}
+            disabled={loading || !place}
+          >
+            Yes
+          </Button>
+          <Button
+            type="button"
+            onClick={() => handleButtonToggle("kidsFriendly", "No")}
+            $selected={formState.kidsFriendly === "No"}
+            disabled={loading || !place}
+          >
+            No
+          </Button>
+          <Button
+            type="button"
+            onClick={() => handleButtonToggle("kidsFriendly", "Don't Know")}
+            $selected={formState.kidsFriendly === "Don't Know"}
+            disabled={loading || !place}
+          >
+            {"Don't Know"}
+          </Button>
+        </ButtonGroup>
+      </FormGroup>
+      <FormGroup>
+        <Label>Has Chaulk</Label>
+        <ButtonGroup>
+          <Button
+            type="button"
+            onClick={() => handleButtonToggle("hasChalk", "Yes")}
+            $selected={formState.hasChalk === "Yes"}
+            disabled={loading || !place}
+          >
+            Yes
+          </Button>
+          <Button
+            type="button"
+            onClick={() => handleButtonToggle("hasChalk", "No")}
+            $selected={formState.hasChalk === "No"}
+            disabled={loading || !place}
+          >
+            No
+          </Button>
+          <Button
+            type="button"
+            onClick={() => handleButtonToggle("hasChalk", "Don't Know")}
+            $selected={formState.hasChalk === "Don't Know"}
+            disabled={loading || !place}
+          >
+            {"Don't Know"}
+          </Button>
+        </ButtonGroup>
+      </FormGroup>
+      <FormGroup>
+        <Label>Has wheelchair access?</Label>
+        <ButtonGroup>
+          <Button
+            type="button"
+            onClick={() => handleButtonToggle("wheelchairAccess", "Yes")}
+            $selected={formState.wheelchairAccess === "Yes"}
+            disabled={loading || !place}
+          >
+            Yes
+          </Button>
+          <Button
+            type="button"
+            onClick={() => handleButtonToggle("wheelchairAccess", "No")}
+            $selected={formState.wheelchairAccess === "No"}
+            disabled={loading || !place}
+          >
+            No
+          </Button>
+          <Button
+            type="button"
+            onClick={() => handleButtonToggle("wheelchairAccess", "Don't Know")}
+            $selected={formState.wheelchairAccess === "Don't Know"}
+            disabled={loading || !place}
+          >
+            {"Don't Know"}
+          </Button>
+        </ButtonGroup>
+      </FormGroup>
       <SubmitButton type="submit" disabled={loading || !place}>
         {loading ? <Spinner size="sm" /> : "Add Pub"}
       </SubmitButton>
@@ -235,7 +407,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
 
 export default AddPubForm;
 
-const Form = styled.form<{$isOpen: boolean}>`
+const Form = styled.form<{ $isOpen: boolean }>`
   width: 30vw;
   display: flex;
   flex-direction: column;

@@ -1,3 +1,15 @@
+export interface PubInformation {
+  id: number;
+  numberOfTables: number | null;
+  tableQuality: string | null;
+  tableCost: number | null;
+  cueQuality: string | null;
+  hasChalk: string | null;
+  wheelchairAccess: string | null;
+  kidsFriendly: string | null;
+  pubId?: number;
+}
+
 export interface Table {
   id: number;
   size: string | null;
@@ -44,6 +56,7 @@ export interface Pub {
   updatedBy?: User[];
   userId: number;
   isRequiresManualReview: boolean;
+  pubInformation?: PubInformation;
 }
 
 export interface User {
@@ -60,6 +73,17 @@ export interface PubInput {
   tables?: Table[];
   createdBy: string;
   isRequiresManualReview: boolean;
+  pubInformation?: PubInformationInput;
+}
+
+export interface PubInformationInput {
+  numberOfTables?: number | null;
+  tableQuality?: string | null;
+  tableCost?: number | null;
+  cueQuality?: string | null;
+  hasChalk?: string | null;
+  wheelchairAccess?: string | null;
+  kidsFriendly?: string | null;
 }
 
 export interface CommentInput {

@@ -14,6 +14,7 @@ const fetchPubs = async () => {
       location: true,
       rules: true,
       tables: true,
+      pubInformation: true,
     },
   });
 
@@ -64,11 +65,13 @@ const Home = ({ pubsData }: { pubsData: Pub[] }) => {
   return (
     <Container>
       {pubs && (
-        <FindPubMap
-          setPlace={setPlace}
-          pubs={pubs}
-          isMinimized={selectedPub !== null}
-        />
+        <MapContainer $isFullScreen={!place}>
+          <FindPubMap
+            setPlace={setPlace}
+            pubs={pubs}
+            isMinimized={selectedPub !== null}
+          />
+        </MapContainer>
       )}
       <PubDetailsContainer $isVisible={selectedPub !== null}>
         {selectedPub && (
@@ -102,11 +105,15 @@ const Container = styled.div`
   height: calc(100vh - 80px);
 `;
 
-interface PubDetailsProps {
-  $isVisible: boolean;
-}
+const MapContainer = styled.div<{ $isFullScreen: boolean }>`
+  width: 100%;
+  height: calc(100vh - 80px);
+  @media (max-width: 768px) {
+    height: ${(props) => (props.$isFullScreen ? `calc(100vh - 80px)` : "30vh")};
+  }
+`;
 
-const PubDetailsContainer = styled.div<PubDetailsProps>`
+const PubDetailsContainer = styled.div<{ $isVisible: boolean }>`
   position: fixed;
   bottom: ${(props) => (props.$isVisible ? "0" : "-100%")};
   left: 0;
@@ -115,10 +122,8 @@ const PubDetailsContainer = styled.div<PubDetailsProps>`
   transition: bottom 0.3s ease-in-out;
   z-index: 1000;
   height: 30vh;
-  max-height: 30vh;
 
   @media (max-width: 768px) {
-    height: 70vh;
-    max-height: 70vh;
+    height: 70%;
   }
 `;

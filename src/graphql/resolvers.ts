@@ -68,6 +68,7 @@ export const resolvers = {
         rules,
         tables,
         isRequiresManualReview,
+        pubInformation,
       } = input;
 
       const newPub = {
@@ -99,6 +100,19 @@ export const resolvers = {
             }
           : undefined,
         isRequiresManualReview,
+        pubInformation: pubInformation
+          ? {
+              create: {
+                numberOfTables: pubInformation.numberOfTables,
+                tableQuality: pubInformation.tableQuality,
+                tableCost: pubInformation.tableCost,
+                cueQuality: pubInformation.cueQuality,
+                hasChalk: pubInformation.hasChalk,
+                wheelchairAccess: pubInformation.wheelchairAccess,
+                kidsFriendly: pubInformation.kidsFriendly,
+              },
+            }
+          : undefined,
       };
 
       try {
@@ -108,6 +122,7 @@ export const resolvers = {
             location: true,
             rules: true,
             tables: true,
+            pubInformation: true,
           },
         });
         return createdPub;

@@ -6,6 +6,12 @@ import { useQuery } from "@apollo/client";
 import { useUserStore } from "@/state/userStore";
 import Comments from "../Comments/Comments";
 import CommentsForm from "@/components/Comments/CommentsForm";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCheck,
+  faQuestion,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface PubDetailsProps {
   pub: Pub;
@@ -37,6 +43,19 @@ const PubDetails: React.FC<PubDetailsProps> = ({
     });
   };
 
+  const getIcon = (value: string | null) => {
+    if (!value) {
+      return <FontAwesomeIcon icon={faQuestion} />;
+    }
+    if (value === "Yes") {
+      return <FontAwesomeIcon icon={faCheck} />;
+    }
+    if (value === "No") {
+      return <FontAwesomeIcon icon={faTimes} />;
+    }
+    return <FontAwesomeIcon icon={faQuestion} />;
+  };
+
   useEffect(() => {
     if (data?.comments) {
       setComments(data.comments);
@@ -58,31 +77,76 @@ const PubDetails: React.FC<PubDetailsProps> = ({
           <strong>Added By:</strong> {pub.createdBy ?? "Unknown"}
         </AddedBy>
         <Divider />
-        <Rules>
-          <Info>
-            <strong>Cue Deposit Required:</strong>{" "}
-            {pub?.rules?.isCueDeposit || "unknown"}
-          </Info>
-          <Info>
-            <strong>Pre-booking Table Allowed:</strong>
-            {pub?.rules?.isReservationAllowed || "unknown"}
-          </Info>
-          <Info>
-            <strong>Jumping Whiteball Allowed:</strong>
-            {pub?.rules?.isJumpingAllowed || "unknown"}
-          </Info>
-          <Info>
-            <strong>Coin On Table Reservation Allowed:</strong>
-            {pub?.rules?.isPoundOnTable || "unknown"}
-          </Info>
-        </Rules>
+        <InfoContainer>
+          <Rules>
+            <Info>
+              <strong>Cue deposit:</strong>
+              {getIcon(pub?.rules?.isCueDeposit)}
+            </Info>
+            <Info>
+              <strong>Pre-booking:</strong>
+              {getIcon(pub?.rules?.isReservationAllowed)}
+            </Info>
+            <Info>
+              <strong>Jumping balls:</strong>
+              {getIcon(pub?.rules?.isJumpingAllowed)}
+            </Info>
+            <Info>
+              <strong>Pound down:</strong>
+              {getIcon(pub?.rules?.isPoundOnTable)}
+            </Info>
+          </Rules>
+          <PubInfo>
+            {pub.pubInformation && (
+              <Info>
+                <strong>Number of tables:</strong>
+                {pub.pubInformation.numberOfTables}
+              </Info>
+            )}
+            {pub.pubInformation && (
+              <Info>
+                <strong>Table quality:</strong>{" "}
+                {pub.pubInformation.tableQuality}
+              </Info>
+            )}
+            {pub.pubInformation && (
+              <Info>
+                <strong>Table cost:</strong> {pub.pubInformation.tableCost}
+              </Info>
+            )}
+            {pub.pubInformation && (
+              <Info>
+                <strong>Cue quality:</strong> {pub.pubInformation.cueQuality}
+              </Info>
+            )}
+            {pub.pubInformation && (
+              <Info>
+                <strong>Has Chalk:</strong>{" "}
+                {getIcon(pub?.pubInformation?.hasChalk)}
+              </Info>
+            )}
+            {pub.pubInformation && (
+              <Info>
+                <strong>Wheelchair access:</strong>
+                {getIcon(pub?.pubInformation?.wheelchairAccess)}
+              </Info>
+            )}
+            {pub.pubInformation && (
+              <Info>
+                <strong>Kids friendly:</strong>
+                {getIcon(pub?.pubInformation?.kidsFriendly)}
+              </Info>
+            )}
+          </PubInfo>
+        </InfoContainer>
+
         {pub.tables && pub.tables.length > 0 && (
           <Info>
             <strong>Tables:</strong>
             <ul>
               {pub?.tables?.map((table) => (
                 <li key={table.id}>
-                  Size: {table.size}, Quality: {table.quality}, Cost:{" "}
+                  Size: {table.size}, Quality: {table.quality}, Cost:
                   {table.cost}
                 </li>
               ))}
@@ -99,6 +163,7 @@ const PubDetails: React.FC<PubDetailsProps> = ({
 };
 
 const Container = styled.div`
+  overflow-y: auto;
   color: ${({ theme }) => theme.colors.text};
   display: flex;
   background-color: ${({ theme }) => theme.colors.primary};
@@ -142,7 +207,6 @@ const Address = styled.p`
 `;
 
 const AddedBy = styled.p`
-  position: absolute;
   top: 80px;
   @media (max-width: 768px) {
     top: 0px;
@@ -158,7 +222,18 @@ const Info = styled.div`
   }
 `;
 
+const InfoContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
 const Rules = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const PubInfo = styled.div`
   display: flex;
   flex-direction: column;
 `;
