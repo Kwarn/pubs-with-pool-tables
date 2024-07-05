@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styled, { useTheme } from "styled-components";
+import styled from "styled-components";
 import { Pub, CommentInput, Comment } from "@/types";
 import { GET_PUB_COMMENTS } from "@/graphql/queries";
 import { useQuery } from "@apollo/client";

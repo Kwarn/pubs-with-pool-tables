@@ -167,35 +167,39 @@ const AdminPage: React.FC = () => {
         </>
       )}
 
-      <TableTitle>APPROVED</TableTitle>
-      <Table>
-        <thead>
-          <tr>
-            <Th style={{ width: "20%" }}>Name</Th>
-            <Th style={{ width: "10%" }}>Address</Th>
-            <Th style={{ width: "10%" }}>Cue Deposit</Th>
-            <Th style={{ width: "10%" }}>Jumping Allowed</Th>
-            <Th style={{ width: "10%" }}>Pound On Table</Th>
-            <Th style={{ width: "10%" }}>Reservation Allowed</Th>
-            <Th style={{ width: "20%" }}>Actions</Th>
-          </tr>
-        </thead>
-        <tbody>
-          {approvedPubs?.map((pub) => (
-            <tr key={pub.id}>
-              <Td>{pub.name}</Td>
-              <Td>{pub.address}</Td>
-              <Td>{pub.rules.isCueDeposit}</Td>
-              <Td>{pub.rules.isJumpingAllowed}</Td>
-              <Td>{pub.rules.isPoundOnTable}</Td>
-              <Td>{pub.rules.isReservationAllowed}</Td>
-              <ActionTd>
-                <Button onClick={() => handleDelete(pub.id)}>Delete</Button>
-              </ActionTd>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      {approvedPubs && approvedPubs.length > 0 && (
+        <>
+          <TableTitle>APPROVED</TableTitle>
+          <Table>
+            <thead>
+              <tr>
+                <Th style={{ width: "20%" }}>Name</Th>
+                <Th style={{ width: "10%" }}>Address</Th>
+                <Th style={{ width: "10%" }}>Cue Deposit</Th>
+                <Th style={{ width: "10%" }}>Jumping Allowed</Th>
+                <Th style={{ width: "10%" }}>Pound On Table</Th>
+                <Th style={{ width: "10%" }}>Reservation Allowed</Th>
+                <Th style={{ width: "20%" }}>Actions</Th>
+              </tr>
+            </thead>
+            <tbody>
+              {approvedPubs?.map((pub) => (
+                <tr key={pub.id}>
+                  <Td>{pub.name}</Td>
+                  <Td>{pub.address}</Td>
+                  <Td>{pub.rules.isCueDeposit}</Td>
+                  <Td>{pub.rules.isJumpingAllowed}</Td>
+                  <Td>{pub.rules.isPoundOnTable}</Td>
+                  <Td>{pub.rules.isReservationAllowed}</Td>
+                  <ActionTd>
+                    <Button onClick={() => handleDelete(pub.id)}>Delete</Button>
+                  </ActionTd>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </>
+      )}
 
       <TableTitle>USERS</TableTitle>
       <UserList>

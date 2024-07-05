@@ -52,7 +52,7 @@ const AddPubMap = ({
             if ((event as google.maps.IconMouseEvent).placeId) {
               const _event = event as google.maps.IconMouseEvent;
               const request = {
-                placeId: _event.placeId || "",
+                placeId: _event.placeId ?? "",
                 fields: ["name", "types", "formatted_address", "geometry"],
               };
 
@@ -63,11 +63,11 @@ const AddPubMap = ({
                   placeResult
                 ) {
                   const placeInfo: Place = {
-                    name: placeResult.name || "Unknown Place",
-                    lat: placeResult.geometry?.location?.lat() || 0,
-                    lng: placeResult.geometry?.location?.lng() || 0,
+                    name: placeResult.name ?? "Unknown Place",
+                    lat: placeResult.geometry?.location?.lat() ?? 0,
+                    lng: placeResult.geometry?.location?.lng() ?? 0,
                     type: placeResult.types ? placeResult.types[0] : "unknown",
-                    address: placeResult.formatted_address || "Unknown Address",
+                    address: placeResult.formatted_address ?? "Unknown Address",
                   };
 
                   setPlace(placeInfo);
