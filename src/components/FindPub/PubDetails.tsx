@@ -132,6 +132,7 @@ const Name = styled.h1`
   margin: 30px 0 10px 0;
   @media (max-width: 768px) {
     margin-top: 4rem;
+    font-size: 0.8rem;
   }
 `;
 

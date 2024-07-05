@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { CommentInput, PubInput, Table } from "@/types";
+import { CommentInput, PubInput, Table, UserInput } from "@/types";
 
 export const resolvers = {
   Query: {
@@ -27,6 +27,34 @@ export const resolvers = {
       } catch (error) {
         console.error("Error fetching comments:", error);
         throw new Error("Failed to fetch comments");
+      }
+    },
+    users: async () => {
+      try {
+        return await prisma.user.findMany();
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        throw new Error("Failed to fetch users");
+      }
+    },
+    admin: async (_: undefined, { userId }: { userId: number }) => {
+      try {
+        const admin = await prisma.admin.findUnique({
+          where: { userId },
+        });
+        return admin || { isAdmin: false }; // Return { isAdmin: false } if admin is not found
+      } catch (error) {
+        console.error(`Error fetching admin: ${error}`);
+        throw new Error("Failed to fetch admin");
+      }
+    },
+    admins: async () => {
+      try {
+        const admins = await prisma.admin.findMany();
+        return admins;
+      } catch (error) {
+        console.error(`Error fetching admins: ${error}`);
+        throw new Error("Failed to fetch admins");
       }
     },
   },
@@ -142,6 +170,71 @@ export const resolvers = {
       } catch (error) {
         console.error("Error creating comment:", error);
         throw new Error("Failed to create comment");
+      }
+    },
+    addUser: async (_: undefined, { input }: { input: UserInput }) => {
+      const { email, name } = input;
+
+      try {
+        const existingUser = await prisma.user.findUnique({
+          where: { email },
+        });
+
+        if (existingUser) {
+          return existingUser;
+        }
+
+        const newUser = await prisma.user.create({
+          data: {
+            email,
+            name,
+          },
+        });
+
+        return newUser;
+      } catch (error) {
+        console.error("Error creating user:", error);
+        throw new Error("Failed to create user");
+      }
+    },
+    addAdmin: async (_: undefined, { userId }: { userId: number }) => {
+      try {
+        const existingAdmin = await prisma.admin.findUnique({
+          where: { userId },
+        });
+
+        if (existingAdmin) {
+          throw new Error("User is already an admin");
+        }
+
+        const admin = await prisma.admin.create({
+          data: {
+            userId,
+          },
+        });
+
+        return admin;
+      } catch (error) {
+        throw new Error(`Failed to add admin: ${error}`);
+      }
+    },
+    removeAdmin: async (_: undefined, { userId }: { userId: number }) => {
+      try {
+        const admin = await prisma.admin.findUnique({
+          where: { userId },
+        });
+
+        if (!admin) {
+          throw new Error("User is not an admin");
+        }
+
+        await prisma.admin.delete({
+          where: { userId },
+        });
+
+        return admin;
+      } catch (error) {
+        throw new Error(`Failed to remove admin: ${error}`);
       }
     },
   },

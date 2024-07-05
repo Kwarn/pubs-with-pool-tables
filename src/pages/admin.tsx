@@ -1,21 +1,48 @@
 import React from "react";
 import styled from "styled-components";
-import { Pub } from "@/types";
 import { useQuery, useMutation } from "@apollo/client";
-import { GET_PUBS } from "@/graphql/queries";
-import { APPROVE_PUB_MUTATION, DELETE_PUB_MUTATION } from "@/graphql/mutations";
+import { GET_ADMINS, GET_PUBS, GET_USERS } from "@/graphql/queries";
+import {
+  APPROVE_PUB_MUTATION,
+  DELETE_PUB_MUTATION,
+  ADD_ADMIN_MUTATION,
+  REMOVE_ADMIN_MUTATION,
+} from "@/graphql/mutations";
 import Spinner from "@/components/Spinner";
+import { Pub, User } from "@/types";
+import { Admin } from "@prisma/client";
 
 const Pubs: React.FC = () => {
-  const { data, loading, error, refetch } = useQuery<{ pubs: Pub[] }>(GET_PUBS);
+  const {
+    data: pubData,
+    loading: pubLoading,
+    error: pubError,
+    refetch: refetchPubs,
+  } = useQuery<{ pubs: Pub[] }>(GET_PUBS);
+  const {
+    data: userData,
+    loading: userLoading,
+    error: userError,
+    refetch: refetchUsers,
+  } = useQuery<{ users: User[] }>(GET_USERS);
+  const {
+    data: adminData,
+    loading: adminLoading,
+    error: adminError,
+    refetch: refetchAdmins,
+  } = useQuery<{ admins: Admin[] }>(GET_ADMINS);
 
   const [deletePub] = useMutation(DELETE_PUB_MUTATION);
   const [approvePub] = useMutation(APPROVE_PUB_MUTATION);
+  const [addAdmin] = useMutation(ADD_ADMIN_MUTATION);
+  const [removeAdmin] = useMutation(REMOVE_ADMIN_MUTATION);
 
-  const reviewRequiredPubs = data?.pubs.filter(
+  const reviewRequiredPubs = pubData?.pubs.filter(
     (pub) => pub.isRequiresManualReview
   );
-  const approvedPubs = data?.pubs.filter((pub) => !pub.isRequiresManualReview);
+  const approvedPubs = pubData?.pubs.filter(
+    (pub) => !pub.isRequiresManualReview
+  );
 
   const handleDelete = async (id: number) => {
     try {
@@ -33,7 +60,7 @@ const Pubs: React.FC = () => {
           });
         },
       });
-      refetch();
+      refetchPubs();
     } catch (error) {
       console.error("Error deleting pub:", error);
     }
@@ -61,20 +88,43 @@ const Pubs: React.FC = () => {
           });
         },
       });
-      refetch();
+      refetchPubs();
     } catch (error) {
       console.error("Error approving pub:", error);
     }
   };
 
-  if (loading)
+  const handleAddAdmin = async (userId: number) => {
+    try {
+      await addAdmin({
+        variables: { userId },
+      });
+      refetchAdmins();
+    } catch (error) {
+      console.error("Error adding admin:", error);
+    }
+  };
+
+  const handleRemoveAdmin = async (userId: number) => {
+    try {
+      await removeAdmin({
+        variables: { userId },
+      });
+      refetchAdmins();
+    } catch (error) {
+      console.error("Error removing admin:", error);
+    }
+  };
+
+  if (pubLoading || userLoading)
     return (
       <SpinnerContainer>
         <Spinner size="lg" />
       </SpinnerContainer>
     );
 
-  if (error) return <div>Error: {error.message}</div>;
+  if (pubError) return <div>Error: {pubError.message}</div>;
+  if (userError) return <div>Error: {userError.message}</div>;
 
   return (
     <Container>
@@ -144,6 +194,33 @@ const Pubs: React.FC = () => {
           ))}
         </tbody>
       </Table>
+
+      <TableTitle>USERS</TableTitle>
+      <UserList>
+        {userData?.users?.map((user) => {
+          const isAdmin = adminData?.admins.some(
+            (admin) => admin.userId === user.id
+          );
+
+          return (
+            <UserItem key={user.id}>
+              <UserInfo>Name: {user.name}</UserInfo>
+              <UserInfo>Email: {user.email}</UserInfo>
+              <div>
+                {isAdmin ? (
+                  <Button onClick={() => handleRemoveAdmin(user.id)}>
+                    Remove Admin
+                  </Button>
+                ) : (
+                  <Button onClick={() => handleAddAdmin(user.id)}>
+                    Add Admin
+                  </Button>
+                )}
+              </div>
+            </UserItem>
+          );
+        })}
+      </UserList>
     </Container>
   );
 };
@@ -205,4 +282,21 @@ const Button = styled.button`
   color: ${({ theme }) => theme.colors.text};
   border: none;
   cursor: pointer;
+`;
+
+const UserList = styled.ul`
+  list-style-type: none;
+  padding: 0;
+`;
+
+const UserItem = styled.li`
+  background-color: #626060;
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 5px;
+`;
+
+const UserInfo = styled.p`
+  margin: 0;
+  color: ${({ theme }) => theme.colors.text};
 `;

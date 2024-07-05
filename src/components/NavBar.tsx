@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import Login from "./Login";
+import Login from "./AuthButton";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import styled from "styled-components";
 
@@ -50,10 +50,10 @@ const NavBar = () => {
         </LinkWrapper>
         {user && (
           <LinkWrapper
-            $active={router.pathname === "/pubs-admin"}
+            $active={router.pathname === "/admin"}
             onClick={() => setIsOpen(false)}
           >
-            <Link href="/pubs-admin">Pubs Admin</Link>
+            <Link href="/admin">Admin</Link>
           </LinkWrapper>
         )}
         <LoginWrapper $isOpen={isOpen}>

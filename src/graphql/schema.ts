@@ -40,6 +40,12 @@ type Pub {
   isRequiresManualReview: Boolean!
 }
 
+type User {
+  id: Int!
+  name: String!
+  email: String!
+}
+
 input PubInput {
   name: String!
   address: String!
@@ -75,16 +81,32 @@ input CommentInput {
   pubId: ID!
 }
 
+input UserInput {
+  name: String!
+  email: String!
+}
+
+type Admin {
+  id: Int!
+  userId: Int!
+}
+
 type Query {
   pubs: [Pub]
   comments(pubId: ID!): [Comment]
+  users: [User]
+  admin: [Admin]
+  admins: [Admin]
 }
+
 
 type Mutation {
   addPub(input: PubInput!): Pub!
   addComment(input: CommentInput!): Comment!
   deletePub(id: ID!): Pub!
   approvePub(id: Int!): Pub!
+  addUser(input: UserInput!): User!
+  addAdmin(userId: Int!): Admin!
+  removeAdmin(userId: Int!): Admin!
 }
-
 `;

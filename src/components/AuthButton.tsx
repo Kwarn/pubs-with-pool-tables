@@ -1,26 +1,19 @@
-import { useUserStore } from "@/state/userStore";
-import { useUser } from "@auth0/nextjs-auth0/client";
-import React, { useEffect } from "react";
 import styled from "styled-components";
+import { useUser } from "@auth0/nextjs-auth0/client";
+import { useUserStore } from "@/state/userStore";
 
 const Login = () => {
-  const { updateUser, updateLastRoute } = useUserStore();
+  const { updateAuthUser, updateLocalUser } = useUserStore();
   const { user, error, isLoading } = useUser();
 
-  useEffect(() => {
-    if (user) {
-      updateUser(user);
-    }
-  }, [user]);
+  const handleLogout = () => {
+    updateAuthUser(null);
+    updateLocalUser(null);
+  };
 
   if (isLoading) return <NavLink>Loading...</NavLink>;
 
   if (error) return <NavLink>{error.message}</NavLink>;
-
-  const handleLogout = () => {
-    updateUser(null); //  handle this more gracefully on return from auth0
-    updateLastRoute("/");
-  };
 
   return (
     <LoginContainer>

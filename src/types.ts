@@ -15,14 +15,6 @@ export interface Rules {
   isReservationAllowed: string;
 }
 
-export interface User {
-  id: number;
-  name: string | null;
-  email: string;
-  createdPubs?: Pub[];
-  updatedPubs?: Pub[];
-}
-
 export interface MapLocation {
   id?: number;
   lat: number;
@@ -54,6 +46,12 @@ export interface Pub {
   isRequiresManualReview: boolean;
 }
 
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
 export interface PubInput {
   name: string;
   address: string;
@@ -68,4 +66,9 @@ export interface CommentInput {
   text: string;
   author: string;
   pubId: number;
+}
+
+export interface UserInput {
+  name: string;
+  email: string;
 }

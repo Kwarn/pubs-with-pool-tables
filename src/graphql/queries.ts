@@ -39,3 +39,29 @@ export const GET_PUB_COMMENTS = gql`
     }
   }
 `;
+
+export const GET_USERS = gql`
+  query GetUsers {
+    users {
+      id
+      name
+      email
+    }
+  }
+`;
+
+export const GET_ADMINS = gql`
+  query GetAdmins {
+    admins {
+      userId
+    }
+  }
+`;
+
+export const GET_ADMIN = gql`
+  query GetAdmin($userId: ID!) {
+    admin(userId: $userId) {
+      userId
+    }
+  }
+`;
