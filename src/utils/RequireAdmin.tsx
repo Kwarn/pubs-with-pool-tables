@@ -9,7 +9,7 @@ const RequireAdmin = <P extends object>(
 ) => {
   const AuthComponent: React.FC<P> = (props) => {
     const { localUser } = useUserStore();
-    const [loadingInitial, setLoadingInitial] = useState(true); // State to track initial loading
+    const [loadingInitial, setLoadingInitial] = useState(true);
     const {
       data: adminData,
       loading: adminLoading,
@@ -22,28 +22,26 @@ const RequireAdmin = <P extends object>(
     const router = useRouter();
 
     useEffect(() => {
-      // Check if admin data is loaded and not loading initial
       if (!adminLoading && adminData) {
-        setLoadingInitial(false); // Set loadingInitial to false once data is loaded
+        setLoadingInitial(false);
       }
     }, [adminLoading, adminData]);
 
     useEffect(() => {
-      // Redirect only after initial loading is complete and admin data is available
       if (!loadingInitial && (!adminData || !adminData.admin)) {
         router.push("/");
       }
     }, [loadingInitial, adminData]);
 
     if (adminLoading || loadingInitial) {
-      return <div>Loading...</div>; // Show loading indicator while fetching data
+      return <div>Loading...</div>;
     }
 
     if (adminData && adminData.admin) {
-      return <WrappedComponent {...props} />; // Render the wrapped component if user is admin
+      return <WrappedComponent {...props} />;
     }
 
-    return <div>Unauthorized Access</div>; // Render unauthorized access if user is not admin
+    return <div>Unauthorized Access</div>;
   };
 
   return AuthComponent;

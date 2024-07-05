@@ -96,7 +96,6 @@ export const UserStoreProvider: React.FC<{ children: ReactNode }> = ({
   );
 };
 
-// Custom hook to consume the context
 export const useUserStore = (): UserContextType => {
   return useContext(UserStoreContext);
 };
