@@ -4,18 +4,39 @@ import { useRouter } from "next/router";
 import Login from "./AuthButton";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import styled from "styled-components";
+import { useQuery } from "@apollo/client";
+import { GET_ADMIN } from "@/graphql/queries";
+import { useUserStore } from "@/state/userStore";
 
 const NavBar = () => {
   const { user } = useUser();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
+  const [isUserAdmin, setIsUserAdmin] = useState(false);
+  const { localUser } = useUserStore();
 
   const handleClickOutside = (event: MouseEvent) => {
     if (navRef.current && !navRef.current.contains(event.target as Node)) {
       setIsOpen(false);
     }
   };
+
+  const {
+    data: adminData,
+    loading: adminLoading,
+    error: adminError,
+    refetch: refetchAdmin,
+  } = useQuery(GET_ADMIN, {
+    variables: { userId: localUser?.id },
+    skip: !localUser?.id,
+  });
+
+  useEffect(() => {
+    if (adminData?.admin) {
+      setIsUserAdmin(true);
+    }
+  }, [adminData]);
 
   useEffect(() => {
     document.addEventListener("click", handleClickOutside);
@@ -48,7 +69,7 @@ const NavBar = () => {
             Add Pub
           </Link>
         </LinkWrapper>
-        {user && (
+        {isUserAdmin && (
           <LinkWrapper
             $active={router.pathname === "/admin"}
             onClick={() => setIsOpen(false)}

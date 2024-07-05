@@ -18,7 +18,7 @@ export const resolvers = {
         throw new Error("Failed to fetch pubs");
       }
     },
-    comments: async (_: undefined, { pubId }: { pubId: number }) => {
+    comments: async (_: undefined, { pubId }: { pubId: string }) => {
       try {
         return await prisma.comment.findMany({
           where: { pubId: Number(pubId) },
@@ -37,12 +37,12 @@ export const resolvers = {
         throw new Error("Failed to fetch users");
       }
     },
-    admin: async (_: undefined, { userId }: { userId: number }) => {
+    admin: async (_: undefined, { userId }: { userId: string }) => {
       try {
         const admin = await prisma.admin.findUnique({
-          where: { userId },
+          where: { userId: Number(userId) },
         });
-        return admin || { isAdmin: false }; // Return { isAdmin: false } if admin is not found
+        return admin || null;
       } catch (error) {
         console.error(`Error fetching admin: ${error}`);
         throw new Error("Failed to fetch admin");
@@ -116,7 +116,7 @@ export const resolvers = {
         throw new Error("Failed to create pub");
       }
     },
-    deletePub: async (_: undefined, { id }: { id: number }) => {
+    deletePub: async (_: undefined, { id }: { id: string }) => {
       const pubId = Number(id);
       try {
         await prisma.comment.deleteMany({
@@ -133,10 +133,10 @@ export const resolvers = {
         throw new Error("Failed to delete pub");
       }
     },
-    approvePub: async (_: undefined, { id }: { id: number }) => {
+    approvePub: async (_: undefined, { id }: { id: string }) => {
       try {
         const updatedPub = await prisma.pub.update({
-          where: { id },
+          where: { id: Number(id) },
           data: {
             isRequiresManualReview: false,
           },
@@ -197,10 +197,11 @@ export const resolvers = {
         throw new Error("Failed to create user");
       }
     },
-    addAdmin: async (_: undefined, { userId }: { userId: number }) => {
+    addAdmin: async (_: undefined, { userId }: { userId: string }) => {
+      const id = Number(userId);
       try {
         const existingAdmin = await prisma.admin.findUnique({
-          where: { userId },
+          where: { userId: id },
         });
 
         if (existingAdmin) {
@@ -209,7 +210,7 @@ export const resolvers = {
 
         const admin = await prisma.admin.create({
           data: {
-            userId,
+            userId: Number(userId),
           },
         });
 
@@ -218,10 +219,11 @@ export const resolvers = {
         throw new Error(`Failed to add admin: ${error}`);
       }
     },
-    removeAdmin: async (_: undefined, { userId }: { userId: number }) => {
+    removeAdmin: async (_: undefined, { userId }: { userId: string }) => {
+      const id = Number(userId);
       try {
         const admin = await prisma.admin.findUnique({
-          where: { userId },
+          where: { userId: Number(userId) },
         });
 
         if (!admin) {
@@ -229,7 +231,7 @@ export const resolvers = {
         }
 
         await prisma.admin.delete({
-          where: { userId },
+          where: { userId: id },
         });
 
         return admin;

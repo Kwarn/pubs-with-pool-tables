@@ -11,8 +11,16 @@ import {
 import Spinner from "@/components/Spinner";
 import { Pub, User } from "@/types";
 import { Admin } from "@prisma/client";
+import RequireAdmin from "@/utils/RequireAdmin";
 
-const Pubs: React.FC = () => {
+const AdminPage: React.FC = () => {
+  const {
+    data: adminData,
+    loading: adminLoading,
+    error: adminError,
+    refetch: refetchAdmins,
+  } = useQuery<{ admins: Admin[] }>(GET_ADMINS);
+
   const {
     data: pubData,
     loading: pubLoading,
@@ -25,12 +33,6 @@ const Pubs: React.FC = () => {
     error: userError,
     refetch: refetchUsers,
   } = useQuery<{ users: User[] }>(GET_USERS);
-  const {
-    data: adminData,
-    loading: adminLoading,
-    error: adminError,
-    refetch: refetchAdmins,
-  } = useQuery<{ admins: Admin[] }>(GET_ADMINS);
 
   const [deletePub] = useMutation(DELETE_PUB_MUTATION);
   const [approvePub] = useMutation(APPROVE_PUB_MUTATION);
@@ -116,7 +118,7 @@ const Pubs: React.FC = () => {
     }
   };
 
-  if (pubLoading || userLoading)
+  if (pubLoading || userLoading || adminLoading)
     return (
       <SpinnerContainer>
         <Spinner size="lg" />
@@ -225,7 +227,7 @@ const Pubs: React.FC = () => {
   );
 };
 
-export default Pubs;
+export default RequireAdmin(AdminPage);
 
 const Container = styled.div`
   display: flex;

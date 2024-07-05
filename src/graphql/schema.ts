@@ -95,7 +95,7 @@ type Query {
   pubs: [Pub]
   comments(pubId: ID!): [Comment]
   users: [User]
-  admin: [Admin]
+  admin(userId: ID!): Admin
   admins: [Admin]
 }
 
