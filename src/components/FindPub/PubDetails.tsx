@@ -18,7 +18,7 @@ const PubDetails: React.FC<PubDetailsProps> = ({
   onAddComment,
   newComment,
 }) => {
-  const { user } = useUserStore();
+  const { localUser } = useUserStore();
 
   const [comments, setComments] = useState<Comment[]>([]);
 
@@ -32,7 +32,7 @@ const PubDetails: React.FC<PubDetailsProps> = ({
   const handleCommentSubmit = (text: string) => {
     onAddComment({
       text,
-      author: user?.name ?? "unknown",
+      author: localUser?.name ?? "unknown",
       pubId: pub.id,
     });
   };
