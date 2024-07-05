@@ -8,7 +8,7 @@ interface CommentFormProps {
 
 const CommentForm: React.FC<CommentFormProps> = ({ onSubmit }) => {
   const [commentText, setCommentText] = useState("");
-  const { user } = useUserStore();
+  const { localUser } = useUserStore();
 
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +21,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ onSubmit }) => {
 
   return (
     <Form onSubmit={handleCommentSubmit}>
-      {user ? (
+      {localUser ? (
         <>
           <Textarea
             placeholder="Your Comment"
