@@ -20,7 +20,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
   error,
   onSubmit,
 }) => {
-  const { user } = useUserStore();
+  const { localUser } = useUserStore();
 
   const [formState, setFormState] = useState({
     name: "",
@@ -48,7 +48,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!user?.name) {
+    if (!localUser?.name) {
       return; // TODO: need auth redirect
     }
 
@@ -66,7 +66,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
         isReservationAllowed: formState.isReservationAllowed,
       },
       isRequiresManualReview: isNotPub,
-      createdBy: user.name,
+      createdBy: localUser.name,
     });
   };
 
