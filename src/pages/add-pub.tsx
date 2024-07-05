@@ -23,9 +23,6 @@ const AddPub: React.FC = () => {
   const handleFormSubmit = async (formData: PubInput) => {
     try {
       await createPub({ variables: { input: formData } });
-      await fetch("/api/revalidate-find-pub", {
-        method: "POST",
-      });
     } catch (e: any) {
       console.log(e);
     }
@@ -71,9 +68,10 @@ const Container = styled.div`
 
 const AddPubFormContainer = styled.div<{ $isOpen: boolean }>`
   background-color: ${({ theme }) => theme.colors.primary};
-  width: ${({ $isOpen }) => ($isOpen ? "30vw" : "0")};
+  width: ${({ $isOpen }) => ($isOpen ? "40vw" : "0")};
   transition: width 0.3s ease-in-out;
   height: 100%;
+  overflow-y: auto;
   @media (max-width: 768px) {
     width: 100%;
     height: ${({ $isOpen }) => ($isOpen ? "100%" : "0")};

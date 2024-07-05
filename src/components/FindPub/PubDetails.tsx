@@ -71,69 +71,67 @@ const PubDetails: React.FC<PubDetailsProps> = ({
   return (
     <Container id={pub.name}>
       <Details>
-        <Name>{pub?.name ?? "unknown"}</Name>
-        <Address>{pub?.address || "unknown"}</Address>
         <AddedBy>
           <strong>Added By:</strong> {pub.createdBy ?? "Unknown"}
         </AddedBy>
-        <Divider />
+        <Name>{pub?.name ?? "unknown"}</Name>
+        <Address>{pub?.address || "unknown"}</Address>
         <InfoContainer>
           <Rules>
             <Info>
-              <strong>Cue deposit:</strong>
+              <strong>Cue deposit</strong>
               {getIcon(pub?.rules?.isCueDeposit)}
             </Info>
             <Info>
-              <strong>Pre-booking:</strong>
+              <strong>Pre-booking</strong>
               {getIcon(pub?.rules?.isReservationAllowed)}
             </Info>
             <Info>
-              <strong>Jumping balls:</strong>
+              <strong>Jumping balls</strong>
               {getIcon(pub?.rules?.isJumpingAllowed)}
             </Info>
             <Info>
-              <strong>Pound down:</strong>
+              <strong>Pound down</strong>
               {getIcon(pub?.rules?.isPoundOnTable)}
             </Info>
           </Rules>
           <PubInfo>
             {pub.pubInformation && (
               <Info>
-                <strong>Number of tables:</strong>
+                <strong>Number of tables</strong>
                 {pub.pubInformation.numberOfTables}
               </Info>
             )}
             {pub.pubInformation && (
               <Info>
-                <strong>Table quality:</strong>{" "}
-                {pub.pubInformation.tableQuality}
+                <strong>Table quality</strong> {pub.pubInformation.tableQuality}
               </Info>
             )}
             {pub.pubInformation && (
               <Info>
-                <strong>Table cost:</strong> {pub.pubInformation.tableCost}
+                <strong>Table cost</strong> £{pub.pubInformation.tableCost}
               </Info>
             )}
             {pub.pubInformation && (
               <Info>
-                <strong>Cue quality:</strong> {pub.pubInformation.cueQuality}
+                <strong>Cue quality</strong> {pub.pubInformation.cueQuality}
               </Info>
             )}
             {pub.pubInformation && (
               <Info>
-                <strong>Has Chalk:</strong>{" "}
+                <strong>Has Chalk</strong>{" "}
                 {getIcon(pub?.pubInformation?.hasChalk)}
               </Info>
             )}
             {pub.pubInformation && (
               <Info>
-                <strong>Wheelchair access:</strong>
+                <strong>Wheelchair access</strong>
                 {getIcon(pub?.pubInformation?.wheelchairAccess)}
               </Info>
             )}
             {pub.pubInformation && (
               <Info>
-                <strong>Kids friendly:</strong>
+                <strong>Kids friendly</strong>
                 {getIcon(pub?.pubInformation?.kidsFriendly)}
               </Info>
             )}
@@ -142,11 +140,11 @@ const PubDetails: React.FC<PubDetailsProps> = ({
 
         {pub.tables && pub.tables.length > 0 && (
           <Info>
-            <strong>Tables:</strong>
+            <strong>Tables</strong>
             <ul>
               {pub?.tables?.map((table) => (
                 <li key={table.id}>
-                  Size: {table.size}, Quality: {table.quality}, Cost:
+                  Size: {table.size}, Quality: {table.quality}, Cost: £
                   {table.cost}
                 </li>
               ))}
@@ -185,11 +183,6 @@ const Details = styled.div`
   }
 `;
 
-const Divider = styled.hr`
-  height: 2px;
-  background-color: ${({ theme }) => theme.colors.text};
-`;
-
 const Name = styled.h1`
   font-family: ${({ theme }) => theme.fonts.heading};
   font-size: 1.5rem;
@@ -207,35 +200,47 @@ const Address = styled.p`
 `;
 
 const AddedBy = styled.p`
-  top: 80px;
+  text-align: left;
+  font-size: 14px;
   @media (max-width: 768px) {
-    top: 0px;
-    font-size: 14px;
+    font-size: 12px;
+  }
+`;
+
+const InfoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  @media (max-width: 768px) {
+    flex-direction: row;
   }
 `;
 
 const Info = styled.div`
-  margin-bottom: 10px;
+  margin: 10px 10px 10px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
 
   strong {
     margin-right: 5px;
   }
 `;
 
-const InfoContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
 const Rules = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const PubInfo = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: rpw;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const CommentsSection = styled.div`

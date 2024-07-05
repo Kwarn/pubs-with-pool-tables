@@ -29,9 +29,9 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
     isJumpingAllowed: "Don't Know",
     isPoundOnTable: "Don't Know",
     isReservationAllowed: "Don't Know",
-    numberOfTables: 0,
+    numberOfTables: "", // Initialize as empty string
     tableQuality: "",
-    tableCost: 0,
+    tableCost: "", // Initialize as empty string
     cueQuality: "",
     hasChalk: "Don't Know",
     wheelchairAccess: "Don't Know",
@@ -73,9 +73,9 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
         isReservationAllowed: formState.isReservationAllowed,
       },
       pubInformation: {
-        numberOfTables: formState.numberOfTables,
+        numberOfTables: parseInt(formState.numberOfTables), // Parse to integer
         tableQuality: formState.tableQuality,
-        tableCost: formState.tableCost,
+        tableCost: parseFloat(formState.tableCost), // Parse to float
         cueQuality: formState.cueQuality,
         hasChalk: formState.hasChalk,
         wheelchairAccess: formState.wheelchairAccess,
@@ -119,9 +119,79 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
           </p>
         </Alert>
       )}
+      <FormGroup>
+        <Label>Number of tables</Label>
+        <NumberInput
+          type="number"
+          value={formState.numberOfTables}
+          onChange={(e) =>
+            setFormState({
+              ...formState,
+              numberOfTables: e.target.value,
+            })
+          }
+          disabled={loading || !place}
+          required
+        />
+      </FormGroup>
+      <FormGroup>
+        <Label>Cost of tables</Label>
+        <CurrencyInput
+          type="number"
+          step="0.01"
+          value={formState.tableCost}
+          onChange={(e) =>
+            setFormState({
+              ...formState,
+              tableCost: e.target.value,
+            })
+          }
+          disabled={loading || !place}
+          required
+        />
+      </FormGroup>
+      <FormGroup>
+        <Label>Quality of tables</Label>
+        <Select
+          value={formState.tableQuality}
+          onChange={(e) =>
+            setFormState({
+              ...formState,
+              tableQuality: e.target.value,
+            })
+          }
+          disabled={loading || !place}
+          required
+        >
+          <option value="">Select quality</option>
+          <option value="Low">Low</option>
+          <option value="Average">Average</option>
+          <option value="High">High</option>
+        </Select>
+      </FormGroup>
 
       <FormGroup>
-        <Label>is a deposit for the cues required?</Label>
+        <Label>Quality of cues</Label>
+        <Select
+          value={formState.cueQuality}
+          onChange={(e) =>
+            setFormState({
+              ...formState,
+              cueQuality: e.target.value,
+            })
+          }
+          disabled={loading || !place}
+          required
+        >
+          <option value="">Select quality</option>
+          <option value="Low">Low</option>
+          <option value="Average">Average</option>
+          <option value="High">High</option>
+        </Select>
+      </FormGroup>
+
+      <FormGroup>
+        <Label>is a deposit for the cues required</Label>
         <ButtonGroup>
           <Button
             type="button"
@@ -149,9 +219,8 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
           </Button>
         </ButtonGroup>
       </FormGroup>
-
       <FormGroup>
-        <Label>is jumping the whiteball allowed?</Label>
+        <Label>is jumping the whiteball allowed</Label>
         <ButtonGroup>
           <Button
             type="button"
@@ -181,7 +250,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
       </FormGroup>
 
       <FormGroup>
-        <Label>Can you hold a place in queue with a coin?</Label>
+        <Label>Can you hold a place in queue with a coin</Label>
         <ButtonGroup>
           <Button
             type="button"
@@ -211,7 +280,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
       </FormGroup>
 
       <FormGroup>
-        <Label>Can the tables here be pre-booked?</Label>
+        <Label>Can the tables here be pre-booked</Label>
         <ButtonGroup>
           <Button
             type="button"
@@ -241,107 +310,9 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
           </Button>
         </ButtonGroup>
       </FormGroup>
-      <FormGroup>
-        <Label>Cost of tables</Label>
-        <input
-          type="number"
-          step="0.01"
-          value={formState.tableCost}
-          onChange={(e) =>
-            setFormState({
-              ...formState,
-              tableCost: parseFloat(e.target.value),
-            })
-          }
-          disabled={loading || !place}
-          required
-        />
-      </FormGroup>
-      <FormGroup>
-        <Label>Number of tables</Label>
-        <input
-          type="number"
-          value={formState.numberOfTables}
-          onChange={(e) =>
-            setFormState({
-              ...formState,
-              numberOfTables: parseInt(e.target.value),
-            })
-          }
-          disabled={loading || !place}
-          required
-        />
-      </FormGroup>
-      <FormGroup>
-        <Label>Quality of tables</Label>
-        <select
-          value={formState.tableQuality}
-          onChange={(e) =>
-            setFormState({
-              ...formState,
-              tableQuality: e.target.value,
-            })
-          }
-          disabled={loading || !place}
-          required
-        >
-          <option value="">Select quality</option>
-          <option value="Low">Low</option>
-          <option value="Average">Average</option>
-          <option value="High">High</option>
-        </select>
-      </FormGroup>
 
       <FormGroup>
-        <Label>Quality of cues</Label>
-        <select
-          value={formState.cueQuality}
-          onChange={(e) =>
-            setFormState({
-              ...formState,
-              cueQuality: e.target.value,
-            })
-          }
-          disabled={loading || !place}
-          required
-        >
-          <option value="">Select quality</option>
-          <option value="Low">Low</option>
-          <option value="Average">Average</option>
-          <option value="High">High</option>
-        </select>
-      </FormGroup>
-      <FormGroup>
-        <Label>Kids friendly</Label>
-        <ButtonGroup>
-          <Button
-            type="button"
-            onClick={() => handleButtonToggle("kidsFriendly", "Yes")}
-            $selected={formState.kidsFriendly === "Yes"}
-            disabled={loading || !place}
-          >
-            Yes
-          </Button>
-          <Button
-            type="button"
-            onClick={() => handleButtonToggle("kidsFriendly", "No")}
-            $selected={formState.kidsFriendly === "No"}
-            disabled={loading || !place}
-          >
-            No
-          </Button>
-          <Button
-            type="button"
-            onClick={() => handleButtonToggle("kidsFriendly", "Don't Know")}
-            $selected={formState.kidsFriendly === "Don't Know"}
-            disabled={loading || !place}
-          >
-            {"Don't Know"}
-          </Button>
-        </ButtonGroup>
-      </FormGroup>
-      <FormGroup>
-        <Label>Has Chaulk</Label>
+        <Label>is there usually chaulk</Label>
         <ButtonGroup>
           <Button
             type="button"
@@ -370,7 +341,36 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
         </ButtonGroup>
       </FormGroup>
       <FormGroup>
-        <Label>Has wheelchair access?</Label>
+        <Label>Are the tables kids friendly</Label>
+        <ButtonGroup>
+          <Button
+            type="button"
+            onClick={() => handleButtonToggle("kidsFriendly", "Yes")}
+            $selected={formState.kidsFriendly === "Yes"}
+            disabled={loading || !place}
+          >
+            Yes
+          </Button>
+          <Button
+            type="button"
+            onClick={() => handleButtonToggle("kidsFriendly", "No")}
+            $selected={formState.kidsFriendly === "No"}
+            disabled={loading || !place}
+          >
+            No
+          </Button>
+          <Button
+            type="button"
+            onClick={() => handleButtonToggle("kidsFriendly", "Don't Know")}
+            $selected={formState.kidsFriendly === "Don't Know"}
+            disabled={loading || !place}
+          >
+            {"Don't Know"}
+          </Button>
+        </ButtonGroup>
+      </FormGroup>
+      <FormGroup>
+        <Label>Is there wheelchair access to the tables</Label>
         <ButtonGroup>
           <Button
             type="button"
@@ -408,7 +408,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
 export default AddPubForm;
 
 const Form = styled.form<{ $isOpen: boolean }>`
-  width: 30vw;
+  width: 100%;
   display: flex;
   flex-direction: column;
   @media (max-width: 768px) {
@@ -417,12 +417,44 @@ const Form = styled.form<{ $isOpen: boolean }>`
     width: 100%;
     padding: 0;
   }
+  padding: 0 20px 30px 20px;
+  box-sizing: border-box;
 `;
 
 const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
   margin: 5px 10px;
+`;
+
+const NumberInput = styled.input`
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #a1afa0;
+  border-radius: 4px;
+  margin-top: 5px;
+  box-sizing: border-box;
+`;
+
+const CurrencyInput = styled.input`
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #a1afa0;
+  border-radius: 4px;
+  margin-top: 5px;
+  box-sizing: border-box;
+`;
+
+const Select = styled.select`
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #a1afa0;
+  border-radius: 4px;
+  margin-top: 5px;
+  box-sizing: border-box;
 `;
 
 const Label = styled.label`
