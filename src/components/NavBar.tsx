@@ -63,11 +63,7 @@ const NavBar = () => {
           $active={router.pathname === "/add-pub"}
           onClick={() => setIsOpen(false)}
         >
-          <Link
-            href={user ? "/add-pub" : "/api/auth/login?returnTo=%2Fadd-pub"}
-          >
-            Add Pub
-          </Link>
+          <Link href={user ? "/add-pub" : "/api/auth/login"}>Add Pub</Link>
         </LinkWrapper>
         {isUserAdmin && (
           <LinkWrapper
