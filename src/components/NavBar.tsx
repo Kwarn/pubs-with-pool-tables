@@ -197,6 +197,10 @@ const LinkWrapper = styled.div<{ $active: boolean }>`
     width: fit-content;
     color: ${(props) => (props.$active ? "#fff" : "#ccc")};
     text-decoration: none;
+    @media (max-width: 768px) {
+      width: 100%;
+      text-align: center;
+    }
   }
 
   a:hover {

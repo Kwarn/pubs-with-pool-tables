@@ -15,31 +15,34 @@ const AddPub: React.FC = () => {
   const [pubAlreadyExists, setPubAlreadyExists] = useState<boolean>(false);
   const [showForm, setShowForm] = useState<boolean>(false);
 
-  const [getPubData, { data: pubData, loading: pubLoading, error: pubError }] =
+  const [getPubData, { loading: pubLoading, error: pubError }] =
     useLazyQuery(GET_PUB);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (place?.address) {
-        const { data } = await getPubData({
-          variables: { pubAddress: place.address },
-        });
-        if (data && data.pub) {
-          setPubAlreadyExists(true);
-          setShowForm(false);
-          return
-        } else {
-          setPubAlreadyExists(false);
-          setShowForm(true);
-          return
-        }
-      }
+    if (!place) {
       setPubAlreadyExists(false);
       setShowForm(false);
+      return;
+    }
+
+    if (place?.type !== "bar") setIsNotPub(true);
+    else setIsNotPub(false);
+
+    const fetchData = async () => {
+      const { data } = await getPubData({
+        variables: { pubAddress: place.address },
+      });
+      if (data?.pub) {
+        setPubAlreadyExists(true);
+        return setShowForm(false);
+      }
+      setPubAlreadyExists(false);
+      setShowForm(true);
     };
 
-    fetchData();
+    if (place.address) fetchData();
   }, [place]);
+
   const [createPub, { loading, error, data }] =
     useMutation(CREATE_PUB_MUTATION);
 
@@ -98,14 +101,22 @@ const Container = styled.div`
 
 const PubAlreadyExists = styled.div`
   position: absolute;
-  width: 90vw;
+  width: 20vw;
   top: 25vh;
-  left: calc(50% - 45vw);
+  left: calc(50% - 10vw);
   color: ${({ theme }) => theme.colors.text};
   padding: 20px;
   font-weight: bold;
   background-color: ${({ theme }) => theme.colors.primary};
   box-sizing: border-box;
+  h3 {
+    text-align: center;
+  }
+  @media (max-width: 768px) {
+    width: 90vw;
+    top: 25vh;
+    left: calc(50% - 45vw);
+  }
 `;
 
 const AddPubFormContainer = styled.div<{ $isOpen: boolean }>`
