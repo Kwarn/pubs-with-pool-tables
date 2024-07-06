@@ -10,15 +10,6 @@ export interface PubInformation {
   pubId?: number;
 }
 
-export interface Table {
-  id: number;
-  size: string | null;
-  quality: string | null;
-  cost: number | null;
-  description: string | null;
-  pubId: number;
-}
-
 export interface Rules {
   id?: number;
   isCueDeposit: string;
@@ -50,7 +41,6 @@ export interface Pub {
   location: MapLocation;
   rulesId: number;
   rules: Rules;
-  tables?: Table[];
   comments?: Comment[];
   createdBy: string;
   updatedBy?: User[];
@@ -70,10 +60,19 @@ export interface PubInput {
   address: string;
   location: MapLocation;
   rules: Rules;
-  tables?: Table[];
   createdBy: string;
   isRequiresManualReview: boolean;
-  pubInformation?: PubInformationInput;
+  pubInformation: PubInformationInput;
+}
+
+export interface UpdatePubInput {
+  pubId: number;
+  rules: Rules;
+  updatedBy: string;
+  // TODO in order to do this we need to add updates to a UpdatesPending table so we can retain the original until the update is approved and replaces it
+  // for now we'll just update the pub directly passing 'false' for isRequiresManualReview
+  isRequiresManualReview: boolean; 
+  pubInformation: PubInformationInput;
 }
 
 export interface PubInformationInput {

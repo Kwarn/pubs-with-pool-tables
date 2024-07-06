@@ -6,12 +6,6 @@ export const CREATE_PUB_MUTATION = gql`
       id
       name
       address
-      tables {
-        size
-        quality
-        cost
-        description
-      }
       location {
         id
         lat
@@ -23,7 +17,41 @@ export const CREATE_PUB_MUTATION = gql`
         isPoundOnTable
         isReservationAllowed
       }
-      isRequiresManualReview
+      pubInformation {
+        numberOfTables
+        tableQuality
+        tableCost
+        cueQuality
+        hasChalk
+        wheelchairAccess
+        kidsFriendly
+      }
+    }
+  }
+`;
+
+export const UPDATE_PUB_MUTATION = gql`
+  mutation UpdatePub($input: UpdatePubInput!) {
+    updatePub(input: $input) {
+      id
+      name
+      address
+      createdBy
+      rules {
+        isCueDeposit
+        isReservationAllowed
+        isJumpingAllowed
+        isPoundOnTable
+      }
+      pubInformation {
+        numberOfTables
+        tableQuality
+        tableCost
+        cueQuality
+        hasChalk
+        wheelchairAccess
+        kidsFriendly
+      }
     }
   }
 `;
@@ -54,26 +82,6 @@ export const APPROVE_PUB_MUTATION = gql`
   mutation ApprovePub($id: Int!) {
     approvePub(id: $id) {
       id
-      name
-      address
-      tables {
-        size
-        quality
-        cost
-        description
-      }
-      location {
-        id
-        lat
-        lng
-      }
-      rules {
-        isCueDeposit
-        isJumpingAllowed
-        isPoundOnTable
-        isReservationAllowed
-      }
-      isRequiresManualReview
     }
   }
 `;

@@ -12,12 +12,6 @@ export const GET_PUBS = gql`
         lat
         lng
       }
-      tables {
-        cost
-        description
-        quality
-        size
-      }
       rules {
         isCueDeposit
         isJumpingAllowed

@@ -2,24 +2,39 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Spinner from "@/components/Spinner";
 import { Place } from "./AddPubMap";
-import { PubInput } from "@/types";
+import { Pub, PubInput, UpdatePubInput } from "@/types";
 import { useUserStore } from "@/state/userStore";
+import usePubFormSubmit from "../hooks/usePubFormSubmit";
 
 interface AddPubFormProps {
-  place: Place | null;
-  isNotPub: boolean;
-  loading: boolean;
-  error: any;
-  onSubmit: (input: PubInput) => void;
+  editPubDetails?: Pub | null;
+  place?: Place | null;
+  onSubmitCallback?: (updatedPub: Pub) => void;
 }
 
 const AddPubForm: React.FC<AddPubFormProps> = ({
+  editPubDetails,
   place,
-  isNotPub,
-  loading,
-  error,
-  onSubmit,
+  onSubmitCallback,
 }) => {
+  const [isNotPub, setIsNotPub] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (place?.type !== "bar") setIsNotPub(true);
+    else setIsNotPub(false);
+  }, [place]);
+
+  const { handleFormSubmit, loading, error } = usePubFormSubmit();
+
+  const submit = async (
+    mode: "create" | "update",
+    formData: PubInput | UpdatePubInput
+  ) => {
+    const pub = await handleFormSubmit(mode, formData);
+    if (onSubmitCallback) {
+      onSubmitCallback(pub);
+    }
+  };
   const { localUser } = useUserStore();
 
   const [formState, setFormState] = useState({
@@ -29,9 +44,9 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
     isJumpingAllowed: "Don't Know",
     isPoundOnTable: "Don't Know",
     isReservationAllowed: "Don't Know",
-    numberOfTables: "", // Initialize as empty string
+    numberOfTables: "",
     tableQuality: "",
-    tableCost: "", // Initialize as empty string
+    tableCost: "",
     cueQuality: "",
     hasChalk: "Don't Know",
     wheelchairAccess: "Don't Know",
@@ -39,6 +54,30 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
   });
 
   useEffect(() => {
+    // set state to editPubDetails if it exists
+    setFormState({
+      name: editPubDetails?.name ?? "",
+      address: editPubDetails?.address ?? "",
+      isCueDeposit: editPubDetails?.rules.isCueDeposit ?? "Don't Know",
+      isJumpingAllowed: editPubDetails?.rules.isJumpingAllowed ?? "Don't Know",
+      isPoundOnTable: editPubDetails?.rules.isPoundOnTable ?? "Don't Know",
+      isReservationAllowed:
+        editPubDetails?.rules.isReservationAllowed ?? "Don't Know",
+      numberOfTables:
+        editPubDetails?.pubInformation?.numberOfTables?.toString() ?? "",
+      tableQuality: editPubDetails?.pubInformation?.tableQuality ?? "",
+      tableCost: editPubDetails?.pubInformation?.tableCost?.toString() ?? "",
+      cueQuality: editPubDetails?.pubInformation?.cueQuality ?? "",
+      hasChalk: editPubDetails?.pubInformation?.hasChalk ?? "Don't Know",
+      wheelchairAccess:
+        editPubDetails?.pubInformation?.wheelchairAccess ?? "Don't Know",
+      kidsFriendly:
+        editPubDetails?.pubInformation?.kidsFriendly ?? "Don't Know",
+    });
+  }, [editPubDetails]);
+
+  useEffect(() => {
+    // update the name & address formState when place changes
     setFormState((prevState) => ({
       ...prevState,
       name: place?.name ?? "",
@@ -47,6 +86,7 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
   }, [place]);
 
   const handleButtonToggle = (name: keyof typeof formState, value: string) => {
+    // handles updating state for multi select buttons
     setFormState({
       ...formState,
       [name]: value,
@@ -54,46 +94,74 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    // handles formatting data for either creating or updating a pub
     e.preventDefault();
     if (!localUser?.name) {
       return; // TODO: need auth redirect
     }
 
-    onSubmit({
-      name: formState.name,
-      address: formState.address,
-      location: {
-        lat: place?.lat ?? 0,
-        lng: place?.lng ?? 0,
-      },
-      rules: {
-        isCueDeposit: formState.isCueDeposit,
-        isJumpingAllowed: formState.isJumpingAllowed,
-        isPoundOnTable: formState.isPoundOnTable,
-        isReservationAllowed: formState.isReservationAllowed,
-      },
-      pubInformation: {
-        numberOfTables: parseInt(formState.numberOfTables), // Parse to integer
-        tableQuality: formState.tableQuality,
-        tableCost: parseFloat(formState.tableCost), // Parse to float
-        cueQuality: formState.cueQuality,
-        hasChalk: formState.hasChalk,
-        wheelchairAccess: formState.wheelchairAccess,
-        kidsFriendly: formState.kidsFriendly,
-      },
-      isRequiresManualReview: isNotPub,
-      createdBy: localUser.name,
-    });
+    let submitData: PubInput | UpdatePubInput;
+
+    if (editPubDetails) {
+      submitData = {
+        updatedBy: localUser.name,
+        pubId: editPubDetails.id,
+        rules: {
+          isCueDeposit: formState.isCueDeposit,
+          isJumpingAllowed: formState.isJumpingAllowed,
+          isPoundOnTable: formState.isPoundOnTable,
+          isReservationAllowed: formState.isReservationAllowed,
+        },
+        isRequiresManualReview: false, // TODO add manual review logic see types.ts
+        pubInformation: {
+          numberOfTables: parseInt(formState.numberOfTables),
+          tableQuality: formState.tableQuality,
+          tableCost: parseFloat(formState.tableCost),
+          cueQuality: formState.cueQuality,
+          hasChalk: formState.hasChalk,
+          wheelchairAccess: formState.wheelchairAccess,
+          kidsFriendly: formState.kidsFriendly,
+        },
+      } as UpdatePubInput;
+    } else {
+      submitData = {
+        name: formState.name,
+        address: formState.address,
+        location: {
+          lat: place?.lat ?? 0,
+          lng: place?.lng ?? 0,
+        },
+        rules: {
+          isCueDeposit: formState.isCueDeposit,
+          isJumpingAllowed: formState.isJumpingAllowed,
+          isPoundOnTable: formState.isPoundOnTable,
+          isReservationAllowed: formState.isReservationAllowed,
+        },
+        pubInformation: {
+          numberOfTables: parseInt(formState.numberOfTables),
+          tableQuality: formState.tableQuality,
+          tableCost: parseFloat(formState.tableCost),
+          cueQuality: formState.cueQuality,
+          hasChalk: formState.hasChalk,
+          wheelchairAccess: formState.wheelchairAccess,
+          kidsFriendly: formState.kidsFriendly,
+        },
+        isRequiresManualReview: isNotPub,
+        createdBy: localUser.name,
+      } as PubInput;
+    }
+
+    submit(editPubDetails ? "update" : "create", submitData);
   };
 
   return (
-    <Form onSubmit={handleSubmit} $isOpen={!!place}>
+    <Form onSubmit={handleSubmit} $isOpen={!!place || !!editPubDetails}>
       {error && (
         <Alert $bgColor="#f8d7da">
           <p>{error?.message || "Something went wrong.."}</p>
         </Alert>
       )}
-      {!place && (
+      {!place && !editPubDetails && (
         <Alert $bgColor="transparent">
           <p>Search for a pub or select a pub on the map to start</p>
         </Alert>
@@ -130,7 +198,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
               numberOfTables: e.target.value,
             })
           }
-          disabled={loading || !place}
           required
         />
       </FormGroup>
@@ -146,7 +213,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
               tableCost: e.target.value,
             })
           }
-          disabled={loading || !place}
           required
         />
       </FormGroup>
@@ -160,7 +226,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
               tableQuality: e.target.value,
             })
           }
-          disabled={loading || !place}
           required
         >
           <option value="">Select quality</option>
@@ -180,7 +245,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
               cueQuality: e.target.value,
             })
           }
-          disabled={loading || !place}
           required
         >
           <option value="">Select quality</option>
@@ -197,7 +261,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
             type="button"
             onClick={() => handleButtonToggle("isCueDeposit", "Yes")}
             $selected={formState.isCueDeposit === "Yes"}
-            disabled={loading || !place}
           >
             Yes
           </Button>
@@ -205,7 +268,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
             type="button"
             onClick={() => handleButtonToggle("isCueDeposit", "No")}
             $selected={formState.isCueDeposit === "No"}
-            disabled={loading || !place}
           >
             No
           </Button>
@@ -213,7 +275,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
             type="button"
             onClick={() => handleButtonToggle("isCueDeposit", "Don't Know")}
             $selected={formState.isCueDeposit === "Don't Know"}
-            disabled={loading || !place}
           >
             {"Don't Know"}
           </Button>
@@ -226,7 +287,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
             type="button"
             onClick={() => handleButtonToggle("isJumpingAllowed", "Yes")}
             $selected={formState.isJumpingAllowed === "Yes"}
-            disabled={loading || !place}
           >
             Yes
           </Button>
@@ -234,7 +294,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
             type="button"
             onClick={() => handleButtonToggle("isJumpingAllowed", "No")}
             $selected={formState.isJumpingAllowed === "No"}
-            disabled={loading || !place}
           >
             No
           </Button>
@@ -242,7 +301,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
             type="button"
             onClick={() => handleButtonToggle("isJumpingAllowed", "Don't Know")}
             $selected={formState.isJumpingAllowed === "Don't Know"}
-            disabled={loading || !place}
           >
             {"Don't Know"}
           </Button>
@@ -256,7 +314,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
             type="button"
             onClick={() => handleButtonToggle("isPoundOnTable", "Yes")}
             $selected={formState.isPoundOnTable === "Yes"}
-            disabled={loading || !place}
           >
             Yes
           </Button>
@@ -264,7 +321,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
             type="button"
             onClick={() => handleButtonToggle("isPoundOnTable", "No")}
             $selected={formState.isPoundOnTable === "No"}
-            disabled={loading || !place}
           >
             No
           </Button>
@@ -272,7 +328,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
             type="button"
             onClick={() => handleButtonToggle("isPoundOnTable", "Don't Know")}
             $selected={formState.isPoundOnTable === "Don't Know"}
-            disabled={loading || !place}
           >
             {"Don't Know"}
           </Button>
@@ -286,7 +341,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
             type="button"
             onClick={() => handleButtonToggle("isReservationAllowed", "Yes")}
             $selected={formState.isReservationAllowed === "Yes"}
-            disabled={loading || !place}
           >
             Yes
           </Button>
@@ -294,7 +348,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
             type="button"
             onClick={() => handleButtonToggle("isReservationAllowed", "No")}
             $selected={formState.isReservationAllowed === "No"}
-            disabled={loading || !place}
           >
             No
           </Button>
@@ -304,7 +357,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
               handleButtonToggle("isReservationAllowed", "Don't Know")
             }
             $selected={formState.isReservationAllowed === "Don't Know"}
-            disabled={loading || !place}
           >
             {"Don't Know"}
           </Button>
@@ -318,7 +370,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
             type="button"
             onClick={() => handleButtonToggle("hasChalk", "Yes")}
             $selected={formState.hasChalk === "Yes"}
-            disabled={loading || !place}
           >
             Yes
           </Button>
@@ -326,7 +377,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
             type="button"
             onClick={() => handleButtonToggle("hasChalk", "No")}
             $selected={formState.hasChalk === "No"}
-            disabled={loading || !place}
           >
             No
           </Button>
@@ -334,7 +384,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
             type="button"
             onClick={() => handleButtonToggle("hasChalk", "Don't Know")}
             $selected={formState.hasChalk === "Don't Know"}
-            disabled={loading || !place}
           >
             {"Don't Know"}
           </Button>
@@ -347,7 +396,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
             type="button"
             onClick={() => handleButtonToggle("kidsFriendly", "Yes")}
             $selected={formState.kidsFriendly === "Yes"}
-            disabled={loading || !place}
           >
             Yes
           </Button>
@@ -355,7 +403,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
             type="button"
             onClick={() => handleButtonToggle("kidsFriendly", "No")}
             $selected={formState.kidsFriendly === "No"}
-            disabled={loading || !place}
           >
             No
           </Button>
@@ -363,7 +410,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
             type="button"
             onClick={() => handleButtonToggle("kidsFriendly", "Don't Know")}
             $selected={formState.kidsFriendly === "Don't Know"}
-            disabled={loading || !place}
           >
             {"Don't Know"}
           </Button>
@@ -376,7 +422,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
             type="button"
             onClick={() => handleButtonToggle("wheelchairAccess", "Yes")}
             $selected={formState.wheelchairAccess === "Yes"}
-            disabled={loading || !place}
           >
             Yes
           </Button>
@@ -384,7 +429,6 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
             type="button"
             onClick={() => handleButtonToggle("wheelchairAccess", "No")}
             $selected={formState.wheelchairAccess === "No"}
-            disabled={loading || !place}
           >
             No
           </Button>
@@ -392,14 +436,19 @@ const AddPubForm: React.FC<AddPubFormProps> = ({
             type="button"
             onClick={() => handleButtonToggle("wheelchairAccess", "Don't Know")}
             $selected={formState.wheelchairAccess === "Don't Know"}
-            disabled={loading || !place}
           >
             {"Don't Know"}
           </Button>
         </ButtonGroup>
       </FormGroup>
-      <SubmitButton type="submit" disabled={loading || !place}>
-        {loading ? <Spinner size="sm" /> : "Add Pub"}
+      <SubmitButton type="submit">
+        {loading ? (
+          <Spinner size="sm" />
+        ) : editPubDetails ? (
+          "Update pub"
+        ) : (
+          "Add Pub"
+        )}
       </SubmitButton>
     </Form>
   );
@@ -411,14 +460,13 @@ const Form = styled.form<{ $isOpen: boolean }>`
   width: 100%;
   display: flex;
   flex-direction: column;
+  padding: 0 20px 30px 20px;
+  box-sizing: border-box;
   @media (max-width: 768px) {
     height: ${({ $isOpen }) => ($isOpen ? "100%" : "0")};
     display: ${({ $isOpen }) => ($isOpen ? "flex" : "none")};
     width: 100%;
-    padding: 0;
   }
-  padding: 0 20px 30px 20px;
-  box-sizing: border-box;
 `;
 
 const FormGroup = styled.div`
@@ -524,15 +572,19 @@ const Button = styled.button<{ $selected: boolean }>`
 `;
 
 const SubmitButton = styled.button`
-  margin: 15px 10px 0px 10px;
+  font-family: ${({ theme }) => theme.fonts.heading};
+  margin: 15px 10px 20px 10px;
   padding: 10px 15px;
-  background-color: #2e92ea;
+  background-color: ${({ theme }) => theme.colors.secondary};
   color: #fff;
   border: none;
   border-radius: 4px;
   font-size: 20px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  @media (max-width: 768px) {
+    margin: 10px 0;
+  }
 `;
 
 interface AlertProps {

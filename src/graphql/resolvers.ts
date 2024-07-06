@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { CommentInput, PubInput, Table, UserInput } from "@/types";
+import { CommentInput, PubInput, UserInput, UpdatePubInput } from "@/types";
 
 export const resolvers = {
   Query: {
@@ -19,7 +19,6 @@ export const resolvers = {
       try {
         return await prisma.pub.findMany({
           include: {
-            tables: true,
             location: true,
             rules: true,
             comments: true,
@@ -78,62 +77,56 @@ export const resolvers = {
         createdBy,
         location,
         rules,
-        tables,
         isRequiresManualReview,
         pubInformation,
       } = input;
 
-      const newPub = {
-        name: name,
-        address: address,
-        createdBy: createdBy,
-        location: {
-          create: {
-            lat: location.lat,
-            lng: location.lng,
-          },
-        },
-        rules: {
-          create: {
-            isCueDeposit: rules.isCueDeposit,
-            isJumpingAllowed: rules.isJumpingAllowed,
-            isPoundOnTable: rules.isPoundOnTable,
-            isReservationAllowed: rules.isReservationAllowed,
-          },
-        },
-        tables: tables
-          ? {
-              create: tables.map((table: Table) => ({
-                size: table.size,
-                quality: table.quality,
-                cost: table.cost,
-                description: table.description,
-              })),
-            }
-          : undefined,
-        isRequiresManualReview,
-        pubInformation: pubInformation
-          ? {
-              create: {
-                numberOfTables: pubInformation.numberOfTables,
-                tableQuality: pubInformation.tableQuality,
-                tableCost: pubInformation.tableCost,
-                cueQuality: pubInformation.cueQuality,
-                hasChalk: pubInformation.hasChalk,
-                wheelchairAccess: pubInformation.wheelchairAccess,
-                kidsFriendly: pubInformation.kidsFriendly,
-              },
-            }
-          : undefined,
-      };
-
       try {
+        const existingPub = await prisma.pub.findFirst({ // TODO update schema - make this a unique constraint
+          where: { address: address },
+        });
+
+        if (existingPub) {
+          throw new Error("A pub with this address already exists");
+        }
+        const newPub = {
+          name: name,
+          address: address,
+          createdBy: createdBy,
+          location: {
+            create: {
+              lat: location.lat,
+              lng: location.lng,
+            },
+          },
+          rules: {
+            create: {
+              isCueDeposit: rules.isCueDeposit,
+              isJumpingAllowed: rules.isJumpingAllowed,
+              isPoundOnTable: rules.isPoundOnTable,
+              isReservationAllowed: rules.isReservationAllowed,
+            },
+          },
+          isRequiresManualReview,
+          pubInformation: pubInformation
+            ? {
+                create: {
+                  numberOfTables: pubInformation.numberOfTables,
+                  tableQuality: pubInformation.tableQuality,
+                  tableCost: pubInformation.tableCost,
+                  cueQuality: pubInformation.cueQuality,
+                  hasChalk: pubInformation.hasChalk,
+                  wheelchairAccess: pubInformation.wheelchairAccess,
+                  kidsFriendly: pubInformation.kidsFriendly,
+                },
+              }
+            : undefined,
+        };
         const createdPub = await prisma.pub.create({
           data: newPub,
           include: {
             location: true,
             rules: true,
-            tables: true,
             pubInformation: true,
           },
         });
@@ -141,6 +134,49 @@ export const resolvers = {
       } catch (error) {
         console.error("Error creating pub:", error);
         throw new Error("Failed to create pub");
+      }
+    },
+    updatePub: async (_: undefined, { input }: { input: UpdatePubInput }) => {
+      const { pubId, updatedBy, rules, pubInformation, ...updates } = input;
+
+      try {
+        const existingPub = await prisma.pub.findUnique({
+          where: { id: Number(pubId) },
+        });
+
+        if (!existingPub) {
+          throw new Error(`Pub with id ${pubId} not found`);
+        }
+
+        const updatedByArray = existingPub.updatedBy
+          ? [...existingPub.updatedBy, updatedBy]
+          : [updatedBy];
+
+        const updateData = {
+          ...updates,
+          updatedBy: {
+            set: updatedByArray,
+          },
+          ...(rules && { rules: { update: rules } }),
+          ...(pubInformation && {
+            pubInformation: { update: pubInformation },
+          }),
+        };
+
+        const updatedPub = await prisma.pub.update({
+          where: { id: Number(pubId) },
+          data: updateData,
+          include: {
+            location: true,
+            rules: true,
+            pubInformation: true,
+          },
+        });
+
+        return updatedPub;
+      } catch (error) {
+        console.error(error);
+        throw new Error("Failed to update pub");
       }
     },
     deletePub: async (_: undefined, { id }: { id: string }) => {
@@ -166,12 +202,6 @@ export const resolvers = {
           where: { id: Number(id) },
           data: {
             isRequiresManualReview: false,
-          },
-          include: {
-            tables: true,
-            location: true,
-            rules: true,
-            comments: true,
           },
         });
 

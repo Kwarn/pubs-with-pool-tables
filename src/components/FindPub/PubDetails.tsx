@@ -12,6 +12,9 @@ import {
   faQuestion,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
+import Modal from "@/components/Modal";
+import AddPubForm from "@/components/AddPub/AddPubForm";
+import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 
 interface PubDetailsProps {
   pub: Pub;
@@ -25,8 +28,9 @@ const PubDetails: React.FC<PubDetailsProps> = ({
   newComment,
 }) => {
   const { localUser } = useUserStore();
-
   const [comments, setComments] = useState<Comment[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPub, setSelectedPub] = useState<Pub>(pub);
 
   const { loading, error, data } = useQuery<{ comments: Comment[] }>(
     GET_PUB_COMMENTS,
@@ -34,6 +38,11 @@ const PubDetails: React.FC<PubDetailsProps> = ({
       variables: { pubId: pub.id },
     }
   );
+
+  const handlePubUpdateSubmit = async (updatedPub: Pub) => {
+    setIsModalOpen(false);
+    setSelectedPub(updatedPub);
+  };
 
   const handleCommentSubmit = (text: string) => {
     onAddComment({
@@ -57,6 +66,12 @@ const PubDetails: React.FC<PubDetailsProps> = ({
   };
 
   useEffect(() => {
+    if (pub) {
+      setSelectedPub(pub);
+    }
+  }, [pub]);
+
+  useEffect(() => {
     if (data?.comments) {
       setComments(data.comments);
     }
@@ -69,93 +84,94 @@ const PubDetails: React.FC<PubDetailsProps> = ({
   }, [newComment]);
 
   return (
-    <Container id={pub.name}>
+    <Container id={selectedPub.name}>
       <Details>
         <AddedBy>
-          <strong>Added By:</strong> {pub.createdBy ?? "Unknown"}
+          <strong>Added By:</strong> {selectedPub.createdBy ?? "Unknown"}
         </AddedBy>
-        <Name>{pub?.name ?? "unknown"}</Name>
-        <Address>{pub?.address || "unknown"}</Address>
+
+        <Name>
+          {selectedPub?.name ?? "unknown"}{" "}
+          <EditButton onClick={() => setIsModalOpen(true)}>
+            <EditIcon icon={faPencilAlt} />
+          </EditButton>
+        </Name>
+        <Address>{selectedPub?.address || "unknown"}</Address>
         <InfoContainer>
           <Rules>
             <Info>
               <strong>Cue deposit</strong>
-              {getIcon(pub?.rules?.isCueDeposit)}
+              {getIcon(selectedPub?.rules?.isCueDeposit)}
             </Info>
             <Info>
               <strong>Pre-booking</strong>
-              {getIcon(pub?.rules?.isReservationAllowed)}
+              {getIcon(selectedPub?.rules?.isReservationAllowed)}
             </Info>
             <Info>
               <strong>Jumping balls</strong>
-              {getIcon(pub?.rules?.isJumpingAllowed)}
+              {getIcon(selectedPub?.rules?.isJumpingAllowed)}
             </Info>
             <Info>
               <strong>Pound down</strong>
-              {getIcon(pub?.rules?.isPoundOnTable)}
+              {getIcon(selectedPub?.rules?.isPoundOnTable)}
             </Info>
           </Rules>
           <PubInfo>
-            {pub.pubInformation && (
+            {selectedPub.pubInformation && (
               <Info>
                 <strong>Number of tables</strong>
-                {pub.pubInformation.numberOfTables}
+                {selectedPub.pubInformation.numberOfTables}
               </Info>
             )}
-            {pub.pubInformation && (
+            {selectedPub.pubInformation && (
               <Info>
-                <strong>Table quality</strong> {pub.pubInformation.tableQuality}
+                <strong>Table quality</strong>{" "}
+                {selectedPub.pubInformation.tableQuality}
               </Info>
             )}
-            {pub.pubInformation && (
+            {selectedPub.pubInformation && (
               <Info>
-                <strong>Table cost</strong> £{pub.pubInformation.tableCost}
+                <strong>Table cost</strong> £
+                {selectedPub.pubInformation.tableCost}
               </Info>
             )}
-            {pub.pubInformation && (
+            {selectedPub.pubInformation && (
               <Info>
-                <strong>Cue quality</strong> {pub.pubInformation.cueQuality}
+                <strong>Cue quality</strong>{" "}
+                {selectedPub.pubInformation.cueQuality}
               </Info>
             )}
-            {pub.pubInformation && (
+            {selectedPub.pubInformation && (
               <Info>
                 <strong>Has Chalk</strong>{" "}
-                {getIcon(pub?.pubInformation?.hasChalk)}
+                {getIcon(selectedPub?.pubInformation?.hasChalk)}
               </Info>
             )}
-            {pub.pubInformation && (
+            {selectedPub.pubInformation && (
               <Info>
                 <strong>Wheelchair access</strong>
-                {getIcon(pub?.pubInformation?.wheelchairAccess)}
+                {getIcon(selectedPub?.pubInformation?.wheelchairAccess)}
               </Info>
             )}
-            {pub.pubInformation && (
+            {selectedPub.pubInformation && (
               <Info>
                 <strong>Kids friendly</strong>
-                {getIcon(pub?.pubInformation?.kidsFriendly)}
+                {getIcon(selectedPub?.pubInformation?.kidsFriendly)}
               </Info>
             )}
           </PubInfo>
         </InfoContainer>
-
-        {pub.tables && pub.tables.length > 0 && (
-          <Info>
-            <strong>Tables</strong>
-            <ul>
-              {pub?.tables?.map((table) => (
-                <li key={table.id}>
-                  Size: {table.size}, Quality: {table.quality}, Cost: £
-                  {table.cost}
-                </li>
-              ))}
-            </ul>
-          </Info>
-        )}
       </Details>
       <CommentsSection>
         <Comments comments={comments || []} loading={loading} />
         <CommentsForm onSubmit={handleCommentSubmit} />
       </CommentsSection>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <AddPubForm
+          editPubDetails={selectedPub}
+          onSubmitCallback={handlePubUpdateSubmit}
+        />
+      </Modal>
     </Container>
   );
 };
@@ -187,7 +203,7 @@ const Name = styled.h1`
   font-family: ${({ theme }) => theme.fonts.heading};
   font-size: 1.5rem;
   text-align: center;
-  margin: 30px 0 10px 0;
+  margin: 30px 0 10px 25px;
   @media (max-width: 768px) {
     margin-top: 4rem;
     font-size: 0.8rem;
@@ -254,6 +270,25 @@ const CommentsSection = styled.div`
     width: 100%;
     height: 30%;
   }
+`;
+
+const EditButton = styled.button`
+  font-family: ${({ theme }) => theme.fonts.heading};
+  background: ${({ theme }) => theme.colors.secondary};
+  color: #fff;
+  border: none;
+  padding: 5px 5px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  &:hover {
+    background: ${({ theme }) => theme.colors.secondaryDark};
+  }
+`;
+
+const EditIcon = styled(FontAwesomeIcon)`
+  margin: auto;
 `;
 
 export default PubDetails;

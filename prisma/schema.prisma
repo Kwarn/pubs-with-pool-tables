@@ -24,16 +24,6 @@ model Rules {
   pubs                 Pub[]
 }
 
-model Table {
-  id          Int     @id @default(autoincrement())
-  size        String?
-  quality     String?
-  cost        Float?
-  description String?
-  pub         Pub     @relation(fields: [pubId], references: [id])
-  pubId       Int
-}
-
 model PubInformation {
   id               Int      @id @default(autoincrement())
   numberOfTables   Int?
@@ -54,7 +44,6 @@ model Pub {
   location               MapLocation     @relation(fields: [locationId], references: [id])
   rulesId                Int
   rules                  Rules           @relation(fields: [rulesId], references: [id])
-  tables                 Table[]
   comments               Comment[]
   informationId          Int?            @unique
   createdBy              String

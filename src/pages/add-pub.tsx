@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import AddPubMap, { Place } from "@/components/AddPub/AddPubMap";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { CREATE_PUB_MUTATION } from "@/graphql/mutations";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import { CREATE_PUB_MUTATION, UPDATE_PUB_MUTATION } from "@/graphql/mutations";
 import { useRouter } from "next/router";
 import AddPubForm from "@/components/AddPub/AddPubForm";
-import { PubInput } from "@/types";
+import { Pub, PubInput, UpdatePubInput } from "@/types";
 import { GET_PUB } from "@/graphql/queries";
 
 const AddPub: React.FC = () => {
   const router = useRouter();
   const [place, setPlace] = useState<Place | null>(null);
-  const [isNotPub, setIsNotPub] = useState<boolean>(false);
-  const [pubAlreadyExists, setPubAlreadyExists] = useState<boolean>(false);
   const [showForm, setShowForm] = useState<boolean>(false);
+  const [pubAlreadyExists, setPubAlreadyExists] = useState<boolean>(false);
 
   const [getPubData, { loading: pubLoading, error: pubError }] =
     useLazyQuery(GET_PUB);
@@ -24,9 +23,6 @@ const AddPub: React.FC = () => {
       setShowForm(false);
       return;
     }
-
-    if (place?.type !== "bar") setIsNotPub(true);
-    else setIsNotPub(false);
 
     const fetchData = async () => {
       const { data } = await getPubData({
@@ -43,22 +39,12 @@ const AddPub: React.FC = () => {
     if (place.address) fetchData();
   }, [place]);
 
-  const [createPub, { loading, error, data }] =
-    useMutation(CREATE_PUB_MUTATION);
-
-  const handleFormSubmit = async (formData: PubInput) => {
-    try {
-      await createPub({ variables: { input: formData } });
-    } catch (e: any) {
-      console.log(e);
-    }
-  };
-
-  useEffect(() => {
-    if (data) {
+  const onSubmitCallback = (createdPub: Pub) => {
+    console.log("createdPub", createdPub);
+    if (createdPub) {
       router.push("/");
     }
-  }, [data]);
+  };
 
   return (
     <Container>
@@ -72,13 +58,7 @@ const AddPub: React.FC = () => {
       )}
 
       <AddPubFormContainer $isOpen={showForm}>
-        <AddPubForm
-          place={place}
-          isNotPub={isNotPub}
-          loading={loading}
-          error={error}
-          onSubmit={handleFormSubmit}
-        />
+        <AddPubForm place={place} onSubmitCallback={onSubmitCallback} />
       </AddPubFormContainer>
     </Container>
   );

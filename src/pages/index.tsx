@@ -13,7 +13,6 @@ const fetchPubs = async () => {
     include: {
       location: true,
       rules: true,
-      tables: true,
       pubInformation: true,
     },
   });

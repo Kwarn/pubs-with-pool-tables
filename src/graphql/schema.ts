@@ -12,13 +12,6 @@ type Rules {
   isReservationAllowed: String!
 }
 
-type Table {
-  size: String
-  quality: String
-  cost: Float
-  description: String
-}
-
 type Comment {
   id: ID!
   text: String!
@@ -44,12 +37,16 @@ type Pub {
   address: String!
   location: MapLocation!
   rules: Rules!
-  tables: [Table]
   comments: [Comment]
   createdBy: String!
   updatedBy: [String]
   isRequiresManualReview: Boolean!
   pubInformation: PubInformation
+}
+  
+type Admin {
+  id: Int!
+  userId: Int!
 }
 
 type User {
@@ -58,12 +55,22 @@ type User {
   email: String!
 }
 
+input UpdatePubInput {
+  pubId: ID!
+  name: String
+  address: String
+  createdBy: String
+  rules: RulesInput
+  pubInformation: PubInformationInput
+  isRequiresManualReview: Boolean!
+  updatedBy: String
+}
+
 input PubInput {
   name: String!
   address: String!
   location: MapLocationInput
   rules: RulesInput
-  tables: [TableInput]
   createdBy: String!
   isRequiresManualReview: Boolean!
   pubInformation: PubInformationInput
@@ -91,13 +98,6 @@ input RulesInput {
   isReservationAllowed: String!
 }
 
-input TableInput {
-  size: String
-  quality: String
-  cost: Float
-  description: String
-}
-
 input CommentInput {
   text: String!
   author: String!
@@ -107,11 +107,6 @@ input CommentInput {
 input UserInput {
   name: String!
   email: String!
-}
-
-type Admin {
-  id: Int!
-  userId: Int!
 }
 
 type Query {
@@ -125,6 +120,7 @@ type Query {
 
 type Mutation {
   addPub(input: PubInput!): Pub!
+  updatePub(input: UpdatePubInput!): Pub!
   addComment(input: CommentInput!): Comment!
   deletePub(id: ID!): Pub!
   approvePub(id: Int!): Pub!
