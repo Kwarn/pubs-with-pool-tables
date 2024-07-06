@@ -15,6 +15,7 @@ import {
 import Modal from "@/components/Modal";
 import AddPubForm from "@/components/AddPub/AddPubForm";
 import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
+import { useRouter } from "next/router";
 
 interface PubDetailsProps {
   pub: Pub;
@@ -27,6 +28,7 @@ const PubDetails: React.FC<PubDetailsProps> = ({
   onAddComment,
   newComment,
 }) => {
+  const router = useRouter();
   const { localUser } = useUserStore();
   const [comments, setComments] = useState<Comment[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,6 +52,13 @@ const PubDetails: React.FC<PubDetailsProps> = ({
       author: localUser?.name ?? "unknown",
       pubId: pub.id,
     });
+  };
+
+  const handleEditButton = () => {
+    if (localUser?.name === selectedPub.createdBy) setIsModalOpen(true);
+    else {
+      router.push("/api/auth/login");
+    }
   };
 
   const getIcon = (value: string | null) => {
@@ -89,10 +98,9 @@ const PubDetails: React.FC<PubDetailsProps> = ({
         <AddedBy>
           <strong>Added By:</strong> {selectedPub.createdBy ?? "Unknown"}
         </AddedBy>
-
         <Name>
-          {selectedPub?.name ?? "unknown"}{" "}
-          <EditButton onClick={() => setIsModalOpen(true)}>
+          {selectedPub?.name ?? "unknown"}
+          <EditButton onClick={handleEditButton}>
             <EditIcon icon={faPencilAlt} />
           </EditButton>
         </Name>
@@ -280,6 +288,7 @@ const EditButton = styled.button`
   padding: 5px 5px;
   font-size: 1rem;
   border-radius: 5px;
+  margin-left: 10px;
   cursor: pointer;
   margin-bottom: 10px;
   &:hover {
