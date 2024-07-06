@@ -70,17 +70,16 @@ const AddPub: React.FC = () => {
           <h3>This pub has already been added</h3>
         </PubAlreadyExists>
       )}
-      {showForm && (
-        <AddPubFormContainer $isOpen={showForm}>
-          <AddPubForm
-            place={place}
-            isNotPub={isNotPub}
-            loading={loading}
-            error={error}
-            onSubmit={handleFormSubmit}
-          />
-        </AddPubFormContainer>
-      )}
+
+      <AddPubFormContainer $isOpen={showForm}>
+        <AddPubForm
+          place={place}
+          isNotPub={isNotPub}
+          loading={loading}
+          error={error}
+          onSubmit={handleFormSubmit}
+        />
+      </AddPubFormContainer>
     </Container>
   );
 };
